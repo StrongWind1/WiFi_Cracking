@@ -1,0 +1,107 @@
+site_name: WiFi Cracking
+site_description: Complete technical reference for WPA/WPA2 PSK security analysis
+site_url: https://strongwind1.github.io/WiFi_Cracking/
+repo_url: https://github.com/StrongWind1/WiFi_Cracking
+repo_name: StrongWind1/WiFi_Cracking
+copyright: Copyright &copy; 2025 - 2026 StrongWind1
+
+theme:
+  name: material
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.sections
+    - navigation.path
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - toc.follow
+    - search.highlight
+    - search.suggest
+    - search.share
+    - header.autohide
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.mark
+  - pymdownx.keys
+  - tables
+  - attr_list
+  - md_in_html
+  - def_list
+  - footnotes
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Protocol:
+    - Key hierarchy: protocol/key-hierarchy.md
+    - 4-way handshake: protocol/four-way-handshake.md
+    - PSK variants: protocol/psk-variants.md
+  - Attacks:
+    - PMKID attack: attacks/pmkid.md
+    - EAPOL attack: attacks/eapol.md
+    - Message pairs: attacks/message-pairs.md
+  - Algorithms:
+    - PBKDF2 (passphrase to PMK): algorithms/pbkdf2.md
+    - Standard PSK (AKM 2 and 6): algorithms/standard-psk.md
+    - FT-PSK (AKM 4): algorithms/ft-psk.md
+  - Reference:
+    - Capture requirements: reference/capture-requirements.md
+    - Hash line formats: reference/hash-line-formats.md
+    - EAPOL-Key frame: reference/eapol-frame.md
+    - Gap table: reference/gap-table.md
+    - EAPOL size limits: reference/eapol-size-limits.md
+    - Hashcat modes: reference/hashcat-modes.md
+  - Tools:
+    - hcxpcapngtool: tools/hcxpcapngtool.md
+    - Cheat sheet: tools/cheat-sheet.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/StrongWind1/WiFi_Cracking
+      name: WiFi Cracking on GitHub
+  generator: false
+
+extra_css:
+  - stylesheets/extra.css

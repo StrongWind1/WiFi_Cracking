@@ -1,0 +1,48 @@
+# mkdocs documentation
+/site
+
+# Python
+__pycache__/
+*.py[oc]
+*.egg-info
+.venv
+venv/
+env/
+
+# Coverage
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Tool caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.claude/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+.cache/

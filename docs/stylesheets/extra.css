@@ -1,0 +1,127 @@
+/* WiFi Cracking theme
+ *
+ * Palette:
+ *   Background:  #0a1a0a → #0d1117 (deep dark green/black)
+ *   Accent:      #00e676 (bright green, WiFi signal)
+ *   Secondary:   #4dd0e1 (cyan, data flow)
+ *   Text:        #c9d1d9
+ */
+
+/* ---------- Custom primary color (both schemes) ---------- */
+
+:root > * {
+  --md-primary-fg-color: #0a1a0f;
+  --md-primary-fg-color--light: #122218;
+  --md-primary-fg-color--dark: #050d07;
+}
+
+/* ---------- Dark mode (slate, default) ---------- */
+
+[data-md-color-scheme="slate"] {
+  --md-hue: 150;
+
+  --md-accent-fg-color: #00e676;
+  --md-accent-fg-color--transparent: #00e6761a;
+
+  --md-default-bg-color: #0d1117;
+  --md-default-bg-color--light: #111d1a;
+  --md-default-bg-color--lighter: #162220;
+  --md-default-bg-color--lightest: #1c2d28;
+
+  --md-code-bg-color: #0d1a14;
+  --md-code-fg-color: #c9d1d9;
+  --md-code-hl-color: #00e6761a;
+
+  --md-footer-bg-color: #050d07;
+  --md-footer-bg-color--dark: #030804;
+  --md-footer-fg-color: #ffffffb3;
+  --md-footer-fg-color--light: #ffffff73;
+  --md-footer-fg-color--lighter: #ffffff42;
+
+  --md-typeset-color: #c9d1d9;
+  --md-typeset-a-color: #00e676;
+}
+
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #0a1a0f;
+}
+
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #0a1a0f;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar {
+  background-color: #0d1117;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link:hover {
+  color: #00e676;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link--active {
+  color: #00e676;
+}
+
+[data-md-color-scheme="slate"] .md-search__input {
+  background-color: #162220;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition,
+[data-md-color-scheme="slate"] .md-typeset details {
+  border-color: #1b4332;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: #122218;
+  color: #e0e0e0;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  border-color: #1c2d28;
+}
+
+[data-md-color-scheme="slate"] .md-banner {
+  background-color: #050d07;
+  color: #ffffffb3;
+}
+
+/* ---------- Header title ---------- */
+
+.md-header__title {
+  cursor: pointer;
+  pointer-events: none;
+}
+
+.md-header__ellipsis {
+  pointer-events: auto;
+}
+
+.md-header__button.md-logo {
+  position: relative;
+  z-index: 1;
+}
+
+.md-header__button.md-logo::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -200px;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* ---------- Light mode ---------- */
+
+[data-md-color-scheme="default"] {
+  --md-accent-fg-color: #00796b;
+  --md-typeset-a-color: #00796b;
+}
+
+[data-md-color-scheme="default"] .md-header {
+  background-color: #0a1a0f;
+}
+
+[data-md-color-scheme="default"] .md-tabs {
+  background-color: #0a1a0f;
+}
