@@ -146,13 +146,17 @@ real-world configurations:
 
 For every crackable PSK variant, there are two independent ways to attack:
 
-### Attack A: PMKID (Clientless)
+### Attack A: PMKID
 
-- **Requires**: Only M1 from the AP (no client needed, no full handshake)
-- **How**: The AP includes a PMKID in M1's Key Data field. The PMKID is a hash
-  of the PMK, so it can be verified against password guesses.
-- **Limitation**: Not all APs include a PMKID in M1. Depends on whether the AP
-  has a cached PMKSA.
+- **Requires**: A frame containing a PMKID. For standard WPA (AKM 2/6), the
+  PMKID can appear in M1, M2, Association Request, or Reassociation Request.
+  For FT-PSK (AKM 4), hcxpcapngtool extracts the PMKID from M2 because only
+  M2 contains all the FT IEs (MDID, R0KH-ID, R1KH-ID) needed for the FT key
+  derivation chain.
+- **How**: The PMKID is a hash of the PMK, so it can be verified against
+  password guesses.
+- **Limitation**: Not all APs include a PMKID. Depends on whether the AP has
+  a cached PMKSA.
 
 ### Attack B: EAPOL 4-Way Handshake (MIC verification)
 
@@ -213,7 +217,7 @@ in the EAPOL frame:
 | M3 | SNonce (from M2 or M4) | M3 contains ANonce, so SNonce is external |
 | M4 | ANonce (from M1 or M3) | M4 contains SNonce, so ANonce is external |
 
-In code, this looks like:
+This is what `tools/wpa_audit.py` does when building hash lines:
 
 ```python
 ext_nonce = s_nonce if eapol_msg == 3 else a_nonce
@@ -562,9 +566,9 @@ Step D: MIC
 
 | Attack | AKM | Minimum Capture | Fields Required |
 |--------|-----|----------------|-----------------|
-| PMKID | 2 (PSK) | M1 with PMKID in Key Data | SSID, MAC_AP, MAC_STA, PMKID |
-| PMKID | 4 (FT-PSK) | M1 with PMKID + FT IEs | SSID, MAC_AP, MAC_STA, PMKID, MDID, R0KH-ID, R1KH-ID |
-| PMKID | 6 (PSK-SHA256) | M1 with PMKID in Key Data | SSID, MAC_AP, MAC_STA, PMKID |
+| PMKID | 2 (PSK) | M1, M2, Assoc Req, or Reassoc Req with PMKID | SSID, MAC_AP, MAC_STA, PMKID |
+| PMKID | 4 (FT-PSK) | M2 with PMKID + FT IEs | SSID, MAC_AP, MAC_STA, PMKID, MDID, R0KH-ID, R1KH-ID |
+| PMKID | 6 (PSK-SHA256) | M1, M2, Assoc Req, or Reassoc Req with PMKID | SSID, MAC_AP, MAC_STA, PMKID |
 | EAPOL | 2 (PSK) | Any message pair (M1+M2 best) | SSID, MAC_AP, MAC_STA, ANonce, SNonce, MIC, EAPOL frame |
 | EAPOL | 4 (FT-PSK) | Any message pair + FT IEs | Same as above + MDID, R0KH-ID, R1KH-ID |
 | EAPOL | 6 (PSK-SHA256) | Any message pair | SSID, MAC_AP, MAC_STA, ANonce, SNonce, MIC, EAPOL frame |
@@ -580,7 +584,7 @@ Step D: MIC
 | SNonce | M2 (or M4 if non-zero), EAPOL Key Nonce field | M4 nonce often zeroed per spec |
 | MIC | M2, M3, or M4, EAPOL Key MIC field (16 bytes) | M1 has no MIC |
 | EAPOL frame | Raw bytes of the EAPOL-Key frame containing the MIC | MIC field zeroed for verification |
-| PMKID | M1 Key Data field, PMKID KDE (tag 0xDD, length 0x14, type 0x04) | Not always present |
+| PMKID | M1, M2, Assoc Req, or Reassoc Req Key Data, PMKID KDE (tag 0xDD, length 0x14, type 0x04) | Not always present. FT-PSK uses M2 specifically. |
 | MDID | Mobility Domain IE (tag 0x36) in Beacon/assoc frames | 2 bytes, FT only |
 | R0KH-ID | Fast BSS Transition IE (tag 0x37) subelement | Variable length, up to 48 bytes |
 | R1KH-ID | Fast BSS Transition IE (tag 0x37) subelement | 6 bytes (usually = AP MAC) |
@@ -1009,12 +1013,12 @@ to tell hashcat that nonce error correction may be needed.
 
 ### Options Matrix (tested results)
 
-| Pcap | Messages | Unique | default | --all | NC=8+all |
-|------|----------|--------|---------|-------|----------|
-| A | 1/1/1/1(nz) | 3e | 1e/0p | 6e/0p | 6e/0p |
-| B | 1/1/1/1(z) | 2e | 1e/0p | 3e/0p | 3e/0p |
-| C | 5/5/8/4(z) | 45e | 1e/1p | 20e/5p | 51e/5p |
-| D | 15/1/2/1(z) | 8e | 1e/0p | 3e/0p | 10e/0p |
+| Pcap | Messages | Our unique | default | --all | NC=8+all | bruteforce |
+|------|----------|-----------|---------|-------|----------|------------|
+| small_m4 | 1/1/1/1(nz) | 3e | 1e/0p | 6e/0p | 6e/0p | **3e**/0p |
+| 331 | 1/1/1/1(z) | 2e | 1e/0p | 3e/0p | 3e/0p | **2e**/0p |
+| 327 | 5/5/8/4(z) | 45e | 1e/1p | 20e/5p | 51e/5p | **45e**/5p |
+| 546 | 15/1/2/1(z) | 8e | 1e/0p | 3e/0p | 10e/0p | **8e**/0p |
 
 Messages format: M1/M2/M3/M4 count, (nz)=non-zero M4 nonce, (z)=zeroed.
 Output format: {EAPOL}e/{PMKID}p.
@@ -1024,7 +1028,19 @@ Key observations:
 - **NC only matters with `--all`**: without `--all`, dedup limits output to 1 per pair anyway
 - **`--eapoltimeout` and `--ignore-ie` had no effect** on these test captures
 - **Default mode under-extracts** because of dedup (1 per AP/STA), strict RC
-  matching, and only 4 of 6 combo types.
+  matching, and only 4 of 6 combo types. `--bruteforce` recovers everything.
+
+### `--bruteforce` Mode (crackwolf custom)
+
+Our custom build adds `--bruteforce` which enables maximum hash extraction:
+- Enables `--all` + `--ignore-ie`
+- Sets NC and timeout to maximum
+- Uses a 4096-entry message window (vs default 64)
+- **Deduplicates by hash fingerprint** (SHA1 of AP+STA+ANonce+EAPOL via
+  OpenSSL EVP API) so each unique crackable hash is written exactly once
+
+Tested against `wpa_audit.py` (independent Python implementation using scapy):
+all test pcaps produce identical unique fingerprint sets with `--bruteforce`.
 
 ---
 
@@ -1079,6 +1095,15 @@ done
 ```
 
 ### Useful Commands
+
+**Reduce pcap size before conversion** (strips everything except mgmt frames + EAPOL):
+```bash
+tshark -r dumpfile.pcap \
+    -R "(wlan.fc.type_subtype == 0x00 || wlan.fc.type_subtype == 0x02 || \
+         wlan.fc.type_subtype == 0x04 || wlan.fc.type_subtype == 0x05 || \
+         wlan.fc.type_subtype == 0x08 || eapol)" \
+    -2 -F pcapng -w stripped.pcapng
+```
 
 Do not clean pcaps with wpaclean (removes useful frames). Do not merge pcapng
 files (destroys metadata). Do not filter during capture.
