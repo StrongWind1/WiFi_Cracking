@@ -19,7 +19,6 @@
    awk -F'*' '!seen[$3,$4,$5,$6,$7,$8]++' hashes.22000 > unique.22000
 
 5. CHECK WHAT YOU GOT
-   python3 mp_print.py unique.22000                    # decode message pairs
    hcxhashtool -i unique.22000 --info                  # detailed hash info
 
 6. CRACK

@@ -61,7 +61,7 @@ in the EAPOL frame:
 
 In code, this looks like:
 
-```python
+```
 ext_nonce = s_nonce if eapol_msg == 3 else a_nonce
 ```
 

@@ -217,9 +217,9 @@ in the EAPOL frame:
 | M3 | SNonce (from M2 or M4) | M3 contains ANonce, so SNonce is external |
 | M4 | ANonce (from M1 or M3) | M4 contains SNonce, so ANonce is external |
 
-This is what `tools/wpa_audit.py` does when building hash lines:
+In code, this looks like:
 
-```python
+```
 ext_nonce = s_nonce if eapol_msg == 3 else a_nonce
 ```
 
@@ -1039,7 +1039,7 @@ Our custom build adds `--bruteforce` which enables maximum hash extraction:
 - **Deduplicates by hash fingerprint** (SHA1 of AP+STA+ANonce+EAPOL via
   OpenSSL EVP API) so each unique crackable hash is written exactly once
 
-Tested against `wpa_audit.py` (independent Python implementation using scapy):
+Tested against an independent implementation using scapy:
 all test pcaps produce identical unique fingerprint sets with `--bruteforce`.
 
 ---
@@ -1065,7 +1065,6 @@ all test pcaps produce identical unique fingerprint sets with `--bruteforce`.
    awk -F'*' '!seen[$3,$4,$5,$6,$7,$8]++' hashes.22000 > unique.22000
 
 5. CHECK WHAT YOU GOT
-   python3 mp_print.py unique.22000                    # decode message pairs
    hcxhashtool -i unique.22000 --info                  # detailed hash info
 
 6. CRACK
