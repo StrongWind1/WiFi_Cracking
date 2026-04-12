@@ -1,51 +1,61 @@
 # Contributing
 
-## Quick Start
+## Getting Started
 
-1. Clone the repository:
+```bash
+git clone https://github.com/StrongWind1/WiFi_Cracking.git
+cd WiFi_Cracking
+pip install mkdocs-material
+mkdocs serve            # preview at http://127.0.0.1:8000
+```
 
-    ```bash
-    git clone <repo-url>
-    cd WiFi_Cracking
-    ```
+For strict build validation (same as CI):
 
-2. Install mkdocs-material:
-
-    ```bash
-    pip install mkdocs-material
-    ```
-
-3. Start the development server:
-
-    ```bash
-    mkdocs serve
-    ```
-
-    The site is available at `http://127.0.0.1:8000` and auto-reloads on changes.
+```bash
+python3 -m mkdocs build --strict
+```
 
 ## Making Changes
 
-- All documentation lives in the `docs/` directory.
-- Edit existing pages or create new ones following the directory structure.
-- Add new pages to the `nav` section in `mkdocs.yml` so they appear in the
-  site navigation.
-- Preview changes locally with `mkdocs serve` before submitting.
+1. Fork the repo and create a branch from `main`
+2. Edit or add pages under `docs/`
+3. Add new pages to the `nav` section in `mkdocs.yml`
+4. Run `mkdocs build --strict` to verify no broken links or warnings
+5. Open a PR against `main` with a clear description of what changed and why
 
 ## Content Guidelines
 
-- Every page must have a single H1 title matching the `nav` entry.
-- Use H2 for major sections and H3 for subsections.
-- Reference authoritative sources (IEEE 802.11-2020, RFCs, tool documentation)
-  wherever possible.
-- Include spec section numbers when discussing protocol details.
-- Tables should have a header row and use consistent column alignment.
-- Code blocks must specify a language for syntax highlighting.
+- Cite primary sources (IEEE 802.11-2024, RFCs, tool source code) for all
+  technical claims. Include section numbers for spec references.
+- Use the N#E# naming convention for message pairs (see the
+  [EAPOL attack page](../psk-attacks/eapol.md))
+- Use `message_pair` with hex values (`0x00`–`0x05`) when referencing the
+  hashcat field
+- Keep tables and code blocks formatted consistently with existing pages
+- Do not add content about post-capture network access or active exploitation
 
 ## Style Guide
 
-- Write in present tense, active voice.
-- Use "the AP sends" not "the AP will send" or "the AP would send."
-- Spell out acronyms on first use per page, with the abbreviation in parentheses.
-- Keep paragraphs short -- aim for 3-5 sentences.
+- Write in present tense, active voice
+- Use "the AP sends" not "the AP will send"
+- Spell out acronyms on first use per page (abbreviated forms auto-link via
+  the glossary abbreviation list)
+- Keep paragraphs short — 3–5 sentences
 - Use admonitions (`!!! note`, `!!! warning`) sparingly and only when the
-  information genuinely requires special attention.
+  information genuinely requires special attention
+
+## Reporting Errors
+
+Use the [bug report template](https://github.com/StrongWind1/WiFi_Cracking/issues/new?template=bug_report.md).
+Include which page has the error, what is wrong, and what the correct information
+is (with a source if possible).
+
+## Scope
+
+This project covers IEEE 802.11 wireless security analysis: protocol internals
+for all AKM suites, offline password attacks against PSK networks (hcxtools,
+hashcat), enterprise EAP credential extraction, and legacy WEP vulnerabilities.
+
+Out of scope: active network exploitation, deauthentication, injection
+techniques, post-authentication lateral movement, and anything requiring
+unauthorized access to networks.
