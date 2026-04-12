@@ -38,36 +38,48 @@ behavior diverges from the spec.
 
 ### Gap Summary (PSK)
 
-```
-                         ┌──────────────────────────┐
-                         │      SPEC DEFINES IT      │
-                         └──────────┬────────────────┘
-                                    │
-              ┌─────────────────────┼────────────────────┐
-              │                     │                    │
-       ┌──────▼───────┐    ┌────────▼──────┐    ┌───────▼──────┐
-       │  AKM 2 PSK   │    │  AKM 4 FT-PSK │    │ AKM 6 SHA256 │
-       │ PMKID: SHA1  │    │ PMKID: chain  │    │ PMKID: SHA256│
-       │ EAPOL: kv1-3 │    │ EAPOL: kv3    │    │ EAPOL: kv3   │
-       └──────┬───────┘    └────────┬──────┘    └───────┬──────┘
-              │                     │                    │
-       ┌──────▼───────┐    ┌────────▼──────┐    ┌───────▼──────┐
-       │  hcxtools     │    │  hcxtools     │    │  hcxtools    │
-       │ PMKID: WPA*01 │    │ PMKID: WPA*03 │    │ PMKID: WPA*01│
-       │ EAPOL: WPA*02 │    │ EAPOL: WPA*04 │    │ EAPOL: WPA*02│
-       │ ALL WORKING   │    │ EAPOL >255B   │    │ ALL WORKING  │
-       │               │    │ skipped       │    │              │
-       └──────┬───────┘    └────────┬──────┘    └───────┬──────┘
-              │                     │                    │
-       ┌──────▼───────┐    ┌────────▼──────┐    ┌───────▼──────┐
-       │  hashcat      │    │  hashcat      │    │  hashcat     │
-       │  mode 22000   │    │  mode 37100   │    │  mode 22000  │
-       │ PMKID: YES    │    │ PMKID: NO     │    │ PMKID: BROKEN│
-       │  (SHA1 aux4)  │    │  (not merged) │    │  (SHA1≠SHA256│
-       │ kv1: YES aux1 │    │ EAPOL: NO     │    │  silent fail)│
-       │ kv2: YES aux2 │    │  (not merged) │    │ EAPOL: YES   │
-       │ kv3: YES aux3 │    │               │    │  (kv3, aux3) │
-       └───────────────┘    └───────────────┘    └──────────────┘
+```mermaid
+flowchart TD
+    spec["<b>SPEC DEFINES IT</b><br>IEEE 802.11-2024"]
+
+    spec --> akm2_spec
+    spec --> akm4_spec
+    spec --> akm6_spec
+
+    subgraph akm2["AKM 2 — WPA/WPA2-PSK"]
+        akm2_spec["PMKID: HMAC-SHA1<br>EAPOL: kv1, kv2, kv3"]
+        akm2_hcx["hcxtools<br>PMKID → WPA*01<br>EAPOL → WPA*02<br>✅ All working"]
+        akm2_hc["hashcat mode 22000<br>PMKID: ✅ aux4 SHA1<br>kv1: ✅ aux1<br>kv2: ✅ aux2<br>kv3: ✅ aux3"]
+        akm2_spec --> akm2_hcx --> akm2_hc
+    end
+
+    subgraph akm4["AKM 4 — WPA2-FT-PSK"]
+        akm4_spec["PMKID: SHA-256 chain<br>EAPOL: kv3"]
+        akm4_hcx["hcxtools<br>PMKID → WPA*03<br>EAPOL → WPA*04<br>⚠️ EAPOL >255B skipped"]
+        akm4_hc["hashcat mode 37100<br>PMKID: ❌ not merged<br>EAPOL: ❌ not merged<br>PR #4645 pending"]
+        akm4_spec --> akm4_hcx --> akm4_hc
+    end
+
+    subgraph akm6["AKM 6 — WPA2-PSK-SHA256"]
+        akm6_spec["PMKID: HMAC-SHA256<br>EAPOL: kv3"]
+        akm6_hcx["hcxtools<br>PMKID → WPA*01<br>EAPOL → WPA*02<br>✅ All working"]
+        akm6_hc["hashcat mode 22000<br>PMKID: 🔴 BROKEN<br>aux4 uses SHA1 ≠ SHA256<br>silent wrong answer<br>EAPOL: ✅ kv3, aux3"]
+        akm6_spec --> akm6_hcx --> akm6_hc
+    end
+
+    classDef working fill:#1b4332,stroke:#69f0ae,color:#e0e0e0
+    classDef broken fill:#4a1515,stroke:#ff5252,color:#e0e0e0
+    classDef missing fill:#3e2723,stroke:#ffab40,color:#e0e0e0
+    classDef specbox fill:#1a237e,stroke:#90caf9,color:#e0e0e0
+    classDef neutral fill:#1c2d28,stroke:#4dd0e1,color:#c9d1d9
+
+    class spec specbox
+    class akm2_spec,akm4_spec,akm6_spec neutral
+    class akm2_hcx,akm6_hcx working
+    class akm2_hc working
+    class akm4_hcx missing
+    class akm4_hc missing
+    class akm6_hc broken
 ```
 
 ### Detailed Gap Records (PSK)
