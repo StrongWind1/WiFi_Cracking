@@ -5,9 +5,29 @@
 
 # WiFi Cracking
 
-Complete technical reference for IEEE 802.11 wireless security. Covers protocol internals for all 25 AKM suites, offline password attacks against PSK networks, enterprise EAP credential extraction, and legacy WEP vulnerabilities. Built from primary sources: IEEE 802.11-2024, RFC 3748, hashcat, hcxtools, and aircrack-ng.
+Complete technical reference for IEEE 802.11 wireless security. Two paths to
+choose from: a step-by-step **Guide** for cracking WiFi passwords, or a deep
+**Reference** covering protocol internals for all 25 AKM suites.
 
-## Sections
+## Choose your path
+
+<div class="grid cards" markdown>
+
+- :material-school: __[Guide](guide/index.md)__
+
+    ---
+
+    Zero-to-hero walkthrough. Capture traffic, extract hashes, crack passwords — step by step with just the commands you need.
+
+- :material-book-open-variant: __[Reference](protocol/index.md)__
+
+    ---
+
+    Deep technical reference. All 25 AKM suites, protocol internals, attack algorithms, EAP credential extraction, WEP, and tool documentation.
+
+</div>
+
+## Reference sections
 
 <div class="grid cards" markdown>
 
