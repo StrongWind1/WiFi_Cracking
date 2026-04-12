@@ -19,10 +19,6 @@ The general workflow follows three stages:
 2. **Extract** -- Parse captures into hash formats suitable for cracking tools.
 3. **Crack** -- Run extracted hashes through hashcat or aircrack-ng.
 
-Placeholder for a Mermaid flowchart with three swim lanes showing the data flow
-from capture tools through extraction tools to cracking tools, with format
-annotations on each arrow.
-
 ```mermaid
 flowchart LR
     subgraph Capture
