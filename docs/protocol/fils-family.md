@@ -1,17 +1,57 @@
 # FILS Family (AKM 14-17)
 
-Fast Initial Link Setup (FILS) reduces the time required for a station to associate and begin data exchange, targeting environments with high station density and frequent (re)associations such as stadiums and transit systems.
+Fast Initial Link Setup (FILS) reduces association latency by combining
+authentication, key establishment, and association into fewer frame exchanges.
+Targets high-density environments (stadiums, transit) with frequent
+re-associations.
 
 ## Overview
 
-FILS combines the authentication, association, and key establishment steps into fewer frame exchanges than standard 802.1X. It can use either a shared key (rMSK from a prior EAP exchange cached via FILS or ERP) or a full EAP exchange compressed into the association frames. The result is sub-100ms connection times compared to several hundred milliseconds for standard 802.1X.
+Standard 802.1X requires multiple round trips (EAP exchange → 4-way handshake)
+before data can flow. FILS reduces this to two frames — Authentication Request
+and Authentication Response — by incorporating key confirmation directly into
+the association frames. Sub-100ms connections are achievable.
 
 ## FILS Authentication Flow
 
-<!-- TODO: add Mermaid sequence diagram showing FILS Authentication + Association -->
-<!-- Key steps: Authentication frame with FILS Indication, Association Request with ERP/Key Confirm, Association Response with GTK/PTK -->
+```mermaid
+sequenceDiagram
+    participant STA as STA
+    participant AP as AP
 
-FILS authentication uses an Authentication frame with the FILS algorithm number, followed by Association Request/Response frames that carry the key exchange material. The AP and STA derive a FILS Key Confirmation Key (KCK) and complete key installation within the association exchange.
+    Note over STA,AP: STA holds rMSK from prior EAP exchange (ERP) or FILS cache
+
+    STA->>AP: FILS Authentication Request\n(FILS Nonce, ERP/FILS key material, SSID)
+    Note over AP: Derives FILS session keys
+    AP->>STA: FILS Authentication Response\n(FILS Nonce, Key Confirmation, GTK wrapped)
+
+    Note over STA,AP: Both derive session keys\nData exchange begins immediately
+```
+
+FILS authentication is based on EAP Re-authentication Protocol (ERP, RFC 6696).
+The station uses a re-authentication Root Key (rRK) derived during an initial
+full EAP exchange to produce a re-authentication MSK (rMSK) for subsequent
+fast connections, without going back to the RADIUS server.
+
+## Key Derivation
+
+FILS derives a session key from the rMSK:
+
+```
+FILS-Key-Data = KDF-Hash(rMSK || ANonce || SNonce,
+                         "FILS PTK Derivation",
+                         MAC_AP || MAC_STA)
+```
+
+The output is split into ICK (Integrity Check Key), KEK, and TK. The ICK
+replaces the KCK for MIC computation in FILS-specific frames.
+
+Key sizes:
+
+| AKM | Hash | ICK | KEK | TK |
+|-----|------|-----|-----|-----|
+| 14, 16 | SHA-256 | 256 bits | 256 bits | 256 bits |
+| 15, 17 | SHA-384 | 384 bits | 256 bits | 256 bits |
 
 ## AKM Variants
 
@@ -22,10 +62,21 @@ FILS authentication uses an Authentication frame with the FILS algorithm number,
 | 16 | FT-FILS-SHA256 | SHA-256 | Yes | 802.11ai-2016 |
 | 17 | FT-FILS-SHA384 | SHA-384 | Yes | 802.11ai-2016 |
 
-AKMs 16 and 17 combine FILS with Fast Transition, enabling both fast initial connection and fast roaming within the same mobility domain.
+AKMs 16 and 17 combine FILS with Fast Transition, enabling both fast initial
+connection and fast roaming within the same mobility domain.
+
+## Security Posture
+
+FILS does not change the authentication security model — credentials are still
+EAP-method-dependent. FILS only affects the protocol efficiency. The MIC in
+FILS frames uses the ICK (not the KCK from the 4-way handshake), but this
+does not create new offline attack vectors beyond the EAP inner method.
+
+AKMs 14/15/16/17 have no offline attack paths against the 802.11 key material.
 
 ## Spec References
 
-- FILS protocol: 802.11-2024 Section 12.11
-- FILS key derivation: Section 12.11.2
+- FILS protocol: 802.11-2024 §12.11
+- FILS key derivation: §12.11.2
+- EAP Re-authentication Protocol: RFC 6696
 - AKM selectors: Table 9-190

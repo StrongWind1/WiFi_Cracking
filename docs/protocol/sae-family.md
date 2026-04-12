@@ -1,45 +1,114 @@
 # SAE Family (AKM 8, 9, 24, 25)
 
-Simultaneous Authentication of Equals (SAE) is the authentication protocol behind WPA3-Personal. It uses a password-authenticated key exchange (PAKE) that produces a PMK without exposing any material useful for offline attacks.
+Simultaneous Authentication of Equals (SAE) is the authentication protocol
+behind WPA3-Personal. It uses a password-authenticated key exchange (PAKE)
+that produces a PMK without exposing any material useful for offline attacks.
 
 ## Overview
 
-SAE implements the Dragonfly key exchange, a zero-knowledge proof protocol where both parties prove knowledge of the password without revealing it. Even if an attacker captures the full SAE exchange, there is no hash or derived value that can be subjected to offline dictionary attack.
+SAE implements the Dragonfly key exchange (RFC 7664), a zero-knowledge proof
+protocol where both parties prove knowledge of the password without revealing
+it. Capturing the full SAE exchange does not yield any value that can be
+subjected to offline dictionary attack.
 
-## SAE Authentication Flow (Commit / Confirm)
+## SAE Authentication Flow
 
-<!-- TODO: add Mermaid sequence diagram for SAE Commit/Confirm exchange -->
+```mermaid
+sequenceDiagram
+    participant STA as STA (Supplicant)
+    participant AP as AP (Authenticator)
 
-SAE authentication happens before the 4-way handshake and consists of two frames per side:
+    Note over STA,AP: Both derive PWE from password + AP MAC + STA MAC
 
-1. **Commit** -- each side sends a scalar and element derived from the password and a random value.
-2. **Confirm** -- each side sends a confirmation hash proving it computed the same shared secret.
+    STA->>AP: SAE Commit (scalar_S, element_S)
+    AP->>STA: SAE Commit (scalar_A, element_A)
 
-After a successful exchange, both sides derive a PMK (and PMKID) from the shared secret.
+    Note over STA: Derives shared secret K from scalar_A, element_A, scalar_S
+    Note over AP: Derives shared secret K from scalar_S, element_S, scalar_A
+
+    STA->>AP: SAE Confirm (confirm_S = hash of K, scalars, elements)
+    AP->>STA: SAE Confirm (confirm_A)
+
+    Note over STA,AP: Both verify the confirm values
+    Note over STA,AP: Derive PMK = KDF(K, "SAE KCK and PMK", ...)
+    Note over STA,AP: Proceed to 4-Way Handshake
+```
 
 ## Why Offline Cracking Is Impossible
 
-The Commit frame contains a scalar and an elliptic curve point (or finite field element) derived from the password, but the derivation involves random per-session values that are never transmitted. An attacker cannot separate the password contribution from the randomness without solving the discrete logarithm problem. Each password guess requires an active authentication attempt against the AP.
+The SAE Commit frame sends a scalar and group element derived from the password
+and a **per-session random value** (random private key). The derivation is:
+
+```
+scalar = (rand + mask) mod r
+element = -(mask * PWE)
+```
+
+Where `rand` and `mask` are random per-session, `r` is the group order, and
+`PWE` is the Password Element derived from the passphrase.
+
+An attacker who captures `scalar` and `element` cannot separate the password
+contribution (`PWE`) from the randomness (`rand`, `mask`) without solving the
+Diffie-Hellman problem in the cryptographic group. Every password test requires
+a new Commit exchange with the AP (online rate-limited attack only).
+
+Contrast with PSK: the EAPOL-Key frames expose ANonce, SNonce, MIC, and the
+raw EAPOL frame — everything needed to verify a password guess offline.
 
 ## Hash-to-Element vs Hunting-and-Pecking
 
-<!-- TODO: detail both PWE derivation methods and their side-channel implications -->
+Two methods exist for deriving the PWE (Password Element) from the passphrase:
 
-The original SAE specification used a "hunting-and-pecking" method to convert the password into a group element (PWE), which was vulnerable to side-channel timing attacks (Dragonblood). The newer hash-to-element (H2E) method, required for AKM 24/25, uses a deterministic mapping that eliminates this timing channel.
+**Hunting-and-Pecking (H&P)** — original method, now deprecated:
+
+1. Compute `seed = HMAC-SHA256(max(MAC_AP, MAC_STA) || min(...), k || pass || counter)`
+2. Map `seed` into the group via a hash-to-field function
+3. Check if the resulting point is on the curve
+4. If not, increment counter and retry (loop until success)
+
+The number of iterations depends on the input, creating a timing side channel
+that leaks bits of information about the password (Dragonblood attack, CVE-2019-9494).
+
+**Hash-to-Element (H2E)** — deterministic replacement (IEEE 802.11-2021):
+
+1. Derive a PAKE password seed (PPS) using HKDF-Extract
+2. Map PPS directly to a group element using a constant-time hash-to-curve
+   algorithm (SSWU or similar per draft-irtf-cfrg-hash-to-curve)
+
+H2E requires no loops and is constant-time, eliminating the timing side channel.
+AKMs 24 and 25 mandate H2E exclusively.
 
 ## AKM Variants
 
-| AKM | Name | Hash | FT? | PWE Method | Standard |
+| AKM | Name | Hash | FT? | PWE method | Standard |
 |-----|------|------|-----|-----------|----------|
 | 8 | SAE | SHA-256 | No | H&P or H2E | 802.11-2012 |
 | 9 | FT-SAE | SHA-256 | Yes | H&P or H2E | 802.11-2012 |
-| 24 | SAE (group-dependent) | Group-dependent | No | H2E only | 802.11-2024 |
-| 25 | FT-SAE (group-dependent) | Group-dependent | Yes | H2E only | 802.11-2024 |
+| 24 | SAE (group-dep.) | Group-dependent | No | H2E only | 802.11-2024 |
+| 25 | FT-SAE (group-dep.) | Group-dependent | Yes | H2E only | 802.11-2024 |
 
-AKM 24 and 25 select the hash algorithm based on the negotiated cryptographic group rather than fixing it to SHA-256, enabling stronger groups without protocol changes.
+AKM 24 and 25 select the hash algorithm based on the negotiated cryptographic
+group (e.g., P-384 uses SHA-384) rather than fixing it to SHA-256.
+
+## Attack Surface
+
+SAE does not protect against:
+
+- **Online dictionary attacks**: If the AP does not enforce rate-limiting or
+  lockout, an attacker can try passwords in real time. Slow by nature (each
+  attempt requires a full SAE exchange), but possible.
+- **Physical weak passwords**: Short or common passwords are weaker even with
+  SAE because the attacker can test them online.
+- **Rogue AP / evil twin**: SAE provides mutual authentication only if both
+  sides complete the Confirm step. A rogue AP presenting a known SSID will
+  fail at Confirm if it doesn't know the password.
+
+Dragonblood (2019) attacks on H&P are mitigated by H2E deployment and
+updated AP firmware.
 
 ## Spec References
 
-- SAE protocol: 802.11-2024 Section 12.4
+- SAE protocol: 802.11-2024 §12.4
 - Dragonfly key exchange: RFC 7664
-- Hash-to-element: Section 12.4.4.2.2
+- Hash-to-element: §12.4.4.2.2
+- Dragonblood mitigations: §12.4.4.2.3
