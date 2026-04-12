@@ -1,0 +1,10 @@
+[project]
+name = "wifi-cracking"
+version = "1.0.0"
+description = "Complete technical reference for WPA/WPA2 PSK security analysis"
+requires-python = ">=3.11,<3.15"
+
+[dependency-groups]
+docs = [
+    "mkdocs-material",
+]
