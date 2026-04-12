@@ -49,6 +49,9 @@ theme:
 plugins:
   - search
 
+exclude_docs: |
+  includes/
+
 markdown_extensions:
   - abbr
   - admonition
