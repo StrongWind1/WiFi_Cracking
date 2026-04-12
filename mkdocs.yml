@@ -1,5 +1,5 @@
-site_name: WiFi Cracking
-site_description: Complete technical reference for WPA/WPA2 PSK security analysis
+site_name: WiFi Security Analysis
+site_description: Complete technical reference for IEEE 802.11 security — protocols, attacks, and hash extraction
 site_url: https://strongwind1.github.io/WiFi_Cracking/
 repo_url: https://github.com/StrongWind1/WiFi_Cracking
 repo_name: StrongWind1/WiFi_Cracking
@@ -33,6 +33,7 @@ theme:
     - navigation.instant.progress
     - navigation.tracking
     - navigation.sections
+    - navigation.expand
     - navigation.path
     - navigation.top
     - navigation.indexes
@@ -49,6 +50,7 @@ plugins:
   - search
 
 markdown_extensions:
+  - abbr
   - admonition
   - pymdownx.details
   - pymdownx.superfences
@@ -61,6 +63,9 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.mark
   - pymdownx.keys
+  - pymdownx.snippets:
+      auto_append:
+        - docs/includes/abbreviations.md
   - tables
   - attr_list
   - md_in_html
@@ -72,35 +77,51 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Protocol:
+    - protocol/index.md
+    - Security matrix: protocol/security-matrix.md
     - Key hierarchy: protocol/key-hierarchy.md
     - 4-way handshake: protocol/four-way-handshake.md
-    - PSK variants: protocol/psk-variants.md
-  - Attacks:
-    - PMKID attack: attacks/pmkid.md
-    - EAPOL attack: attacks/eapol.md
-    - Message pairs: attacks/message-pairs.md
-  - Algorithms:
-    - PBKDF2 (passphrase to PMK): algorithms/pbkdf2.md
-    - Standard PSK (AKM 2 and 6): algorithms/standard-psk.md
-    - FT-PSK (AKM 4): algorithms/ft-psk.md
-  - Reference:
-    - Capture requirements: reference/capture-requirements.md
-    - Hash line formats: reference/hash-line-formats.md
-    - EAPOL-Key frame: reference/eapol-frame.md
-    - Gap table: reference/gap-table.md
-    - EAPOL size limits: reference/eapol-size-limits.md
-    - Hashcat modes: reference/hashcat-modes.md
+    - PSK (AKM 2, 6, 20): protocol/psk-family.md
+    - FT-PSK (AKM 4, 19): protocol/ft-psk-family.md
+    - SAE (AKM 8, 9, 24, 25): protocol/sae-family.md
+    - Enterprise (AKM 1, 3, 5, 11-13, 22, 23): protocol/enterprise-family.md
+    - FILS (AKM 14-17): protocol/fils-family.md
+    - Other (OWE, TDLS, PASN): protocol/other-family.md
+  - PSK Attacks:
+    - psk-attacks/index.md
+    - PMKID attack: psk-attacks/pmkid.md
+    - EAPOL attack: psk-attacks/eapol.md
+    - Algorithms: psk-attacks/algorithms.md
+  - EAP Attacks:
+    - eap-attacks/index.md
+    - PEAP / MSCHAPv2: eap-attacks/peap-mschapv2.md
+    - EAP-MD5: eap-attacks/eap-md5.md
+    - Cisco LEAP: eap-attacks/leap.md
+  - WEP:
+    - wep/index.md
+    - Aircrack-ng workflow: wep/aircrack-workflow.md
   - Tools:
+    - tools/index.md
     - hcxpcapngtool: tools/hcxpcapngtool.md
-    - Cheat sheet: tools/cheat-sheet.md
-  - Contributing: contributing.md
-  - Changelog: changelog.md
+    - hashcat: tools/hashcat.md
+    - Aircrack-ng suite: tools/aircrack-suite.md
+    - hostapd-mana: tools/hostapd-mana.md
+  - Reference:
+    - reference/index.md
+    - EAPOL-Key frame: reference/eapol-frame.md
+    - Capture requirements: reference/capture-requirements.md
+    - Hash extraction reference: reference/hash-extraction.md
+    - Gap table: reference/gap-table.md
+    - Glossary: reference/glossary.md
+  - Meta:
+    - Contributing: meta/contributing.md
+    - Changelog: meta/changelog.md
 
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/StrongWind1/WiFi_Cracking
-      name: WiFi Cracking on GitHub
+      name: WiFi Security Analysis on GitHub
   generator: false
 
 extra_css:

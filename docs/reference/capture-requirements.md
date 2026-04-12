@@ -1,28 +1,46 @@
 # Capture Requirements
 
-### What You Need to Capture for Each Attack
+## PSK Capture Requirements
 
-| Attack | AKM | Minimum Capture | Fields Required |
-|--------|-----|----------------|-----------------|
-| PMKID | 2 (PSK) | M1, M2, Assoc Req, or Reassoc Req with PMKID | SSID, MAC_AP, MAC_STA, PMKID |
-| PMKID | 4 (FT-PSK) | M2 with PMKID + FT IEs | SSID, MAC_AP, MAC_STA, PMKID, MDID, R0KH-ID, R1KH-ID |
-| PMKID | 6 (PSK-SHA256) | M1, M2, Assoc Req, or Reassoc Req with PMKID | SSID, MAC_AP, MAC_STA, PMKID |
-| EAPOL | 2 (PSK) | Any message pair (M1+M2 best) | SSID, MAC_AP, MAC_STA, ANonce, SNonce, MIC, EAPOL frame |
-| EAPOL | 4 (FT-PSK) | Any message pair + FT IEs | Same as above + MDID, R0KH-ID, R1KH-ID |
-| EAPOL | 6 (PSK-SHA256) | Any message pair | SSID, MAC_AP, MAC_STA, ANonce, SNonce, MIC, EAPOL frame |
+### PMKID Extraction
 
-### Where Each Field Comes From
+Requires a single EAPOL M1 frame containing a PMKID in its RSN IE Key Data.
+Additionally, the BSSID, STA MAC, and SSID must be known (from beacon or
+probe response frames in the same capture).
 
-| Field | Found In | Notes |
-|-------|----------|-------|
-| SSID | Beacon, Probe Response (IE tag 0) | Must be captured separately from handshake |
-| MAC_AP | 802.11 header (addr2 for M1/M3, addr1 for M2/M4) | Role depends on message direction |
-| MAC_STA | 802.11 header (addr1 for M1/M3, addr2 for M2/M4) | Role depends on message direction |
-| ANonce | M1 or M3, EAPOL Key Nonce field (32 bytes) | Usually identical in M1 and M3 |
-| SNonce | M2 (or M4 if non-zero), EAPOL Key Nonce field | M4 nonce often zeroed per spec |
-| MIC | M2, M3, or M4, EAPOL Key MIC field (16 bytes) | M1 has no MIC |
-| EAPOL frame | Raw bytes of the EAPOL-Key frame containing the MIC | MIC field zeroed for verification |
-| PMKID | M1, M2, Assoc Req, or Reassoc Req Key Data, PMKID KDE (tag 0xDD, length 0x14, type 0x04) | Not always present. FT-PSK uses M2 specifically. |
-| MDID | Mobility Domain IE (tag 0x36) in Beacon/assoc frames | 2 bytes, FT only |
-| R0KH-ID | Fast BSS Transition IE (tag 0x37) subelement | Variable length, up to 48 bytes |
-| R1KH-ID | Fast BSS Transition IE (tag 0x37) subelement | 6 bytes (usually = AP MAC) |
+### EAPOL Handshake Extraction
+
+Requires at least two EAPOL-Key frames forming a valid message pair (e.g., M1+M2).
+The capture must also contain the SSID (from beacons or probe responses).
+Placeholder for a detailed field source table.
+
+## EAP Capture Requirements
+
+### MSCHAPv2 (PEAP/EAP-TTLS)
+
+Requires the EAP-Identity, authenticator challenge, peer challenge, and NT-Response.
+These are typically captured from a rogue AP log rather than a passive pcap, since
+the exchange occurs inside a TLS tunnel. Placeholder for field size and format details.
+
+### EAP-MD5
+
+Requires the EAP identifier, challenge value, and MD5 response. These travel in
+cleartext EAP packets and can be captured passively. Placeholder for field details.
+
+### LEAP
+
+Requires the AP challenge, peer response, and username. LEAP exchanges are
+unencrypted and visible in passive captures. Placeholder for field details.
+
+## WEP Capture Requirements
+
+WEP cracking requires a large number of data frames encrypted with unique IVs.
+The PTW attack needs ARP-sized frames (typically obtained via injection). The
+FMS/KoreK attacks work with any data frames. Placeholder for minimum IV counts
+per attack type.
+
+## Field Sources
+
+Placeholder for a comprehensive table mapping each required field to its source
+frame type (beacon, probe response, EAPOL M1-M4, EAP-Identity, data frame) and
+the relevant protocol header offset.
