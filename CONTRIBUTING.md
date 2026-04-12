@@ -1,4 +1,4 @@
-# Contributing to WiFi Cracking
+# Contributing to WiFi Security Analysis
 
 ## Getting started
 
@@ -18,8 +18,8 @@ mkdocs serve            # preview at http://127.0.0.1:8000
 
 ## Content guidelines
 
-- Cite primary sources (IEEE specs, tool source code) for all technical claims
-- Use the N#E# naming convention for message pairs (see the [message pairs page](https://strongwind1.github.io/WiFi_Cracking/attacks/message-pairs/))
+- Cite primary sources (IEEE specs, RFCs, tool source code) for all technical claims
+- Use the N#E# naming convention for message pairs (see the [EAPOL attack page](https://strongwind1.github.io/WiFi_Cracking/psk-attacks/eapol/))
 - Use `message_pair` with hex values (0x00-0x05) when referencing the hashcat field
 - Keep tables and code blocks formatted consistently with existing pages
 - Do not add content about post-capture network access or unauthorized activity
@@ -30,4 +30,4 @@ Use the [bug report template](https://github.com/StrongWind1/WiFi_Cracking/issue
 
 ## Scope
 
-This project documents WPA/WPA2 PSK security analysis: protocol internals, hash extraction, and offline cracking. Content about active network attacks, deauthentication, injection, or post-authentication activity is out of scope.
+This project documents WiFi security analysis across all 802.11 authentication mechanisms: protocol internals (all AKM suites), hash extraction, and offline cracking for PSK, EAP, and WEP. Content about active network attacks, deauthentication, injection, or post-authentication activity is out of scope.
