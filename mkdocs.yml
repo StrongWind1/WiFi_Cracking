@@ -38,7 +38,6 @@ theme:
     - navigation.top
     - navigation.indexes
     - navigation.footer
-    - toc.follow
     - search.highlight
     - search.suggest
     - search.share
@@ -51,6 +50,7 @@ plugins:
 
 exclude_docs: |
   includes/
+  old/
 
 markdown_extensions:
   - abbr

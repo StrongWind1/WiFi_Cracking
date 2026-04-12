@@ -148,6 +148,38 @@
   box-shadow: 0 0 12px var(--md-accent-fg-color--transparent);
 }
 
+/* ---------- Hide TOC sidebar, let content use full width ---------- */
+
+.md-sidebar--secondary {
+  display: none;
+}
+
+@media screen and (min-width: 76.25em) {
+  .md-content {
+    max-width: 100%;
+    margin-right: 0;
+  }
+}
+
+/* ---------- Responsive tables ---------- */
+
+.md-typeset__scrollwrap {
+  overflow-x: auto;
+}
+
+.md-typeset table:not([class]) {
+  width: 100%;
+  table-layout: auto;
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.7rem;
+  }
+}
+
 /* ---------- Security matrix status badges ---------- */
 
 .status-broken {
