@@ -99,15 +99,17 @@ standard authentication/association procedure. This is required for:
 ### Key Derivation
 
 PASN uses a 3-way authentication handshake (PASN Authentication frames 1, 2,
-3) to establish a PASN-base key. The method for deriving the PASN-base key
-depends on the configured "PASN wrapped data" type — it can be based on SAE,
-FILS, a full 4-way handshake PMKSA, or open (no prior security context).
+3) to establish a PTKSA. The PMK used as input depends on the base AKM: it
+comes from an existing PMKSA (SAE, FILS, 802.1X) or is derived via PASN's
+own mechanism when the base AKM is PASN itself.
 
 ```
-PTK = KDF-SHA256(PASN-base-key,
-                 "PASN PTK Derivation",
-                 SPA || BSSID || ANonce || SNonce)
+PTK = KDF-Hash-NNN(PMK, "PASN PTK Derivation", SPA || BSSID || DHss)
 ```
+
+Where `DHss` is the Diffie-Hellman shared secret from the ephemeral key
+exchange in the PASN Authentication frames, and `Hash`/`NNN` depend on the
+base AKM (SHA-256 with NNN=640 for PASN AKMP).
 
 ### Usage
 
@@ -117,7 +119,7 @@ particularly 802.11az ranging.
 
 ### Spec References
 
-- PASN: 802.11-2024 §12.7.1.9
+- PASN: 802.11-2024 §12.13, §12.13.8 (PTKSA derivation)
 
 ---
 
