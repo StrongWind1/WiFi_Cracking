@@ -25,11 +25,11 @@ Offset  Length  Field
 ```
 
 !!! note "Variable MIC length"
-    The MIC field at offset 81 is 16 bytes for AKM 1–9 and 11 (HMAC-SHA1 or
-    HMAC-MD5 or AES-128-CMAC output, all truncated to 128 bits). It is 24
-    bytes for AKM 12/13/19/20/22/23 (AES-256-CMAC, 192-bit output). For
-    AKM 14/15 (FILS), the MIC is 0 bytes. The Key Data Length field at
-    offset 97 is then offset by the difference.
+    The MIC field at offset 81 is 16 bytes for AKM 1–9 and 11 (HMAC-SHA1-128,
+    HMAC-MD5, AES-128-CMAC, or HMAC-SHA-256, all 128-bit output). It is 24
+    bytes for AKM 12/13/19/20/22/23 (HMAC-SHA-384, truncated to 192 bits). For
+    AKM 14/15 (FILS with AES-SIV), the MIC is 0 bytes. The Key Data Length
+    field at offset 97 is then shifted by the difference.
 
 ## Key Information Bitfield
 
@@ -38,7 +38,7 @@ handshake flags. All undefined bits are reserved (set to 0).
 
 | Bits | Field | Values / Notes |
 |------|-------|----------------|
-| 0–2 | Key Descriptor Version | 1 = HMAC-MD5/RC4 (TKIP, kv1); 2 = HMAC-SHA1/AES (CCMP, kv2); 3 = AKM-defined (AES-CMAC, kv3) |
+| 0–2 | Key Descriptor Version | 0 = per negotiated AKM (Table 12-11); 1 = HMAC-MD5/RC4 (kv1); 2 = HMAC-SHA1-128/AES (kv2); 3 = AES-128-CMAC/AES (kv3, AKM 3–6) |
 | 3 | Key Type | 0 = Group/GTK; 1 = Pairwise/PTK |
 | 4–5 | Reserved | Always 0 |
 | 6 | Install | 1 = Install the key now (set in M3) |

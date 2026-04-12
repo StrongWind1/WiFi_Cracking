@@ -36,7 +36,7 @@ flowchart LR
 | 8 | SAE | Secure | No | — | Dragonfly PAKE, no offline attack |
 | 9 | FT-SAE | Secure | No | — | |
 | 10 | APPeerKey | Deprecated | N/A | — | Removed from active standard |
-| 11 | 802.1X Suite B (SHA-256) | Secure | No | — | |
+| 11 | 802.1X Suite B (SHA-256) | Deprecated | No | — | Deprecated per Table 9-190 NOTE 2 |
 | 12 | 802.1X Suite B (SHA-384) | Secure | No | — | 192-bit security level |
 | 13 | FT-802.1X (SHA-384) | Secure | No | — | |
 | 14 | FILS-SHA256 | Secure | No | — | Fast initial link setup |

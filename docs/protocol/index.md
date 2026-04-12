@@ -28,7 +28,7 @@ Every AKM falls into one of five categories:
 | 8 | SAE | SAE | No | 802.11-2012 |
 | 9 | FT-SAE (SHA-256) | SAE | No | 802.11-2012 |
 | 10 | APPeerKey | Other (deprecated) | N/A | 802.11-2012 |
-| 11 | 802.1X Suite B (SHA-256) | Enterprise | No | 802.11ac-2013 |
+| 11 | 802.1X Suite B (SHA-256) | Enterprise (deprecated) | No | 802.11ac-2013 |
 | 12 | 802.1X Suite B (SHA-384) | Enterprise | No | 802.11ac-2013 |
 | 13 | FT-802.1X (SHA-384) | Enterprise | No | 802.11ac-2013 |
 | 14 | FILS-SHA256 | FILS | No | 802.11ai-2016 |
@@ -57,7 +57,8 @@ Every AKM falls into one of five categories:
     | 8, 9 (SAE) | 128 | 128 | 128 | — |
     | 11 (Suite B-128) | 128 | 128 | 128 | — |
     | 12, 13 (Suite B-192) | 192 | 256 | — | 256 |
-    | 14–17 (FILS) | 256 | 256 | 256 | 256 |
+    | 14, 16 (FILS, SHA-256) | 0 (ICK=256) | 256 | 128 | — |
+    | 15, 17 (FILS, SHA-384) | 0 (ICK=384) | 512 | 256 | 256 |
     | 19, 20 | 192 | 256 | — | 256 |
     | 22, 23 | 192 | 256 | — | 256 |
     | 24, 25 | group-dependent | group-dependent | — | — |
@@ -70,11 +71,12 @@ Every AKM falls into one of five categories:
     |-----|---------|----------------------|---------------|---------|
     | 1, 2 | PRF (HMAC-SHA1) | 1 (TKIP) or 2 (CCMP) | HMAC-MD5 (kv1) / HMAC-SHA1-128 (kv2) | RC4 (kv1) / AES (kv2) |
     | 3, 4 (FT, SHA-256) | KDF-SHA-256 | 3 | AES-128-CMAC | AES key wrap |
-    | 5, 6, 11 (SHA-256) | KDF-SHA-256 | 3 | AES-128-CMAC | AES key wrap |
-    | 8, 9 (SAE) | KDF-SHA-256 | 3 | AES-128-CMAC | AES key wrap |
-    | 12, 13 (SHA-384) | KDF-SHA-384 | 0 (AKM-defined) | AES-256-CMAC-192 | AES key wrap |
-    | 19, 20 (SHA-384) | KDF-SHA-384 | 0 (AKM-defined) | AES-256-CMAC-192 | AES key wrap |
-    | 22, 23 (SHA-384) | KDF-SHA-384 | 0 (AKM-defined) | AES-256-CMAC-192 | AES key wrap |
+    | 5, 6 (SHA-256) | KDF-SHA-256 | 3 | AES-128-CMAC | AES key wrap |
+    | 8, 9 (SAE) | KDF-SHA-256 | 0 (AKM-defined) | AES-128-CMAC | AES key wrap |
+    | 11 (Suite B-128, deprecated) | KDF-SHA-256 | 0 (AKM-defined) | HMAC-SHA-256 | AES key wrap |
+    | 12, 13 (SHA-384) | KDF-SHA-384 | 0 (AKM-defined) | HMAC-SHA-384 | AES key wrap |
+    | 19, 20 (SHA-384) | KDF-SHA-384 | 0 (AKM-defined) | HMAC-SHA-384 | AES key wrap |
+    | 22, 23 (SHA-384) | KDF-SHA-384 | 0 (AKM-defined) | HMAC-SHA-384 | AES key wrap |
     | 24, 25 (SAE-ext) | group-dependent | 0 (AKM-defined) | group-dependent | AES key wrap |
 
 ## Category Pages

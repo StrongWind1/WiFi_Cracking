@@ -58,9 +58,9 @@ sniffing or MitM.
     | 6 | GTC | Generic Token Card; rarely used without OTP hardware |
     | 32 | POTP | Protected OTP; niche |
     | 38 | EAP-TLV | Container type, not an auth method |
-    | 50 | EAP-AKA | Cellular SIM-based; common in carrier WiFi |
-    | 52 | EAP-SIM | Older SIM-based; carrier WiFi |
-    | 55 | EAP-AKA' | Updated AKA |
+    | 18 | EAP-SIM | SIM-based; carrier WiFi |
+    | 23 | EAP-AKA | USIM-based; common in carrier WiFi |
+    | 50 | EAP-AKA' | Updated AKA with channel binding |
     | 56 | EAP-NOOB | Nimble OOB; IoT enrollment |
 
 ## Which Methods Produce Crackable Output

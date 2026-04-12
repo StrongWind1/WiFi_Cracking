@@ -93,7 +93,7 @@ specifically needs ARP-sized frames typically obtained via ARP replay injection.
 | Attack | Minimum packets | Frame type | Notes |
 |--------|----------------|------------|-------|
 | FMS | ~4,000,000 | Any data frames | Statistical weak IV collection |
-| KoreK | ~700,000 | Any data frames | 16 statistical correlations |
+| KoreK | ~500,000 | Any data frames | 17 statistical correlations (WEP-104; ~150K for WEP-40) |
 | PTW | ~40,000 | ARP frames (68 bytes) | Multibyte key attack, default in aircrack-ng |
 | ChopChop | 1 frame | Any data frame | Interactive decryption, no key recovery |
 | Fragmentation | 1 frame | Any data frame | Generates keystream, no key recovery |

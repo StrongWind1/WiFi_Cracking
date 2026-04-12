@@ -1,6 +1,6 @@
 # PEAP / MSCHAPv2
 
-PEAP (Protected EAP, RFC 2716) wraps an inner authentication method inside a
+PEAP (Protected EAP) wraps an inner authentication method inside a
 TLS 1.2 tunnel. The most common inner method is MSCHAPv2 (RFC 2759). When a
 rogue AP terminates the TLS tunnel, the MSCHAPv2 challenge/response is
 captured in cleartext, enabling offline cracking of the user's Windows NT hash.
@@ -22,7 +22,7 @@ NTHash = MD4(UTF16LE(Password))             -- 16 bytes (the "NT hash")
 
 NT-Response = DESencrypt(NTHash[0:7],  ChallengeHash)  -- 8 bytes
            || DESencrypt(NTHash[7:14], ChallengeHash)  -- 8 bytes
-           || DESencrypt(NTHash[14:16] || 0x000000000, ChallengeHash)  -- 8 bytes
+           || DESencrypt(NTHash[14:16] || 0x0000000000, ChallengeHash)  -- 8 bytes
 ```
 
 The third DES operation pads the 2-byte remainder with 5 zero bytes, reducing
@@ -125,5 +125,5 @@ hashcat -m 1000 nthash.txt wordlist.txt   # NT hash cracking
 ## Spec and Source References
 
 - MSCHAPv2 protocol: RFC 2759
-- PEAP protocol: RFC 2716 / draft-kamath-pppext-peapv0
+- PEAP protocol: draft-josefsson-pppext-eap-tls-eap (PEAPv0/v1)
 - hashcat format: `HCX_EAPMSCHAPV2HASHLIST` in hcxpcapngtool.h

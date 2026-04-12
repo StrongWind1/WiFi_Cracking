@@ -51,7 +51,7 @@ sufficient weak IVs recovers the key bytes one at a time.
 | Attack | Year | Authors | Packets needed | Method |
 |--------|------|---------|---------------|--------|
 | FMS | 2001 | Fluhrer, Mantin, Shamir | ~4,000,000 data frames | Weak IV + KSA keystream correlation |
-| KoreK | 2004 | KoreK | ~500,000 data frames | 16 independent correlations; fewer IVs |
+| KoreK | 2004 | KoreK | ~500,000 data frames | 17 statistical correlations; fewer IVs than FMS |
 | PTW | 2007 | Pyshkin, Tews, Weinmann | ~40,000 ARP frames | Multibyte attack on all keystream bytes |
 | ChopChop | 2004 | KoreK | 1 frame (active) | Decrypt by truncating + replaying |
 | Fragmentation | 2005 | Andrea | 1 frame (active) | Recover keystream via fragmentation |

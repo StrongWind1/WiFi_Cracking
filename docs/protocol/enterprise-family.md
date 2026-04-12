@@ -76,8 +76,8 @@ Suite B cipher suites: AES-128-CCM or AES-128-GCM for data frames.
 ### Suite B (SHA-384) — AKM 12, 13
 
 AKM 12 targets the 192-bit security level with SHA-384-based KDF. Key sizes:
-KCK = 192 bits, KEK = 256 bits, TK = 256 bits. MIC uses AES-256-CMAC
-(192-bit output, keyver 0 = AKM-defined).
+KCK = 192 bits, KEK = 256 bits, TK = 256 bits. MIC uses HMAC-SHA-384
+(truncated to 192 bits / 24 octets, keyver 0 = AKM-defined).
 
 Mandates AES-256-GCM or AES-256-CCM cipher suites. AKM 13 adds FT to AKM 12.
 
@@ -123,7 +123,7 @@ Attacks target the EAP inner method credentials, not the 802.11 key derivation.
 - 802.1X framework: IEEE 802.1X-2020
 - Enterprise PMK derivation: 802.11-2024 §12.7.1.3
 - EAP base protocol: RFC 3748
-- PEAP: RFC 2716 / MS-PEAP draft
+- PEAP: draft-josefsson-pppext-eap-tls-eap (PEAPv0/v1)
 - MSCHAPv2: RFC 2759
 - AKM selectors: Table 9-190
 - Key sizes: Table 12-8

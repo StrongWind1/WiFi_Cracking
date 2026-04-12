@@ -61,7 +61,7 @@ Two methods exist for deriving the PWE (Password Element) from the passphrase:
 
 **Hunting-and-Pecking (H&P)** — original method, now deprecated:
 
-1. Compute `seed = HMAC-SHA256(max(MAC_AP, MAC_STA) || min(...), k || pass || counter)`
+1. Compute `seed = HMAC-SHA256(max(MAC_AP, MAC_STA) || min(...), password || counter)`
 2. Map `seed` into the group via a hash-to-field function
 3. Check if the resulting point is on the curve
 4. If not, increment counter and retry (loop until success)
@@ -110,5 +110,5 @@ updated AP firmware.
 
 - SAE protocol: 802.11-2024 §12.4
 - Dragonfly key exchange: RFC 7664
-- Hash-to-element: §12.4.4.2.2
-- Dragonblood mitigations: §12.4.4.2.3
+- Hunting-and-pecking: §12.4.4.2.2
+- Hash-to-element: §12.4.4.2.3

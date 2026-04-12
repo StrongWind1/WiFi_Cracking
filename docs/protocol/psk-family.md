@@ -16,7 +16,7 @@ SHA-256-based key derivation with 802.11w-2009. AKM 20, introduced in
 |-----|------|---------|---------------|-----|-----|-----------|-------------|
 | 2 | PSK | PRF (HMAC-SHA1) | HMAC-MD5 (kv1) / HMAC-SHA1-128 (kv2) | 128 | 128 | 128 | 22000 |
 | 6 | PSK-SHA256 | KDF-SHA-256 | AES-128-CMAC (kv3) | 128 | 128 | 128 | 22000 |
-| 20 | PSK-SHA384 | KDF-SHA-384 | AES-256-CMAC-192 (kv0) | 192 | 256 | 256 | pending |
+| 20 | PSK-SHA384 | KDF-SHA-384 | HMAC-SHA-384 (kv0) | 192 | 256 | 256 | pending |
 
 Key lengths per IEEE 802.11-2024 Table 12-8.
 
@@ -66,7 +66,7 @@ PTK = KDF-SHA-256-384(PMK,
 ```
 
 KDF constructs: `counter_LE16(i) || Label || Context || size_LE16(384)`.
-One iteration (ceil(384/256) = 2, but only the first 128 bits needed for KCK).
+Two iterations needed for full PTK (ceil(384/256) = 2), but cracking only requires the first iteration to extract KCK.
 
 ### AKM 20 — KDF-SHA-384
 
@@ -83,7 +83,7 @@ ceil(704/384) = 2.
 | GCMP-128 | 8 | AES-128-GCM | 128 bits | AKM 6 |
 | GCMP-256 | 9 | AES-256-GCM | 256 bits | AKM 20 |
 
-Cipher suite values from IEEE 802.11-2024 Table 9-149 (RSN cipher suite selectors).
+Cipher suite values from IEEE 802.11-2024 Table 9-188 (RSN cipher suite selectors).
 Note: GCMP-128 is suite type 8, GCMP-256 is suite type 9 — distinct values.
 
 ## Key Descriptor Versions
@@ -125,8 +125,8 @@ the MIC field zeroed. For keyver 1/2, the MIC is an HMAC truncated to 128 bits.
 ## Spec References
 
 - AKM suite selectors: IEEE 802.11-2024 Table 9-190
-- PMK derivation (PBKDF2): §12.7.1.2
-- PTK derivation (KDF): §12.7.1.6.2
+- PMK derivation (PBKDF2): Annex J.4.1, §12.7.1.3
+- PTK derivation (PRF): §12.7.1.2; (KDF): §12.7.1.6.2
 - Key descriptor versions: §12.7.3, Table 12-11
-- Cipher suite selectors: Table 9-149
+- Cipher suite selectors: Table 9-188
 - Key lengths: Table 12-8

@@ -15,9 +15,11 @@ association, deriving a PMK from the shared secret.
 ### Key Derivation
 
 ```
-DH shared secret Z = STA_priv × AP_pub     (ECDH, group negotiated in assoc frames)
-PMK = HKDF-Extract(STA_pub || AP_pub, Z)   -- RFC 5869
-PMKID = HMAC-SHA256(PMK, "OWE PMK Name" || STA_pub || AP_pub)[0:16]
+DH shared secret S = scalar-op(STA_priv, AP_pub)   -- ECDH
+s = F(S)                                            -- x-coordinate extraction
+prk = HKDF-Extract(STA_pub || AP_pub || group, s)   -- RFC 5869
+PMK = HKDF-Expand(prk, "OWE Key Generation", n)     -- n = hash digest length
+PMKID = Truncate-128(Hash(STA_pub || AP_pub))
 ```
 
 Then the standard 4-way handshake proceeds using this PMK.
