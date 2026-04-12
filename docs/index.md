@@ -3,7 +3,7 @@
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="Apache 2.0 License"></a>
 </p>
 
-# WiFi Security Analysis
+# WiFi Cracking
 
 Complete technical reference for IEEE 802.11 wireless security. Covers protocol internals for all 25 AKM suites, offline password attacks against PSK networks, enterprise EAP credential extraction, and legacy WEP vulnerabilities. Built from primary sources: IEEE 802.11-2024, RFC 3748, hashcat, hcxtools, and aircrack-ng.
 

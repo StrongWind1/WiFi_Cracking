@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [2.0.0] — 2026-04-11
 
-Complete site redesign. Renamed from "WiFi Cracking" to "WiFi Security Analysis."
+Complete site redesign. Expanded scope from WPA/WPA2 PSK to all 25 AKM suites.
 Expanded scope from WPA/WPA2 PSK cracking to comprehensive IEEE 802.11 security
 reference.
 

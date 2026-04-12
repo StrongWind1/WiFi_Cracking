@@ -1,4 +1,4 @@
-site_name: WiFi Security Analysis
+site_name: WiFi Cracking
 site_description: Complete technical reference for IEEE 802.11 security — protocols, attacks, and hash extraction
 site_url: https://strongwind1.github.io/WiFi_Cracking/
 repo_url: https://github.com/StrongWind1/WiFi_Cracking
@@ -125,7 +125,7 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/StrongWind1/WiFi_Cracking
-      name: WiFi Security Analysis on GitHub
+      name: WiFi Cracking on GitHub
   generator: false
 
 extra_css:

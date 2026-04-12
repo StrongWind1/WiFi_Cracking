@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>WiFi Security Analysis</strong>
+  <strong>WiFi Cracking</strong>
 </p>
 
 <p align="center">

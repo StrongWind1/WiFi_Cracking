@@ -1,5 +1,5 @@
 [project]
-name = "wifi-security-analysis"
+name = "wifi-cracking"
 version = "2.0.0"
 description = "Complete technical reference for IEEE 802.11 security — protocols, attacks, and hash extraction"
 requires-python = ">=3.11,<3.15"

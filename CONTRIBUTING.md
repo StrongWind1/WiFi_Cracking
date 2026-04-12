@@ -1,19 +1,18 @@
-# Contributing to WiFi Security Analysis
+# Contributing to WiFi Cracking
 
 ## Getting started
 
 ```bash
 git clone https://github.com/StrongWind1/WiFi_Cracking.git
 cd WiFi_Cracking
-pip install mkdocs-material
-mkdocs serve            # preview at http://127.0.0.1:8000
+uv run --group docs mkdocs serve    # preview at http://127.0.0.1:8000
 ```
 
 ## Making changes
 
 1. Fork the repo and create a branch from `main`
 2. Edit or add pages under `docs/`
-3. Run `mkdocs build --strict` to verify no broken links or warnings
+3. Run `uv run --group docs mkdocs build --strict` to verify no broken links or warnings
 4. Open a PR against `main` with a clear description of what changed and why
 
 ## Content guidelines
