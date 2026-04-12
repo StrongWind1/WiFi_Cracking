@@ -48,7 +48,7 @@ Every AKM falls into one of five categories:
 
 === "Key Lengths"
 
-    Key lengths from IEEE 802.11-2024 Table 12-8:
+    Key lengths from IEEE 802.11-2024 Table 12-11 (KCK/KEK) and Table 12-8 (TK):
 
     | AKM | KCK | KEK | TK (CCMP) | TK (GCMP-256) |
     |-----|-----|-----|-----------|---------------|

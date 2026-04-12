@@ -53,13 +53,21 @@ routing traffic through the AP.
 ### Key Derivation
 
 TDLS uses a separate handshake (the TDLS Setup Request/Response/Confirm
-exchange) to establish a Tunnel Peer Key (TPK):
+exchange) to establish a Tunnel Peer Key (TPK). The derivation is two steps
+(§12.7.8.2):
 
 ```
-TPK = PRF-X(SNonce || ANonce,
-            "TDLS PMK",
-            Min(MAC_A, MAC_B) || Max(MAC_A, MAC_B))
+TPK-Key-Input = Hash(min(SNonce, ANonce) || max(SNonce, ANonce))
+TPK = KDF-Hash-Length(TPK-Key-Input,
+                      "TDLS PMK",
+                      min(MAC_I, MAC_R) || max(MAC_I, MAC_R) || BSSID)
 ```
+
+Where `Hash` and `KDF-Hash-Length` use the hash algorithm negotiated via the
+AKM suite, `MAC_I` / `MAC_R` are the initiator and responder MAC addresses,
+and `BSSID` is the AP through which both stations are associated. The nonces
+and MACs are min/max sorted to ensure both sides compute the same value
+regardless of initiator role.
 
 The TPK is then split into the TPK-KCK and TPK-TK. This handshake runs inside
 the existing 802.11 data channel (encapsulated in 802.11 data frames), so it
@@ -73,7 +81,7 @@ scenarios (media streaming, file transfer) to avoid the AP bottleneck.
 
 ### Spec References
 
-- TDLS: 802.11-2024 §10.28, §12.7.1.5
+- TDLS: 802.11-2024 §10.28, §12.7.1.5, §12.7.8.2
 
 ---
 

@@ -33,7 +33,7 @@ The PRF/KDF used for PTK derivation differs by AKM:
 |-----|------------|---------|---------------|
 | 2 (PSK) | PBKDF2-HMAC-SHA1 | PRF-X (HMAC-SHA1) | HMAC-MD5 (kv1) or HMAC-SHA1-128 (kv2) |
 | 6 (PSK-SHA256) | PBKDF2-HMAC-SHA1 | KDF-SHA-256 | AES-128-CMAC |
-| 20 (PSK-SHA384) | PBKDF2-HMAC-SHA1 | KDF-SHA-384 | AES-256-CMAC |
+| 20 (PSK-SHA384) | PBKDF2-HMAC-SHA1 | KDF-SHA-384 | HMAC-SHA-384 |
 
 ### FT-PSK (AKM 4, 19)
 
@@ -74,7 +74,7 @@ AES-256 and P-384 cryptography.
 | KCK2 | 0 | 0 | Reserved (future use) |
 | KEK2 | 0 | 0 | Reserved (future use) |
 
-Per IEEE 802.11-2024 Table 12-8. AKM 4 (FT-PSK): KCK2 = KEK2 = 0, so total
+Per IEEE 802.11-2024 Table 12-11. AKM 4 (FT-PSK): KCK2 = KEK2 = 0, so total
 PTK = KCK (128) + KEK (128) + TK (128) = 384 bits.
 
 ## Group Key Hierarchy
@@ -106,6 +106,6 @@ regardless of role (AP vs. STA).
 - PTK derivation: 802.11-2024 §12.7.1.3
 - KDF definition (iterations formula): §12.7.1.6.2
 - Key hierarchy overview: §12.7.2
-- Key sizes per AKM: Table 12-8
+- Key sizes per AKM: Table 12-8 (TK), Table 12-11 (KCK/KEK/MIC)
 - FT key hierarchy: §12.7.1.6.3–6.5
 - GTK derivation: §12.7.7.2

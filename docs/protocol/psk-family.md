@@ -18,7 +18,7 @@ SHA-256-based key derivation with 802.11w-2009. AKM 20, introduced in
 | 6 | PSK-SHA256 | KDF-SHA-256 | AES-128-CMAC (kv3) | 128 | 128 | 128 | 22000 |
 | 20 | PSK-SHA384 | KDF-SHA-384 | HMAC-SHA-384 (kv0) | 192 | 256 | 256 | pending |
 
-Key lengths per IEEE 802.11-2024 Table 12-8.
+Key lengths per IEEE 802.11-2024 Table 12-11 (KCK/KEK) and Table 12-8 (TK).
 
 ## PMK Derivation (PBKDF2)
 
@@ -129,4 +129,4 @@ the MIC field zeroed. For keyver 1/2, the MIC is an HMAC truncated to 128 bits.
 - PTK derivation (PRF): §12.7.1.2; (KDF): §12.7.1.6.2
 - Key descriptor versions: §12.7.3, Table 12-11
 - Cipher suite selectors: Table 9-188
-- Key lengths: Table 12-8
+- Key lengths: Table 12-8 (TK), Table 12-11 (KCK/KEK)

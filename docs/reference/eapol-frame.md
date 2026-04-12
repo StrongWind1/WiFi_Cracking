@@ -48,8 +48,7 @@ handshake flags. All undefined bits are reserved (set to 0).
 | 10 | Error | 1 = MIC failure notification |
 | 11 | Request | 1 = STA requesting key refresh |
 | 12 | Encrypted Key Data | 1 = Key Data is encrypted with KEK (set in M3) |
-| 13 | SMK Message | Used in TDLS SMK handshake; 0 for normal 4-way |
-| 14–15 | Reserved | Always 0 |
+| 13–15 | Reserved | Always 0 |
 
 ## Message Identification Table
 
@@ -85,6 +84,6 @@ of Key Data. The 802.3/802.11 header preceding the EAPOL packet is NOT included.
 ## Spec References
 
 - EAPOL-Key frame layout: 802.11-2024 §12.7.2
-- Key Information field: §12.7.3, Figure 12-47
+- Key Information field: §12.7.3, Figure 12-36
 - MIC computation: §12.7.3
-- Variable MIC lengths: Table 12-8 (KCK sizes per AKM)
+- Variable MIC lengths: Table 12-11 (integrity algorithms and MIC sizes per AKM)

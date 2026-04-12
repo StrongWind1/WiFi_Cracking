@@ -61,8 +61,7 @@ type, descriptor version, and processing flags.
 | 10 | Error | 0 | 0 | 0 | 0 |
 | 11 | Request | 0 | 0 | 0 | 0 |
 | 12 | Encrypted Key Data | 0 | 0 | 1 | 0 |
-| 13 | SMK Message | 0 | 0 | 0 | 0 |
-| 14–15 | Reserved | 0 | 0 | 0 | 0 |
+| 13–15 | Reserved | 0 | 0 | 0 | 0 |
 
 **Key Descriptor Version** determines the MIC algorithm and key-wrap cipher:
 
@@ -70,7 +69,7 @@ type, descriptor version, and processing flags.
 |---------|-----------|-----|----------|
 | 1 | TKIP cipher | HMAC-MD5 | RC4 |
 | 2 | CCMP cipher (AKM 2) | HMAC-SHA1-128 | AES-128 NIST key wrap |
-| 3 | AKM-defined (AKM 6, 4) | AES-128-CMAC | AES-128 NIST key wrap |
+| 3 | AKM 3, 4, 5, 6 | AES-128-CMAC | AES-128 NIST key wrap |
 
 ## Message Identification Summary
 
@@ -89,4 +88,4 @@ identify which message is which:
 - 4-way handshake procedure: 802.11-2024 §12.7.6
 - M1–M4 frame construction: §12.7.6.2–12.7.6.5
 - EAPOL-Key frame format: §12.7.2
-- Key Information field: §12.7.3, Figure 12-47
+- Key Information field: §12.7.3, Figure 12-36

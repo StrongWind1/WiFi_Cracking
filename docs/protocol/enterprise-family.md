@@ -126,4 +126,4 @@ Attacks target the EAP inner method credentials, not the 802.11 key derivation.
 - PEAP: draft-josefsson-pppext-eap-tls-eap (PEAPv0/v1)
 - MSCHAPv2: RFC 2759
 - AKM selectors: Table 9-190
-- Key sizes: Table 12-8
+- Key sizes: Table 12-8 (TK), Table 12-11 (KCK/KEK)

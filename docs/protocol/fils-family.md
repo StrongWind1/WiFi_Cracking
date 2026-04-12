@@ -50,8 +50,8 @@ Key sizes:
 
 | AKM | Hash | ICK | KEK | TK |
 |-----|------|-----|-----|-----|
-| 14, 16 | SHA-256 | 256 bits | 256 bits | 256 bits |
-| 15, 17 | SHA-384 | 384 bits | 256 bits | 256 bits |
+| 14, 16 | SHA-256 | 256 bits | 256 bits | cipher-dependent |
+| 15, 17 | SHA-384 | 384 bits | 512 bits | cipher-dependent |
 
 ## AKM Variants
 
