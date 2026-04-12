@@ -39,15 +39,19 @@ Step B: PMK-R1
   = HMAC-SHA256(PMK-R0,
       counter_LE16(1) || "FT-R1" ||
       R1KHID || STA_MAC ||
-      size_LE16(256))
+      size_LE16(384))
   Take first 32 bytes.
 
-Step C: PTK
-  = HMAC-SHA256(PMK-R1,
+Step C: PTK (2 iterations required: ceil(384/256) = 2)
+  iter1 = HMAC-SHA256(PMK-R1,
       counter_LE16(1) || "FT-PTK" ||
       SNonce || ANonce || MAC_AP || STA_MAC ||
-      size_LE16(384))
-  Take first 48 bytes.
+      size_LE16(384))                          -- 32 bytes
+  iter2 = HMAC-SHA256(PMK-R1,
+      counter_LE16(2) || "FT-PTK" ||
+      SNonce || ANonce || MAC_AP || STA_MAC ||
+      size_LE16(384))                          -- 32 bytes
+  PTK = (iter1 || iter2)[0:48]                 -- first 384 bits of 512
 
 Step D: MIC
   KCK = PTK[0:16]
