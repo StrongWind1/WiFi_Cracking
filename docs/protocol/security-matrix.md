@@ -1,7 +1,6 @@
 # Security Matrix
 
-Security posture of each AKM suite — known attacks, crackable outputs, and
-corresponding hashcat modes.
+Security posture of each AKM suite — known attacks, crackable outputs, and corresponding [hashcat](https://github.com/hashcat/hashcat) modes.
 
 ## WiFi Security Timeline
 
@@ -25,7 +24,7 @@ flowchart LR
 
 | AKM | Name | Status | Offline attack? | hashcat mode | Notes |
 |-----|------|--------|----------------|-------------|-------|
-| — | WEP | **Broken** | RC4 key recovery (PTW) | N/A (WEPWolf / aircrack-ng) | 40K ARP frames → key in seconds |
+| — | WEP | **Broken** | RC4 key recovery (PTW) | N/A ([WEPWolf](https://github.com/StrongWind1/WEPWolf) / aircrack-ng) | 40K ARP frames → key in seconds |
 | WPA1 | WPA-PSK (TKIP) | Vulnerable | **Yes** — PBKDF2 dict | 22000 (kv1) | Legacy, vendor IE `00:50:F2:01` |
 | 1 | 802.1X (SHA-1) | Secure | No (EAP-dependent) | EAP inner method | PEAP/MSCHAPv2 inner: mode 5500 |
 | 2 | PSK (SHA-1) | Vulnerable | **Yes** — PBKDF2 dict | 22000 (kv2) | Most common WPA2 network |

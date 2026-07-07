@@ -1,7 +1,9 @@
 # Aircrack-ng WEP Workflow
 
-Practical step-by-step WEP key recovery using the aircrack-ng suite. The PTW
-attack (aircrack-ng default) requires ~40,000 unique IVs from ARP frames.
+!!! tip "Prefer WEPWolf for offline key recovery"
+    [WEPWolf](https://github.com/StrongWind1/WEPWolf) runs PTW, KoreK, FMS, and RC4-bias attacks from a single command, cracks each key slot separately, and processes entire directories of captures in parallel. See the [WEP cracking guide](../guide/wep.md). Use the aircrack-ng workflow below when you need **active radio attacks** (injection, replay, deauth).
+
+Practical step-by-step WEP key recovery using the [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) suite. The PTW attack (aircrack-ng default) requires ~40,000 unique IVs from ARP frames.
 
 ## Prerequisites
 

@@ -94,7 +94,7 @@ specifically needs ARP-sized frames typically obtained via ARP replay injection.
 |--------|----------------|------------|-------|
 | FMS | ~4,000,000 | Any data frames | Statistical weak IV collection |
 | KoreK | ~500,000 | Any data frames | 17 statistical correlations (WEP-104; ~150K for WEP-40) |
-| PTW | ~40,000 | ARP frames (68 bytes) | Multibyte key attack, default in aircrack-ng |
+| PTW | ~40,000 | ARP frames (68 bytes) | Multibyte key attack, default in [WEPWolf](https://github.com/StrongWind1/WEPWolf) and aircrack-ng |
 | ChopChop | 1 frame | Any data frame | Interactive decryption, no key recovery |
 | Fragmentation | 1 frame | Any data frame | Generates keystream, no key recovery |
 | Caffe-Latte | Client probe required | Client data | No AP needed |

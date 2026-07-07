@@ -1,7 +1,6 @@
 # hashcat
 
-GPU-accelerated password recovery tool. For WiFi attacks, hashcat operates on
-hash lines produced by hcxpcapngtool from pcap captures.
+[hashcat](https://github.com/hashcat/hashcat) -- GPU-accelerated password recovery tool. For WiFi attacks, it operates on hash lines produced by hcxpcapngtool from pcap captures.
 
 ## WiFi-Related Modes
 

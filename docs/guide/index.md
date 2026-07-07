@@ -11,7 +11,7 @@ Three end-to-end workflows for WiFi security testing — from capture to cracked
 | Attack | Capture | Extract / Crack | Install |
 |---|---|---|---|
 | **WEP** | airodump-ng | [WEPWolf](https://github.com/StrongWind1/WEPWolf) | [Download binary](https://github.com/StrongWind1/WEPWolf/releases) or `make release` |
-| **WPA/WPA2** | [hcxdumptool](https://github.com/ZerBea/hcxdumptool) or airodump-ng | [WPAWolf](https://github.com/StrongWind1/WPAWolf) + hashcat | [Download binary](https://github.com/StrongWind1/WPAWolf/releases) or `make release`; `sudo apt install hashcat` |
+| **WPA/WPA2** | [hcxdumptool](https://github.com/ZerBea/hcxdumptool) or airodump-ng | [WPAWolf](https://github.com/StrongWind1/WPAWolf) + [hashcat](https://github.com/hashcat/hashcat) | [Download binary](https://github.com/StrongWind1/WPAWolf/releases) or `make release`; `sudo apt install hashcat` |
 | **EAP** | hostapd-mana (rogue AP) | hashcat | `sudo apt install hostapd-mana hashcat` |
 
 <div class="grid cards" markdown>

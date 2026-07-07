@@ -52,7 +52,7 @@ Complete technical reference for IEEE 802.11 wireless security. Two paths to cho
 
     ---
 
-    WPAWolf, WEPWolf, [hcxdumptool](https://github.com/ZerBea/hcxdumptool), hashcat, aircrack-ng suite. Hash extraction, cracking, and capture tool reference.
+    WPAWolf, [WEPWolf](https://github.com/StrongWind1/WEPWolf), [hcxdumptool](https://github.com/ZerBea/hcxdumptool), [hashcat](https://github.com/hashcat/hashcat), aircrack-ng suite. Hash extraction, cracking, and capture tool reference.
 
 </div>
 

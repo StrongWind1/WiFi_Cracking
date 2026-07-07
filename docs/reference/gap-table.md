@@ -105,12 +105,13 @@ WPAWolf's corpus testing against the PR branch reveals that even once mode 37100
 
 ## WEP Gaps
 
-WEP is considered fully supported by aircrack-ng. The FMS, KoreK, and PTW attacks are all implemented. No significant gaps exist between the specification and aircrack-ng's implementation.
+WEP key recovery is fully supported by [WEPWolf](https://github.com/StrongWind1/WEPWolf) (PTW, KoreK, FMS, RC4-bias) and [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) (PTW, KoreK, FMS). WEPWolf additionally ships the Sepehrdad RC4-bias database and cracks per-key-slot. Active radio attacks (injection, replay) require aircrack-ng.
 
-| # | What | Status | Notes |
-|---|------|--------|-------|
-| 16 | WEP-40 PTW | Working | aircrack-ng default |
-| 17 | WEP-104 PTW | Working | Same algorithm, longer key |
-| 18 | ChopChop | Working | `aireplay-ng -4` |
-| 19 | Fragmentation | Working | `aireplay-ng -5` |
-| 20 | Caffe-Latte / Hirte | Working | Client-side attacks |
+| # | What | Status | Tool | Notes |
+|---|------|--------|------|-------|
+| 16 | WEP-40 PTW | Working | WEPWolf, aircrack-ng | Default attack in both tools |
+| 17 | WEP-104 PTW | Working | WEPWolf, aircrack-ng | Same algorithm, longer key |
+| 18 | WEP RC4-bias | Working | WEPWolf only | Sepehrdad database; recovers from fewer packets |
+| 19 | ChopChop | Working | aircrack-ng (`aireplay-ng -4`) | Active attack, requires radio |
+| 20 | Fragmentation | Working | aircrack-ng (`aireplay-ng -5`) | Active attack, requires radio |
+| 21 | Caffe-Latte / Hirte | Working | aircrack-ng | Client-side attacks |

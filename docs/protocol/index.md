@@ -22,7 +22,7 @@ Every WiFi security scheme falls into one of five categories based on how the us
 
 | Protocol | Encryption | Attack | Tool |
 |---|---|---|---|
-| WEP-40 / WEP-104 | RC4 with 24-bit IV | PTW key recovery (~40K ARP frames) | aircrack-ng |
+| WEP-40 / WEP-104 | RC4 with 24-bit IV | PTW key recovery (~40K ARP frames) | [WEPWolf](https://github.com/StrongWind1/WEPWolf) / [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) |
 
 ### Password — PBKDF2 (offline crackable)
 

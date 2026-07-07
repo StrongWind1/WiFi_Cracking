@@ -1,7 +1,8 @@
 # Aircrack-ng Suite
 
 [Aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) is an open-source suite for 802.11 wireless security assessment. Covers monitor mode setup, packet capture, traffic injection, and key recovery for WEP and WPA.
-See [WEP Workflow](../wep/aircrack-workflow.md) for a step-by-step procedure.
+
+For **offline WEP key recovery**, prefer [WEPWolf](https://github.com/StrongWind1/WEPWolf) — it runs PTW, KoreK, FMS, and RC4-bias attacks from a single command with per-key-slot cracking and parallel directory ingestion. Use the aircrack-ng suite for **active radio attacks** (injection, replay, deauth) and for capturing traffic with `airodump-ng`. See the [WEP cracking guide](../guide/wep.md) for the recommended workflow.
 
 ## Tool Overview
 

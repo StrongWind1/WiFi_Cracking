@@ -1,8 +1,8 @@
 # WEP (Wired Equivalent Privacy)
 
-WEP was the original 802.11 security protocol, defined in the 802.11-1997
-standard. It is fundamentally broken at the cryptographic level and should not
-be deployed. Any WEP network is compromised given sufficient captured traffic.
+WEP was the original 802.11 security protocol, defined in the 802.11-1997 standard. It is fundamentally broken at the cryptographic level and should not be deployed. Any WEP network is compromised given sufficient captured traffic.
+
+The recommended tool for WEP key recovery is [WEPWolf](https://github.com/StrongWind1/WEPWolf), which runs PTW, KoreK, FMS, and RC4-bias attacks from a single command on any pcap/pcapng capture. See the [WEP cracking guide](../guide/wep.md) for a step-by-step walkthrough. [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) remains necessary for active radio attacks (injection, replay).
 
 ## WEP Design
 
@@ -74,8 +74,7 @@ is known:
 - ARP header structure is predictable (source/dest IP and MAC)
 - Known plaintext → known first bytes of keystream → statistical correlation
 
-PTW is the default attack in aircrack-ng. With ARP replay injection:
-~40,000 unique IVs → WEP-40 or WEP-104 key in under 60 seconds.
+PTW is the default attack in both [WEPWolf](https://github.com/StrongWind1/WEPWolf) and aircrack-ng. WEPWolf additionally ships the Sepehrdad "Smashing WEP" RC4-bias database, which recovers keys from fewer packets than PTW alone. With ARP replay injection: ~40,000 unique IVs → WEP-40 or WEP-104 key in under 60 seconds.
 
 ### ChopChop
 
