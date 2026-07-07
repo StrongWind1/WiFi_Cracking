@@ -66,13 +66,13 @@ flowchart TD
 Key sizes vary by AKM suite. Suite B AKMs use 192/256-bit keys to match
 AES-256 and P-384 cryptography.
 
-| Component | AKM 2/4/6 | AKM 12/13/22/23 (Suite B) | Purpose |
-|-----------|-----------|---------------------------|---------|
-| KCK | 128 bits | 192 bits | Computes MIC over EAPOL-Key frames during handshake |
-| KEK | 128 bits | 256 bits | Encrypts key data (GTK) sent in EAPOL-Key frames |
-| TK | 128 bits (CCMP) / 256 bits (GCMP-256) | 256 bits | Encrypts unicast data frames |
-| KCK2 | 0 | 0 | Reserved (future use) |
-| KEK2 | 0 | 0 | Reserved (future use) |
+| Component | AKM 2/4/6 | AKM 19/20 (SHA-384 PSK) | AKM 12/13/22/23 (Suite B) | Purpose |
+|-----------|-----------|-------------------------|---------------------------|---------|
+| KCK | 128 bits | 192 bits | 192 bits | Computes MIC over EAPOL-Key frames during handshake |
+| KEK | 128 bits | 256 bits | 256 bits | Encrypts key data (GTK) sent in EAPOL-Key frames |
+| TK | 128 bits (CCMP) / 256 bits (GCMP-256) | 256 bits | 256 bits | Encrypts unicast data frames |
+| KCK2 | 0 | 0 | 0 | Reserved (future use) |
+| KEK2 | 0 | 0 | 0 | Reserved (future use) |
 
 Per IEEE 802.11-2024 Table 12-11. AKM 4 (FT-PSK): KCK2 = KEK2 = 0, so total
 PTK = KCK (128) + KEK (128) + TK (128) = 384 bits.

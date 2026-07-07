@@ -42,7 +42,7 @@ With no flags, hcxpcapngtool:
 5. **Skips relayed frames**: WDS/relayed EAPOL messages are dropped
 6. **Skips zeroed PSK/PMK**: hashes that verify against empty passphrase are dropped
 7. **Checks AKM from beacons**: only PSK/PSK-SHA256/FT-PSK APs produce hashes
-8. **Enforces EAPOL size ceiling**: frames exceeding 512 bytes at parse are silently dropped. FT-PSK M2 frames routinely reach 260–510 B (RSN IE + MDE + FTE in Key Data) and can hit this limit
+8. **Enforces EAPOL size ceiling**: frames exceeding 255 bytes at parse are silently dropped. FT-PSK M2 frames routinely reach 260–510 B (RSN IE + MDE + FTE in Key Data) and can hit this limit
 9. **Uses a shared 64-entry circular buffer**: all EAPOL messages share one ring buffer. When the 65th message arrives, the oldest is silently dropped — busy captures with many interleaved handshakes lose messages
 10. **Resets state between files**: when processing multiple input files, EAPOL messages from one file cannot pair with messages from another. Each file is processed independently
 

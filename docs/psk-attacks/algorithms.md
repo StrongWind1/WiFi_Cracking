@@ -8,10 +8,10 @@ field, constant, and algorithm is traceable to the spec or tool source.
 | AKM | Name | PMK KDF | PTK KDF | PTK size | MIC algorithm | PMKID hash | hashcat mode |
 |-----|------|---------|---------|----------|---------------|------------|-------------|
 | 2 | PSK | PBKDF2-HMAC-SHA1 | PRF-512/384 (HMAC-SHA1) | 384/512 | HMAC-MD5 (kv1) / HMAC-SHA1-128 (kv2) | HMAC-SHA1-128 | 22000 |
-| 4 | FT-PSK | PBKDF2-HMAC-SHA1 | FT-KDF-SHA256 (2 iters) | 384 | AES-128-CMAC (kv3) | SHA256 chain | 37100 |
+| 4 | FT-PSK | PBKDF2-HMAC-SHA1 | FT-KDF-SHA256 (2 iters) | 384 | AES-128-CMAC (kv3) | SHA256 chain | 37100 (pending) |
 | 6 | PSK-SHA256 | PBKDF2-HMAC-SHA1 | KDF-SHA256 | 384 | AES-128-CMAC (kv3) | HMAC-SHA256-128 | 22000 |
 | 19 | FT-PSK-SHA384 | PBKDF2-HMAC-SHA1 | FT-KDF-SHA384 (2 iters) | 704 | HMAC-SHA384 (kv0, 24 B) | SHA384 chain | none |
-| 20 | PSK-SHA384 | PBKDF2-HMAC-SHA1 | KDF-SHA384 | 704 | HMAC-SHA384 (kv0, 24 B) | HMAC-SHA384-128 | none |
+| 20 | PSK-SHA384 | PBKDF2-HMAC-SHA1 | KDF-SHA384 | 704 | HMAC-SHA384 (kv0, 24 B) | HMAC-SHA384-128 | pending |
 
 ---
 
@@ -20,7 +20,7 @@ field, constant, and algorithm is traceable to the spec or tool source.
 The same for all crackable PSK variants:
 
 ```
-PMK = PBKDF2(passphrase, SSID, ssidLen, 4096, 256 bits)
+PMK = PBKDF2(passphrase, SSID, 4096, 256 bits)
 ```
 
 - Inner PRF: **HMAC-SHA1** (always, regardless of AKM or keyver)

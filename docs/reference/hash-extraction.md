@@ -61,8 +61,8 @@ Bits 0-3 (mask 0x0F):
   100 = N4E3  (M3+M4, EAPOL from M3)  authorized, --all
   101 = N3E4  (M3+M4, EAPOL from M4)  authorized
 Bit 4: 0x10 = AP-less (pair did not require an M1; set for N2E3, N4E3)
-Bit 5: 0x20 = LE (replay-counter pair resolved as little-endian; diagnostic only)
-Bit 6: 0x40 = BE (replay-counter pair resolved as big-endian; diagnostic only)
+Bit 5: 0x20 = LE (AP nonce-counter byte order: little-endian; used for nonce error correction)
+Bit 6: 0x40 = BE (AP nonce-counter byte order: big-endian; used for nonce error correction)
 Bit 7: 0x80 = NC (nonce-error-correction tolerance was needed to pair)
 ```
 
@@ -95,7 +95,7 @@ sequences, or any byte value. Field length ÷ 2 = SSID byte length.
 | 22000 | WPA-PBKDF2-PMKID+EAPOL | Passphrase (8–63 chars) | Yes (4096 iter) | Standard passphrase attack |
 | 22001 | WPA-PMK-PMKID+EAPOL | Raw PMK (64 hex chars) | No (skipped) | Pre-computed PMKs, memory dumps |
 | 37100 | WPA-PBKDF2-PMKID+EAPOL (FT) | Passphrase (8–63 chars) | Yes (4096 iter) | FT-PSK attack (PR #4645, not yet merged) |
-| 5500 | NetNTLMv1 / MSCHAPv2 | `user::::NTresp:chal` | No | PEAP/LEAP credential cracking |
+| 5500 | NetNTLMv1 / MSCHAPv2 | `user::::NTresp:challenge` | No | PEAP/LEAP credential cracking |
 | 4800 | iSCSI CHAP / EAP-MD5 | `hash:id:challenge` | No | EAP-MD5 credential cracking |
 
 **Mode 22001** uses the same `WPA*01*`/`WPA*02*` hash format as 22000. The

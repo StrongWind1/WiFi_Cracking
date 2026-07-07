@@ -142,11 +142,11 @@ In practice, most captures yield only Hash A and one copy of Hash B (via N2E3).
 | N#E# | `eapol=` `nonce=` | Educational | hcx Bitmask | hcx Description | hcx Notes | Old hcx (M##E#) | hashcat `message_pair` |
 |------|-------------------|-------------|-------------|-----------------|-----------|-----------------|------------------------|
 | N1E2 | eapol=M2 nonce=M1 | M2(SNonce+MIC) + M1(ANonce) | 000 | M1+M2, EAPOL from M2 | challenge, default | M12E2 | `0x00` |
-| N1E4 | eapol=M4 nonce=M1 | M4(SNonce+MIC) + M1(ANonce) | 001 | M1+M4, EAPOL from M4 | authorized, `--all` | M14E4 | `0x01` |
+| N1E4 | eapol=M4 nonce=M1 | M4(SNonce+MIC) + M1(ANonce) | 001 | M1+M4, EAPOL from M4 | authorized | M14E4 | `0x01` |
 | N3E2 | eapol=M2 nonce=M3 | M2(SNonce+MIC) + M3(ANonce) | 010 | M2+M3, EAPOL from M2 | authorized, default | M32E2 | `0x02` |
 | N2E3 | eapol=M3 nonce=M2 | M3(ANonce+MIC) + M2(SNonce) | 011 | M2+M3, EAPOL from M3 | authorized, `--all` | M32E3 | `0x03` |
 | N4E3 | eapol=M3 nonce=M4 | M3(ANonce+MIC) + M4(SNonce) | 100 | M3+M4, EAPOL from M3 | authorized, `--all` | M34E3 | `0x04` |
-| N3E4 | eapol=M4 nonce=M3 | M4(SNonce+MIC) + M3(ANonce) | 101 | M3+M4, EAPOL from M4 | authorized, `--all` | M34E4 | `0x05` |
+| N3E4 | eapol=M4 nonce=M3 | M4(SNonce+MIC) + M3(ANonce) | 101 | M3+M4, EAPOL from M4 | authorized | M34E4 | `0x05` |
 
 ### Reading N#E#
 

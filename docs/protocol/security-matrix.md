@@ -45,7 +45,7 @@ flowchart LR
 | 17 | FT-FILS-SHA384 | Secure | No | — | |
 | 18 | OWE | Secure | No | — | Unauthenticated DH; no password |
 | 19 | FT-PSK (SHA-384) | Vulnerable | **Yes** | none | No hashcat module; SHA-384 24 B MIC unsupported by any mode |
-| 20 | PSK-SHA384 | Vulnerable | **Yes** | pending | hashcat module not yet available |
+| 20 | PSK-SHA384 | Vulnerable | **Yes** | none | No hashcat module exists or is planned |
 | 21 | PASN | Secure | No | — | Pre-association security |
 | 22 | FT-802.1X-SHA384 | Secure | No | — | |
 | 23 | 802.1X-SHA384 | Secure | No | — | |
