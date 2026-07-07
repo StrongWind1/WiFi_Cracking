@@ -14,19 +14,31 @@ Enterprise WiFi (WPA2-Enterprise / WPA3-Enterprise) authenticates users through 
 
 Every enterprise WiFi network (AKMs 1, 3, 5, 11-13, 22, 23 and FILS 14-17) authenticates through an EAP method. The method determines what credentials exist on the wire and whether they can be captured or cracked.
 
-| EAP Method | EAP Type | Tunnel | Capture method | hashcat mode | Result |
+### Crackable
+
+| EAP Method | EAP Type | Tunnel | Capture method | hashcat mode | Notes |
 |---|---|---|---|---|---|
-| **PEAP/MSCHAPv2** | 25 + 26 | TLS | Rogue AP | `-m 5500` | Hash crackable at 10B+/s (DES) |
-| **EAP-TTLS/MSCHAPv2** | 21 + 26 | TLS | Rogue AP | `-m 5500` | Hash crackable at 10B+/s (DES) |
-| **EAP-MD5** | 4 | None | Passive | `-m 4800` | Hash crackable at billions/s (raw MD5) |
-| **Cisco LEAP** | 17 | None | Passive | `-m 5500` | Hash crackable at 10B+/s (DES) |
-| **EAP-TTLS/PAP** | 21 | TLS | Rogue AP | N/A | Plaintext password — no cracking needed |
-| **EAP-TTLS/CHAP** | 21 | TLS | Rogue AP | N/A | CHAP hash, trivially reversible |
-| **EAP-GTC** | 6 | TLS (inside PEAP/TTLS) | Rogue AP | N/A | Plaintext token or password |
-| **EAP-TLS** | 13 | Mutual TLS | N/A | N/A | Certificate-based — no password transmitted |
+| **PEAP/MSCHAPv2** | 25 + 26 | TLS | Rogue AP (hostapd-mana) | `-m 5500` | Most common enterprise method; 10B+/s on GPU (DES, no PBKDF2) |
+| **EAP-TTLS/MSCHAPv2** | 21 + 26 | TLS | Rogue AP (hostapd-mana) | `-m 5500` | Same inner method as PEAP; same hashcat mode and speed |
+| **EAP-MD5** | 4 | None | Passive capture | `-m 4800` | Challenge/response in cleartext; billions/s on GPU (raw MD5) |
+| **Cisco LEAP** | 17 | None | Passive capture | `-m 5500` | MS-CHAPv1 in cleartext; deprecated by Cisco |
+
+### Credential capture (no cracking needed)
+
+| EAP Method | EAP Type | Tunnel | Capture method | hashcat mode | Notes |
+|---|---|---|---|---|---|
+| **EAP-TTLS/PAP** | 21 | TLS | Rogue AP (hostapd-mana) | N/A | Plaintext password directly — no hash, no cracking |
+| **EAP-TTLS/CHAP** | 21 | TLS | Rogue AP (hostapd-mana) | N/A | CHAP hash, trivially reversible |
+| **EAP-GTC** | 6 | TLS (inside PEAP/TTLS) | Rogue AP (hostapd-mana) | N/A | Plaintext token or password |
+
+### Not crackable
+
+| EAP Method | EAP Type | Tunnel | Capture method | hashcat mode | Notes |
+|---|---|---|---|---|---|
+| **EAP-TLS** | 13 | Mutual TLS | N/A | N/A | Certificate-based mutual authentication — no password transmitted |
 | **EAP-FAST** | 43 | PAC + TLS | N/A | N/A | Requires valid PAC; rogue AP cannot provision one |
 | **EAP-SIM / EAP-AKA** | 18 / 23 | N/A | N/A | N/A | SIM-card-based — no password exists |
-| **EAP-PWD** | 52 | None | N/A | N/A | Dragonfly PAKE — no crackable material exposed |
+| **EAP-PWD** | 52 | None | N/A | N/A | Dragonfly PAKE (like SAE) — no crackable material exposed |
 
 ## Step 1: PEAP/MSCHAPv2 -- rogue AP attack
 
