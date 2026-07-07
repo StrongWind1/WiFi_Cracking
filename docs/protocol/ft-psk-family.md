@@ -152,7 +152,8 @@ FT authentication:
 
 Both AKM 4 and 19 are crackable because the PMK traces back to PBKDF2. The
 FT key derivation chain adds 3 HMAC-SHA256 calls per candidate (instead of
-the 1–2 calls for standard PSK), but PBKDF2 still dominates:
+the 1–2 calls for standard PSK), but PBKDF2 still dominates.
+Extract hashes with [WPAWolf](https://github.com/StrongWind1/WPAWolf) (recommended) or hcxpcapngtool.
 
 | Attack | hcxtools output | hashcat mode | Status |
 |--------|-----------------|-------------|--------|

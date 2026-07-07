@@ -1,7 +1,7 @@
 # Hash Extraction Reference
 
 Hash line formats, hashcat modes, and EAPOL size constraints for all supported
-WiFi attack types.
+WiFi attack types. These hash lines are produced by [WPAWolf](https://github.com/StrongWind1/WPAWolf) (recommended) or hcxpcapngtool from pcap captures.
 
 ---
 

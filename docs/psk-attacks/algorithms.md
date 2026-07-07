@@ -2,6 +2,7 @@
 
 Step-by-step cryptographic derivations for all crackable PSK AKMs. Every
 field, constant, and algorithm is traceable to the spec or tool source.
+Extract hashes from pcap captures with [WPAWolf](https://github.com/StrongWind1/WPAWolf) before feeding them to hashcat.
 
 ## Algorithm Comparison
 

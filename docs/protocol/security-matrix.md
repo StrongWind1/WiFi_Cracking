@@ -73,9 +73,10 @@ per-packet key mixing adds complexity but still relies on RC4.
 
 AKMs **2, 4, 6, 19, 20** all derive the PMK from a passphrase via PBKDF2.
 The 4-way handshake exposes enough material (nonces, MIC, EAPOL frame) to
-perform offline verification of password candidates. The computational cost
-is dominated by PBKDF2 — ~8192 HMAC-SHA1 calls per candidate. Modern GPUs
-achieve ~500K–2M PMK/s on dedicated hardware.
+perform offline verification of password candidates. Extract handshakes with
+[WPAWolf](https://github.com/StrongWind1/WPAWolf) and crack with hashcat.
+The computational cost is dominated by PBKDF2 — ~8192 HMAC-SHA1 calls per
+candidate. Modern GPUs achieve ~500K–2M PMK/s on dedicated hardware.
 
 **AKM 6 PMKID**: The hashcat 22000 aux4 routine uses HMAC-SHA1 for all
 `WPA*01*` lines; AKM 6 requires HMAC-SHA256. AKM 6 PMKIDs silently fail

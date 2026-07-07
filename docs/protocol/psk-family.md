@@ -111,6 +111,8 @@ the MIC field zeroed. For keyver 1/2, the MIC is an HMAC truncated to 128 bits.
 
 ## Offline Attack Summary
 
+Extract hashes with [WPAWolf](https://github.com/StrongWind1/WPAWolf) (recommended) or hcxpcapngtool.
+
 The `aux1`–`aux4` labels refer to hashcat's internal kernel functions within mode 22000: aux1 = HMAC-MD5 MIC (kv1), aux2 = HMAC-SHA1-128 MIC (kv2), aux3 = AES-128-CMAC MIC (kv3), aux4 = HMAC-SHA1-128 PMKID.
 
 | AKM | Attack | hcxtools output | hashcat mode | Works? |

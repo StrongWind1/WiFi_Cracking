@@ -26,7 +26,7 @@ Every WiFi security scheme falls into one of five categories based on how the us
 
 ### Password — PBKDF2 (offline crackable)
 
-All six PSK families derive the PMK from a passphrase via PBKDF2-HMAC-SHA1 (4096 iterations, 256-bit output). This is the same PBKDF2 call regardless of AKM — the "SHA-256" and "SHA-384" in the AKM names refer to the post-PMK key hierarchy (KDF, MIC algorithms), not the password hashing step.
+All six PSK families derive the PMK from a passphrase via PBKDF2-HMAC-SHA1 (4096 iterations, 256-bit output). This is the same PBKDF2 call regardless of AKM — the "SHA-256" and "SHA-384" in the AKM names refer to the post-PMK key hierarchy (KDF, MIC algorithms), not the password hashing step. Extract handshakes from pcap captures with [WPAWolf](https://github.com/StrongWind1/WPAWolf) and crack with hashcat.
 
 | AKM | Name | Variant | hashcat mode | Standard |
 |-----|------|---------|-------------|----------|
