@@ -72,14 +72,31 @@ Realtek has three in-kernel driver families in kernel 7.1.3. All support basic m
 
 **Bottom line:** Realtek adapters work for passive capture and basic monitor mode, but **none support active monitor mode**. This means hcxdumptool cannot actively solicit PMKIDs — it can only passively wait for handshakes. For active attacks, use a MediaTek adapter. The upside: the RTL8812AU/8814AU/8821AU are now in-kernel via rtw88, so you no longer need the old out-of-tree `aircrack-ng/rtl8812au` drivers.
 
-### Legacy (still works)
+### Ralink (now MediaTek — legacy but solid)
 
-| Chipset | Driver | WiFi gen | Notes |
-|---|---|---|---|
-| Atheros AR9271 | `ath9k_htc` | WiFi 4 (N) | Rock-solid monitor + injection. 2.4 GHz only. The classic pentesting adapter (ALFA AWUS036NHA). |
-| Ralink RT5572 | `rt2800usb` | WiFi 4 (N) | Dual-band. Stable but slow by modern standards. |
+Ralink was acquired by MediaTek in 2011. Their chipsets use the `rt2x00` driver family, which gets monitor mode through mac80211 automatically. All are WiFi 4 (N) or older — they cannot see 5 GHz networks unless the chipset is explicitly dual-band.
 
-These still work and are well-tested, but they are WiFi 4 only — they cannot see 5 GHz or 6 GHz networks.
+| Driver | Chipsets | WiFi gen | Bands | Monitor mode | Notes |
+|---|---|---|---|---|---|
+| `rt2500usb` | RT2571, RT2572 | WiFi 3 (B/G) | 2.4 GHz | Yes | Very old, 11 Mbps max |
+| `rt73usb` | RT2573, RT2671 | WiFi 3/4 (B/G) | 2.4 GHz | Yes | |
+| `rt2800usb` | RT2870, RT3070, RT3071, RT3072 | WiFi 4 (N) | 2.4 GHz | Yes | Common in older USB dongles |
+| `rt2800usb` | RT3370 | WiFi 4 (N) | 2.4 GHz | Yes | rt33xx family |
+| `rt2800usb` | **RT3572, RT3573** | WiFi 4 (N) | **Dual-band** | Yes | The best Ralink for pentesting — 2.4 + 5 GHz |
+| `rt2800usb` | RT5370, RT5372 | WiFi 4 (N) | 2.4 GHz | Yes | rt53xx family, very common in cheap dongles |
+| `rt2800usb` | **RT5572** | WiFi 4 (N) | **Dual-band** | Yes | Dual-band variant of RT5370; used in ALFA AWUS051NH v2 |
+
+All rt2x00 drivers support monitor mode and packet injection via mac80211. The dual-band chipsets (RT3572, RT3573, RT5572) are the most useful since they can capture both 2.4 GHz and 5 GHz traffic.
+
+### Other legacy (still works)
+
+| Chipset | Driver | WiFi gen | Monitor | Injection | Notes |
+|---|---|---|---|---|---|
+| Atheros AR9271 | `ath9k_htc` | WiFi 4 (N) | Yes | Yes | Rock-solid. 2.4 GHz only. The classic pentesting adapter (ALFA AWUS036NHA) |
+| Intersil ISL38xx | `p54usb` | WiFi 3/4 | Yes | Yes | Prism54-based |
+| ZyDAS ZD1211/B | `zd1211rw` | WiFi 3 | Yes | Limited | Very old, mostly historical |
+
+These still work and are well-tested, but they are WiFi 4 or older — they cannot see 5 GHz or 6 GHz networks.
 
 ## Linux kernel requirements
 
