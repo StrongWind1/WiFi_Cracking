@@ -17,6 +17,8 @@ Known gaps between the IEEE 802.11 specification, extraction tools (hcxpcapngtoo
 
 ### PMKID Attacks
 
+The `aux1`–`aux4` labels refer to hashcat's internal kernel functions within mode 22000: aux1 = HMAC-MD5 MIC (kv1), aux2 = HMAC-SHA1-128 MIC (kv2), aux3 = AES-128-CMAC MIC (kv3), aux4 = HMAC-SHA1-128 PMKID.
+
 | # | AKM | Name | PMKID algorithm (spec) | Extraction | hashcat mode | hashcat cracks? | Notes |
 |---|-----|------|------------------------|-----------|-------------|----------------|-------|
 | 1 | 2 | WPA2-PSK | HMAC-SHA1-128 | `WPA*01*` | 22000 | **Yes** (aux4) | Fully working |

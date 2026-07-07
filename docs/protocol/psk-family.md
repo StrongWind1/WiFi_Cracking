@@ -111,12 +111,14 @@ the MIC field zeroed. For keyver 1/2, the MIC is an HMAC truncated to 128 bits.
 
 ## Offline Attack Summary
 
+The `aux1`–`aux4` labels refer to hashcat's internal kernel functions within mode 22000: aux1 = HMAC-MD5 MIC (kv1), aux2 = HMAC-SHA1-128 MIC (kv2), aux3 = AES-128-CMAC MIC (kv3), aux4 = HMAC-SHA1-128 PMKID.
+
 | AKM | Attack | hcxtools output | hashcat mode | Works? |
 |-----|--------|-----------------|-------------|--------|
 | 2 | PMKID | WPA*01* | 22000 (aux4) | Yes |
 | 2 | EAPOL kv1 | WPA*02* | 22000 (aux1) | Yes |
 | 2 | EAPOL kv2 | WPA*02* | 22000 (aux2) | Yes |
-| 6 | PMKID | WPA*01* | 22000 (aux4) | **Broken** (uses SHA1, needs SHA256) |
+| 6 | PMKID | WPA*01* | 22000 (aux4) | **Broken** — aux4 uses SHA1, needs SHA256. See [gap table](../reference/gap-table.md). |
 | 6 | EAPOL kv3 | WPA*02* | 22000 (aux3) | Yes |
 | 20 | PMKID/EAPOL | — | pending | No module yet |
 

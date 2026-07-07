@@ -27,6 +27,8 @@ flowchart TD
     PTK --> KDK["KDK — application key derivation (802.11-2020+)"]
 ```
 
+KDK (Key Derivation Key) — used in 802.11-2024 for additional key derivation in AKMs with extended key hierarchies.
+
 The PRF/KDF used for PTK derivation differs by AKM:
 
 | AKM | PMK source | PTK KDF | MIC algorithm |

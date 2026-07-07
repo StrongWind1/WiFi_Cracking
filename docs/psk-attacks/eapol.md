@@ -45,6 +45,8 @@ WPA*02*<MIC>*<MAC_AP>*<MAC_STA>*<ESSID>*<NONCE>*<EAPOL>*<message_pair>
 
 In code: `ext_nonce = s_nonce if eapol_msg == 3 else a_nonce`
 
+See the [EAPOL-Key frame reference](../reference/eapol-frame.md) for the complete byte-level layout.
+
 ## 12 Theoretical Combinations
 
 Three independent choices build a hash:

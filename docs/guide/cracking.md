@@ -1,11 +1,6 @@
 # Cracking with hashcat
 
-<!-- TODO: rewrite from v1 into a concise walkthrough -->
-<!-- Source material: docs/old/tools/cheat-sheet.md, docs/old/reference/hashcat-modes.md -->
-<!-- Link to Reference: tools/hashcat.md -->
-
-hashcat is the primary tool for offline password cracking. It takes the hash
-extracted by hcxpcapngtool and tests password candidates against it.
+hashcat is the primary tool for offline password cracking. It takes the hash extracted by hcxpcapngtool and tests password candidates against it. It handles both PMKID (a fingerprint the AP computes from the PMK and both MAC addresses) and EAPOL (the protocol that carries the 4-way handshake frames) hash types in a single mode.
 
 ## Basic attack
 
@@ -16,6 +11,12 @@ hashcat -m 22000 hashes.22000 wordlist.txt
 - `-m 22000` — WPA/WPA2 mode (handles both PMKID and EAPOL)
 - `hashes.22000` — your extracted hashes
 - `wordlist.txt` — password candidates (one per line)
+
+## Wordlists
+
+A wordlist is a text file containing one password candidate per line. hashcat reads each line and checks it against the captured hash. The quality of your wordlist directly determines whether you crack the password.
+
+The standard starting point is **rockyou.txt**, a list of ~14 million real passwords from the RockYou breach. On Kali Linux, it is available at `/usr/share/wordlists/rockyou.txt` (you may need to decompress it first with `gzip -d /usr/share/wordlists/rockyou.txt.gz`). Beyond rockyou, you can find larger and more targeted wordlists on repositories like [SecLists](https://github.com/danielmiessler/SecLists) or generate custom lists with tools like `crunch` or `kwprocessor`.
 
 ## Attack modes
 

@@ -3,7 +3,14 @@
 A step-by-step walkthrough for cracking WiFi passwords — from zero knowledge
 to recovered passphrase. Each page builds on the previous one.
 
-<!-- TODO: rewrite intro, add "what you'll need" prereqs, link to Reference for theory -->
+## What you need
+
+- A Linux system (Kali Linux recommended)
+- A WiFi adapter that supports monitor mode
+- aircrack-ng suite (`sudo apt install aircrack-ng`)
+- hcxtools (`sudo apt install hcxtools`) or [wpawolf](https://github.com/StrongWind1/WPAWolf)
+- hashcat (`sudo apt install hashcat`) with GPU drivers for reasonable speed
+- A wordlist (e.g., `rockyou.txt`, typically at `/usr/share/wordlists/rockyou.txt` on Kali)
 
 <div class="grid cards" markdown>
 

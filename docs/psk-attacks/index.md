@@ -18,6 +18,10 @@ verify a candidate passphrase against the MIC field.
 Each vector has different capture requirements, hash formats, and hashcat modes.
 The pages linked below cover each in detail.
 
+- [PMKID Attack](pmkid.md) — client-less attack using PMKID from M1
+- [EAPOL Attack](eapol.md) — MIC verification from captured handshake
+- [PSK Algorithms](algorithms.md) — step-by-step cryptographic derivations
+
 ## Crackable AKMs
 
 The following AKM suites derive their PMK from a passphrase and are therefore

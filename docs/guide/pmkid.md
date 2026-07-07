@@ -1,16 +1,10 @@
 # PMKID Attack
 
-<!-- TODO: rewrite from v1 into a concise walkthrough -->
-<!-- Source material: docs/old/attacks/pmkid.md -->
-<!-- Link to Reference: psk-attacks/pmkid.md -->
-
-The PMKID attack recovers a WiFi password without needing a connected client.
-The AP includes a PMKID value in its first handshake message — if present,
-this single value is enough to crack the password offline.
+The PMKID attack recovers a WiFi password without needing a connected client. The AP includes a **PMKID** (a fingerprint the AP computes from the PMK and both MAC addresses) in its first handshake message — if present, this single value is enough to crack the password offline.
 
 ## How it works
 
-The AP computes:
+The AP computes a fingerprint from the password-derived key and both MAC addresses. If you can guess the password, you can recompute this fingerprint and check for a match. The formula uses the PMK (Pairwise Master Key — the 256-bit key derived from your password):
 
 ```
 PMKID = HMAC-SHA1-128(PMK, "PMK Name" || AP_MAC || Client_MAC)
@@ -42,3 +36,5 @@ hashcat -m 22000 hashes.22000 wordlist.txt
 !!! tip "Deep dive"
     See the [PMKID reference](../psk-attacks/pmkid.md) for per-AKM PMKID
     formulas, RSN IE structure, and edge cases with AKM 4 and 6.
+
+**Next:** [Handshake attack](handshake.md)

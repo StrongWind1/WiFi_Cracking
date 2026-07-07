@@ -1,9 +1,5 @@
 # Handshake Attack
 
-<!-- TODO: rewrite from v1 into a concise walkthrough -->
-<!-- Source material: docs/old/attacks/eapol.md, docs/old/attacks/message-pairs.md -->
-<!-- Link to Reference: psk-attacks/eapol.md -->
-
 The handshake attack captures messages from the WPA/WPA2 4-way handshake and
 uses them to verify password guesses offline. Unlike PMKID, this requires a
 client to be connected (or connecting) to the network.
@@ -21,6 +17,7 @@ Follow the [Capturing traffic](capturing.md) steps. Wait for a client to
 connect, or send a deauth to force a reconnection:
 
 ```bash
+sudo aireplay-ng -0 1 -a <BSSID> wlan0mon
 # Wait for airodump-ng to show "WPA handshake: <BSSID>"
 ```
 
@@ -30,7 +27,7 @@ connect, or send a deauth to force a reconnection:
 hcxpcapngtool -o hashes.22000 capture-01.pcapng
 ```
 
-Look for `WPA*02*` lines — these are EAPOL handshake hashes.
+Look for `WPA*02*` lines — these are handshake hashes based on EAPOL (the protocol that carries the 4-way handshake frames).
 
 ## Step 3 — Crack with hashcat
 
@@ -48,3 +45,5 @@ same ANonce/SNonce pair.
 !!! tip "Deep dive"
     See the [EAPOL attack reference](../psk-attacks/eapol.md) for message pair
     theory, the N#E# naming convention, and the 12→6→3 hash collapse.
+
+**Next:** [Extracting hashes](extracting.md)

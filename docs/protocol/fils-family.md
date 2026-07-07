@@ -10,7 +10,7 @@ re-associations.
 Standard 802.1X requires multiple round trips (EAP exchange → 4-way handshake)
 before data can flow. FILS reduces this to two frames — Authentication Request
 and Authentication Response — by incorporating key confirmation directly into
-the association frames. Sub-100ms connections are achievable.
+the association frames. Sub-100ms connections are achievable (compared to ~1-2 seconds for standard 802.1X authentication).
 
 ## FILS Authentication Flow
 

@@ -1,11 +1,6 @@
 # Extracting Hashes
 
-<!-- TODO: rewrite from v1 into a concise walkthrough -->
-<!-- Source material: docs/old/tools/hcxpcapngtool.md, docs/old/reference/hash-line-formats.md -->
-<!-- Link to Reference: tools/hcxpcapngtool.md, reference/hash-extraction.md -->
-
-Before you can crack a WiFi password, you need to extract the relevant
-cryptographic data from your capture file into a format hashcat understands.
+Before you can crack a WiFi password, you need to extract the relevant cryptographic data from your pcapng (packet capture file format) file into a format hashcat understands.
 The primary tool for this is **hcxpcapngtool** (part of hcxtools). An alternative is **[wpawolf](https://github.com/StrongWind1/WPAWolf)**, which uses a collect-then-pair architecture that avoids hcxpcapngtool's 64-entry buffer limit and EAPOL size gate, and supports cross-file pairing.
 
 ## Basic usage
@@ -14,7 +9,7 @@ The primary tool for this is **hcxpcapngtool** (part of hcxtools). An alternativ
 hcxpcapngtool -o hashes.22000 -f hashes.37100 capture-01.pcapng
 ```
 
-This extracts PMKID and EAPOL hashes for standard PSK (`-o`, mode 22000) and FT-PSK (`-f`, mode 37100) into separate files.
+This extracts PMKID (a fingerprint the AP computes from the PMK and both MAC addresses) and EAPOL (the protocol that carries the 4-way handshake frames) hashes for standard PSK (`-o`, mode 22000) and FT-PSK (`-f`, mode 37100) into separate files.
 
 ## Output format
 
@@ -54,3 +49,5 @@ grep "^WPA\*02" hashes.22000  # EAPOL hashes only
     See the [hcxpcapngtool reference](../tools/hcxpcapngtool.md) for the full
     options matrix and the [Hash extraction reference](../reference/hash-extraction.md)
     for hash line format details.
+
+**Next:** [Cracking with hashcat](cracking.md)

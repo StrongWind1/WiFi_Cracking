@@ -133,7 +133,7 @@ PMKID = HMAC-SHA256-128(PMK, "PMK Name" || MAC_AP || MAC_STA)
 
 - Hash: **HMAC-SHA256** (not SHA1)
 - Same input format as AKM 2
-- hashcat 22000 aux4 uses SHA1 for all `WPA*01*` lines — **silently broken for AKM 6**
+- hashcat 22000 aux4 uses SHA1 for all `WPA*01*` lines — silently broken for AKM 6. See [gap table](../reference/gap-table.md).
 
 ### AKM 6 + keyver 3 — EAPOL Attack
 

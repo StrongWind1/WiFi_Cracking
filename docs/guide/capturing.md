@@ -1,12 +1,8 @@
 # Capturing Traffic
 
-<!-- TODO: rewrite from v1 into a linear walkthrough -->
-<!-- Source material: docs/old/reference/capture-requirements.md -->
-<!-- Link to Reference: reference/capture-requirements.md, tools/aircrack-suite.md -->
-
 ## Prerequisites
 
-- A wireless adapter that supports **monitor mode**
+- A wireless adapter that supports **monitor mode** (a special adapter mode that captures all nearby WiFi traffic, not just traffic to/from your machine)
 - Linux (Kali, Parrot, or any distro with aircrack-ng installed)
 
 ## Step 1 — Enable monitor mode
@@ -32,7 +28,7 @@ Find your target network. Note the **BSSID** (MAC address) and **channel**.
 sudo airodump-ng -c <channel> --bssid <BSSID> -w capture wlan0mon
 ```
 
-This writes capture files to `capture-01.pcapng` (and other formats).
+This writes a pcapng (packet capture file format) file to `capture-01.pcapng` and related output files.
 
 ## What you need to capture
 
@@ -45,9 +41,4 @@ This writes capture files to `capture-01.pcapng` (and other formats).
     See [Capture requirements](../reference/capture-requirements.md) for the
     exact frame combinations needed per attack type.
 
-## Next steps
-
-With a capture file in hand:
-
-- Try the [PMKID attack](pmkid.md) first (no client needed)
-- If that doesn't work, go for the [Handshake attack](handshake.md)
+**Next:** [PMKID attack](pmkid.md)

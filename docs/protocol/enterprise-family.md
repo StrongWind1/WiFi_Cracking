@@ -82,7 +82,7 @@ Mandates AES-256-GCM or AES-256-CCM cipher suites. AKM 13 adds FT to AKM 12.
 
 ### 802.11-2024 Extensions — AKM 22, 23
 
-AKM 22 adds FT to the SHA-384 enterprise suite, equivalent to AKM 13 but defined under the 802.11-2024 revision. AKM 23 is the non-FT SHA-384 enterprise AKM, equivalent to AKM 12. These were introduced to align with CNSA 2.0 requirements.
+AKM 22 adds FT to the SHA-384 enterprise suite, equivalent to AKM 13 but defined under the 802.11-2024 revision. AKM 23 is the non-FT SHA-384 enterprise AKM, equivalent to AKM 12. These were introduced to align with CNSA (Commercial National Security Algorithm Suite) 2.0 requirements.
 
 ## Suite B Compliance
 
