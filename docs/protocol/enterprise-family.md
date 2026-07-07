@@ -70,8 +70,7 @@ KDF-SHA-256 for PTK derivation. MIC uses AES-128-CMAC (keyver 3).
 
 ### Suite B (SHA-256) — AKM 11
 
-AKM 11 targets the 128-bit security level. Same KDF-SHA-256 as AKM 5. Mandates
-Suite B cipher suites: AES-128-CCM or AES-128-GCM for data frames.
+AKM 11 targets the 128-bit security level. Same KDF-SHA-256 as AKM 5. Mandates GCMP-128 (AES-128-GCM) for data frames and BIP-GMAC-128 for management frame protection per Table 9-190.
 
 ### Suite B (SHA-384) — AKM 12, 13
 
@@ -83,9 +82,7 @@ Mandates AES-256-GCM or AES-256-CCM cipher suites. AKM 13 adds FT to AKM 12.
 
 ### 802.11-2024 Extensions — AKM 22, 23
 
-AKM 22 is a SHA-384 enterprise AKM equivalent to AKM 12 but defined under the
-802.11-2024 revision. AKM 23 adds FT. These were introduced to align with
-CNSA 2.0 requirements.
+AKM 22 adds FT to the SHA-384 enterprise suite, equivalent to AKM 13 but defined under the 802.11-2024 revision. AKM 23 is the non-FT SHA-384 enterprise AKM, equivalent to AKM 12. These were introduced to align with CNSA 2.0 requirements.
 
 ## Suite B Compliance
 
@@ -94,7 +91,7 @@ minimum cryptographic requirements for government and high-security networks:
 
 | Suite | Security level | AKMs | Cipher | PRF/KDF |
 |-------|---------------|------|--------|---------|
-| Suite B-128 | 128-bit | 11 | AES-128-CCM/GCM | SHA-256 |
+| Suite B-128 | 128-bit | 11 | GCMP-128 | SHA-256 |
 | Suite B-192 (CNSA) | 192-bit | 12, 13, 22, 23 | AES-256-GCM | SHA-384 |
 
 CNSA-compliant deployments require AKM 12/13 or 22/23 with GCMP-256 cipher

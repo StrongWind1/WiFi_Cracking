@@ -40,7 +40,7 @@ HMAC of the PMK:
 Step A: PMK-R0-Name-salt
   = HMAC-SHA256(PMK,
       counter_LE16(2) || "FT-R0" ||
-      SPA || SSID || MDID || R0KH-ID-Len || R0KH-ID || S0KH-ID ||
+      SSIDlength || SSID || MDID || R0KH-ID-Len || R0KH-ID || S0KH-ID ||
       size_LE16(384))
   Take bytes 0–15 (16 bytes).
 
@@ -53,7 +53,7 @@ Step C: PMKID
   Truncate to 128 bits.
 ```
 
-SPA = S0KH-ID = S1KH-ID = STA MAC address (per §13.4).
+S0KH-ID = S1KH-ID = STA MAC address (per §12.7.1.6.3).
 
 - Requires extra fields: MDID, R0KH-ID, R1KH-ID
 - hashcat mode 37100, hash type `WPA*03*`
@@ -76,7 +76,7 @@ Truncated to 128 bits. Not supported in current hashcat.
 
 PMKIDs appear in two container types depending on the frame:
 
-**Container A: RSN IE (tag 48).** The PMKID Count + PMKID List sit near the end of the RSN IE per §9.4.2.24.5. Used in M2 RSN IE, Association/Reassociation Request, FT Authentication, FT Action frames, Probe Request, and (via vendor firmware bugs) Beacon/Probe Response.
+**Container A: RSN IE (tag 48).** The PMKID Count + PMKID List sit near the end of the RSN IE per §9.4.2.23.5. Used in M2 RSN IE, Association/Reassociation Request, FT Authentication, FT Action frames, Probe Request, and (via vendor firmware bugs) Beacon/Probe Response.
 
 **Container B: PMKID KDE.** A vendor-specific Key Data Encapsulation inside EAPOL-Key M1 Key Data:
 
@@ -115,6 +115,6 @@ PMKSA cache state.
 
 ## Spec References
 
-- PMKID derivation: 802.11-2024 §12.6.1.3
-- FT key hierarchy: §13.4–§13.8
-- RSN IE PMKID List: §9.4.2.24.5
+- PMKID derivation: 802.11-2024 §12.7.1.3
+- FT key hierarchy: §12.7.1.6
+- RSN IE PMKID List: §9.4.2.23.5

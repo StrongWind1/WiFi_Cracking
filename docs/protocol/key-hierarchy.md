@@ -98,7 +98,7 @@ GTK = PRF-X(GMK, "Group key expansion", MAC_AP || GNonce)
 
 For standard PSK (AKM 2, 6, 20), the PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. The comparison treats each value as an unsigned big-endian integer — the smaller value is concatenated first. This ensures both sides compute the same PTK regardless of role (AP vs. STA).
 
-FT-PSK (AKM 4, 19) does **not** use Min/Max ordering. The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per §13.4.2.
+FT-PSK (AKM 4, 19) does **not** use Min/Max ordering. The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per §12.7.1.6.5.
 
 ## Spec References
 

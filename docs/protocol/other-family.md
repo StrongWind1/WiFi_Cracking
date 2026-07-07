@@ -81,13 +81,13 @@ scenarios (media streaming, file transfer) to avoid the AP bottleneck.
 
 ### Spec References
 
-- TDLS: 802.11-2024 §10.28, §12.7.1.5, §12.7.8.2
+- TDLS: 802.11-2024 §11.20, §12.7.8, §12.7.8.2
 
 ---
 
 ## PASN — AKM 21
 
-**Pre-Association Security Negotiation**, introduced in 802.11-2020.
+**Pre-Association Security Negotiation**, introduced in 802.11az-2022.
 
 PASN enables a station and AP to establish a secure channel before the
 standard authentication/association procedure. This is required for:

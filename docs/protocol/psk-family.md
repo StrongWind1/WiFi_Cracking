@@ -76,7 +76,7 @@ Same structure as KDF-SHA-256 but using HMAC-SHA-384 internally. Full PTK = 704 
 
 | Cipher suite | Value | Encryption | TK size | Used with |
 |-------------|-------|-----------|---------|-----------|
-| TKIP | 2 | RC4 + per-packet key mixing | 128 bits (+128-bit TMK) | AKM 2 (legacy, deprecated) |
+| TKIP | 2 | RC4 + per-packet key mixing | 256 bits (128-bit encryption + 128-bit TMK) | AKM 2 (legacy, deprecated) |
 | CCMP-128 | 4 | AES-128-CCM | 128 bits | AKM 2, 6 |
 | GCMP-128 | 8 | AES-128-GCM | 128 bits | AKM 6 |
 | GCMP-256 | 9 | AES-256-GCM | 256 bits | AKM 20 |
@@ -125,6 +125,6 @@ the MIC field zeroed. For keyver 1/2, the MIC is an HMAC truncated to 128 bits.
 - AKM suite selectors: IEEE 802.11-2024 Table 9-190
 - PMK derivation (PBKDF2): Annex J.4.1, §12.7.1.3
 - PTK derivation (PRF): §12.7.1.2; (KDF): §12.7.1.6.2
-- Key descriptor versions: §12.7.3, Table 12-11
+- Key descriptor versions: §12.7.2, Table 12-11
 - Cipher suite selectors: Table 9-188
 - Key lengths: Table 12-8 (TK), Table 12-11 (KCK/KEK)

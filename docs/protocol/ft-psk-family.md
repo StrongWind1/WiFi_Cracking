@@ -109,7 +109,7 @@ Step A: PMK-R0-Name-salt (from PMK-R0 derivation above, bytes 32-47)
 
 Step B: PMK-R0-Name = SHA256("FT-R0N" || PMK-R0-Name-salt)[0:16]
 
-Step C: PMKID = SHA256("FT-R1N" || PMK-R0-Name || R1KHID || STA_MAC)[0:16]
+Step C: PMKID = SHA256("FT-R1N" || PMK-R0-Name || R1KH-ID || S1KH-ID)[0:16]
 ```
 
 Requires: SSID, MDID, R0KH-ID, R1KH-ID — captured from MDE/FTE IEs.

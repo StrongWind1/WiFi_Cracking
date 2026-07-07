@@ -55,11 +55,11 @@ Low nibble (bits 0-3) encodes the N#E# combo discriminant; upper bits are flags:
 ```
 Bits 0-3 (mask 0x0F):
   000 = N1E2  (M1+M2, EAPOL from M2)  challenge
-  001 = N1E4  (M1+M4, EAPOL from M4)  authorized, --all
+  001 = N1E4  (M1+M4, EAPOL from M4)  authorized
   010 = N3E2  (M2+M3, EAPOL from M2)  authorized
   011 = N2E3  (M2+M3, EAPOL from M3)  authorized, --all
   100 = N4E3  (M3+M4, EAPOL from M3)  authorized, --all
-  101 = N3E4  (M3+M4, EAPOL from M4)  authorized, --all
+  101 = N3E4  (M3+M4, EAPOL from M4)  authorized
 Bit 4: 0x10 = AP-less (pair did not require an M1; set for N2E3, N4E3)
 Bit 5: 0x20 = LE (replay-counter pair resolved as little-endian; diagnostic only)
 Bit 6: 0x40 = BE (replay-counter pair resolved as big-endian; diagnostic only)
@@ -150,9 +150,7 @@ awk -F'*' '!seen[$3,$4,$5,$6,$7,$8]++' raw.22000 > unique.22000
 | Tool / context | Max EAPOL size | Why |
 |----------------|---------------|-----|
 | IEEE 802.11 spec | 65535 bytes (uint16 length field) | Protocol allows it |
-| hcxpcapngtool internal | 1024 bytes | Practical implementation limit |
-| hcxpcapngtool → mode 22000 | 255 bytes | Legacy hccap/hccapx uint8 constraint |
-| hcxpcapngtool → mode 37100 | 1024 bytes | ZerBea raised limit for FT |
+| hcxpcapngtool | 255 bytes (`EAPOL_AUTHLEN_OLD_MAX`) | Legacy hccap/hccapx uint8 constraint; applies to all output paths |
 | hashcat m22000 parser | 256 bytes (512 hex chars, `token.len_max[7] = 512`) | Module parser limit |
 | hashcat m37100 parser | 256 bytes (512 hex chars) | Module parser limit |
 | Typical WPA2-PSK M2 | ~120–140 bytes | Fits easily |

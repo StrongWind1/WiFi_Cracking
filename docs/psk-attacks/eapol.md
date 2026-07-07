@@ -31,7 +31,7 @@ Hashcat only needs the other nonce supplied externally.
 | M4 | SNonce (offset 17–48) | ANonce | M1 or M3 |
 
 !!! note "M4 nonce"
-    M4's Key Nonce should be 0 per IEEE 802.11-2024 §12.7.6.5. NOTE 9
+    M4's Key Nonce should be 0 per IEEE 802.11-2024 §12.7.6.5; §12.7.2 NOTE 9
     documents that some implementations copy the SNonce from M2 instead.
     If zeroed, M4 is unusable as an EAPOL source.
 
@@ -185,5 +185,5 @@ Bits 5 and 6 (LE/BE) indicate which byte order the AP uses for the counter porti
 ## Spec References
 
 - EAPOL-Key MIC computation: 802.11-2024 §12.7.6.5
-- M4 nonce value: §12.7.6.5 NOTE 9
+- M4 nonce value: §12.7.6.5, §12.7.2 NOTE 9
 - Key descriptor versions: §12.7.2, Table 12-11

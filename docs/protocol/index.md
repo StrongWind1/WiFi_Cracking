@@ -39,8 +39,8 @@ Every AKM falls into one of five categories:
 | 19 | FT-PSK (SHA-384) | PSK | **Yes** | 802.11-2020 |
 | 20 | PSK-SHA384 | PSK | **Yes** | 802.11-2020 |
 | 21 | PASN | Other | No | 802.11-2024 |
-| 22 | 802.1X-SHA384 | Enterprise | No | 802.11-2024 |
-| 23 | FT-802.1X-SHA384 | Enterprise | No | 802.11-2024 |
+| 22 | FT-802.1X-SHA384 | Enterprise | No | 802.11-2024 |
+| 23 | 802.1X-SHA384 | Enterprise | No | 802.11-2024 |
 | 24 | SAE (group-dependent) | SAE | No | 802.11-2024 |
 | 25 | FT-SAE (group-dependent) | SAE | No | 802.11-2024 |
 

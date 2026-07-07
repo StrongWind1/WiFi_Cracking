@@ -10,8 +10,8 @@ field, constant, and algorithm is traceable to the spec or tool source.
 | 2 | PSK | PBKDF2-HMAC-SHA1 | PRF-512/384 (HMAC-SHA1) | 384/512 | HMAC-MD5 (kv1) / HMAC-SHA1-128 (kv2) | HMAC-SHA1-128 | 22000 |
 | 4 | FT-PSK | PBKDF2-HMAC-SHA1 | FT-KDF-SHA256 (2 iters) | 384 | AES-128-CMAC (kv3) | SHA256 chain | 37100 |
 | 6 | PSK-SHA256 | PBKDF2-HMAC-SHA1 | KDF-SHA256 | 384 | AES-128-CMAC (kv3) | HMAC-SHA256-128 | 22000 |
-| 19 | FT-PSK-SHA384 | PBKDF2-HMAC-SHA1 | FT-KDF-SHA384 (2 iters) | 576 | HMAC-SHA384 (kv0, 24 B) | SHA384 chain | none |
-| 20 | PSK-SHA384 | PBKDF2-HMAC-SHA1 | KDF-SHA384 | 576 | HMAC-SHA384 (kv0, 24 B) | HMAC-SHA384-128 | none |
+| 19 | FT-PSK-SHA384 | PBKDF2-HMAC-SHA1 | FT-KDF-SHA384 (2 iters) | 704 | HMAC-SHA384 (kv0, 24 B) | SHA384 chain | none |
+| 20 | PSK-SHA384 | PBKDF2-HMAC-SHA1 | KDF-SHA384 | 704 | HMAC-SHA384 (kv0, 24 B) | HMAC-SHA384-128 | none |
 
 ---
 
@@ -70,7 +70,7 @@ Length is appended as a 2-byte little-endian integer.
 
 For standard PSK (AKM 2, 6), the PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. Comparison treats each as an unsigned big-endian integer. The smaller value is concatenated first. This ensures both sides derive the same PTK regardless of AP vs. STA role.
 
-**FT-PSK (AKM 4, 19) does not use Min/Max ordering.** The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per IEEE 802.11-2024 §13.4.2. This is why the APLESS combos (N2E3, N4E3) fail in hashcat mode 37100 — the kernel hardcodes the nonce layout and cannot swap them for M3-anchored pairs.
+**FT-PSK (AKM 4, 19) does not use Min/Max ordering.** The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per IEEE 802.11-2024 §12.7.1.6.5. This is why the APLESS combos (N2E3, N4E3) fail in hashcat mode 37100 — the kernel hardcodes the nonce layout and cannot swap them for M3-anchored pairs.
 
 ---
 
@@ -235,6 +235,6 @@ Step D: MIC
 - PRF definition: §12.7.1.2
 - KDF definition (iterations formula): §12.7.1.6.2
 - PMKID computation: §12.7.1.3
-- Standard PSK PTK derivation: §12.7.1.6.2
+- Standard PSK PTK derivation: §12.7.1.3
 - FT key hierarchy: §12.7.1.6.3–6.5
 - AES-128-CMAC: RFC 4493

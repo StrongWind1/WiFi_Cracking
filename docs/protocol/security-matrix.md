@@ -47,8 +47,8 @@ flowchart LR
 | 19 | FT-PSK (SHA-384) | Vulnerable | **Yes** | none | No hashcat module; SHA-384 24 B MIC unsupported by any mode |
 | 20 | PSK-SHA384 | Vulnerable | **Yes** | pending | hashcat module not yet available |
 | 21 | PASN | Secure | No | — | Pre-association security |
-| 22 | 802.1X-SHA384 | Secure | No | — | |
-| 23 | FT-802.1X-SHA384 | Secure | No | — | |
+| 22 | FT-802.1X-SHA384 | Secure | No | — | |
+| 23 | 802.1X-SHA384 | Secure | No | — | |
 | 24 | SAE (group-dep.) | Secure | No | — | H2E only |
 | 25 | FT-SAE (group-dep.) | Secure | No | — | H2E only |
 
