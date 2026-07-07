@@ -1,0 +1,27 @@
+# Normalize line endings: treat everything as text with LF on checkout.
+# Prevents CRLF from sneaking in on Windows checkouts.
+* text=auto eol=lf
+
+# Explicit text types (LF enforced).
+*.md      text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.toml    text eol=lf
+*.css     text eol=lf
+Makefile  text eol=lf
+
+# Binary files: never diff or convert line endings.
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.pdf     binary
+*.gz      binary
+*.zip     binary
+*.pcap    binary
+*.pcapng  binary
+*.cap     binary
+*.hccapx  binary
+*.hc22000 binary
+*.22000   binary

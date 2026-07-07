@@ -1,46 +1,92 @@
 # EAPOL-Key Frame Format
 
-This is the raw frame that gets captured, MIC-zeroed, and included in the hash line.
+Byte-level layout of the EAPOL-Key frame as defined in IEEE 802.11-2024 §12.7.2.
+This frame carries the 4-way handshake messages and the MIC that hashcat verifies.
+
+## Frame Structure
 
 ```
-Offset  Size  Field
-------  ----  -----
-0       1     Version (usually 0x01 or 0x02)
-1       1     Type (0x03 = EAPOL-Key)
-2       2     Length (big-endian, of everything after this field)
-4       1     Key Descriptor Type (0xFE=WPA, 0x02=RSN)
-5       2     Key Information (big-endian, bitfield below)
-7       2     Key Length (16=CCMP, 32=TKIP)
-9       8     Replay Counter
-17      32    Key Nonce (ANonce or SNonce depending on message)
-49      16    Key IV
-65      8     Key RSC
-73      8     Reserved
-81      16    Key MIC  ← THIS is zeroed for MIC computation
-97      2     Key Data Length
-99      var   Key Data (RSN IEs, GTK KDE, PMKID KDE, FT IEs...)
+Offset  Length  Field
+------  ------  -----
+0       1       Protocol Version (always 0x02 for 802.11i/RSN)
+1       1       Packet Type (0x03 = Key)
+2       2       Packet Body Length (big-endian uint16)
+4       1       Descriptor Type (0x02 = RSN, 0xFE = WPA)
+5       2       Key Information (bitfield, see below)
+7       2       Key Length
+9       8       Key Replay Counter (big-endian uint64)
+17      32      Key Nonce (ANonce or SNonce per message)
+49      16      EAPOL-Key IV (zero for CCMP; RC4 IV for TKIP kv1)
+65      8       Key RSC (Receive Sequence Counter for GTK)
+73      8       Reserved
+81      16      Key MIC (zero while computing; filled after HMAC/CMAC)
+97      2       Key Data Length (big-endian uint16)
+99      var     Key Data (RSN IE, PMKID KDE, encrypted GTK, etc.)
 ```
 
-### Key Information Bitfield (16 bits, big-endian)
+!!! note "Variable MIC length"
+    The MIC field at offset 81 is 16 bytes for AKM 1–9 and 11 (HMAC-SHA1-128,
+    HMAC-MD5, or AES-128-CMAC, all 128-bit output). It is 24
+    bytes for AKM 12/13/19/20/22/23 (HMAC-SHA-384, truncated to 192 bits). For
+    AKM 14/15 (FILS with AES-SIV), the MIC is 0 bytes. The Key Data Length
+    field at offset 97 is then shifted by the difference.
 
-| Bit(s) | Name | Values |
-|--------|------|--------|
-| 0-2 | Key Descriptor Version | 1=HMAC-MD5/RC4, 2=HMAC-SHA1/AES, 3=AES-CMAC/AES |
-| 3 | Key Type | 1=Pairwise, 0=Group |
-| 4-5 | (reserved) | |
-| 6 | Install | 1 in M3 |
-| 7 | Key Ack | 1 = response required (set by AP in M1, M3) |
-| 8 | Key MIC | 1 = MIC field is valid (M2, M3, M4) |
-| 9 | Secure | 1 = initial key exchange complete (M3, M4) |
-| 10 | Error | MIC failure report (TKIP countermeasures) |
-| 11 | Request | Supplicant requesting handshake |
-| 12 | Encrypted Key Data | 1 in M3 (GTK encrypted) |
+## Key Information Bitfield
 
-### How to Identify Each Message
+The 2-byte Key Information field encodes the descriptor version, key type, and
+handshake flags. All undefined bits are reserved (set to 0).
 
-| Message | Key Ack | Key MIC | Install | Secure | Has SNonce | Has Key Data |
-|---------|---------|---------|---------|--------|------------|-------------|
-| M1 | 1 | 0 | 0 | 0 | No (ANonce) | PMKID KDE (optional) |
-| M2 | 0 | 1 | 0 | 0 | Yes (SNonce) | STA RSN IE |
-| M3 | 1 | 1 | 1 | 1 | No (ANonce) | AP RSN IE + encrypted GTK |
-| M4 | 0 | 1 | 0 | 1 | Often zeroed | Empty |
+| Bits | Field | Values / Notes |
+|------|-------|----------------|
+| 0–2 | Key Descriptor Version | 0 = per negotiated AKM (Table 12-11); 1 = HMAC-MD5/RC4 (kv1); 2 = HMAC-SHA1-128/AES (kv2); 3 = AES-128-CMAC/AES (kv3, AKM 3–6) |
+| 3 | Key Type | 0 = Group/GTK; 1 = Pairwise/PTK |
+| 4–5 | Reserved | Always 0 |
+| 6 | Install | 1 = Install the key now (set in M3) |
+| 7 | Key ACK | 1 = AP requests a response (set in M1, M3) |
+| 8 | Key MIC | 1 = MIC field is populated (set in M2, M3, M4) |
+| 9 | Secure | 1 = Both sides have installed keys (set in M3, M4) |
+| 10 | Error | 1 = MIC failure notification |
+| 11 | Request | 1 = STA requesting key refresh |
+| 12 | Encrypted Key Data | 1 = Key Data is encrypted with KEK (set in M3) |
+| 13–15 | Reserved | Always 0 |
+
+## Message Identification Table
+
+These flag combinations identify each handshake message:
+
+| Message | Key ACK | Key MIC | Install | Secure | Nonce field | Key Data |
+|---------|---------|---------|---------|--------|-------------|----------|
+| M1 | 1 | 0 | 0 | 0 (1 if rekey) | ANonce | PMKID (optional) |
+| M2 | 0 | 1 | 0 | 0 (1 if rekey) | SNonce | STA RSN IE |
+| M3 | 1 | 1 | 1 | 1 | ANonce | Encrypted GTK + AP RSN IE |
+| M4 | 0 | 1 | 0 | 1 | 0 | None |
+
+!!! note "M3 classification"
+    M3 is identified by Key ACK=1 + Install=1 alone; Key MIC and Secure are not checked. WPA1 M3 carries Secure=0.
+
+## EAPOL-Key IV Note
+
+For keyver 1 (TKIP), the 16-byte EAPOL-Key IV carries the RC4 encryption
+parameters for Key Data. For keyver 2 and 3 (CCMP, AES-CMAC), this field
+is always zeroed. Key Data is wrapped with the NIST AES key wrap algorithm
+using the KEK.
+
+## MIC Computation
+
+To verify a MIC (hashcat's core operation):
+
+1. Extract the raw EAPOL-Key frame bytes
+2. Zero out the MIC field (offset 81 through 81+MIC_len; 16 bytes for AKMs 1–9/11, 24 bytes for AKMs 12/13/19/20/22/23)
+3. Compute `HMAC-MD5(KCK, frame)` (keyver 1) or `HMAC-SHA1(KCK, frame)` truncated to 128 bits (keyver 2) or `AES-128-CMAC(KCK, frame)` (keyver 3) or `HMAC-SHA384(KCK, frame)` truncated to 192 bits (keyver 0, AKMs 19/20)
+4. Compare result against the saved MIC bytes
+
+The frame used includes the full EAPOL header (from offset 0) through the end
+of Key Data. The 802.3/802.11 header preceding the EAPOL packet is NOT included.
+
+## Spec References
+
+- EAPOL-Key frame layout: 802.11-2024 §12.7.2
+- Key Information field: §12.7.2, Figure 12-36
+- MIC computation: §12.7.2
+- KDV mapping: §12.7.2, Table 12-11
+- Variable MIC lengths: Table 12-11 (integrity algorithms and MIC sizes per AKM)

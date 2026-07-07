@@ -125,3 +125,74 @@
 [data-md-color-scheme="default"] .md-tabs {
   background-color: #0a1a0f;
 }
+
+/* ---------- Dashboard cards ---------- */
+
+.md-typeset .grid.cards > ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.8rem;
+  padding: 0;
+  list-style: none;
+}
+
+.md-typeset .grid.cards > ul > li {
+  border: 1px solid var(--md-default-bg-color--lightest);
+  border-radius: 0.3rem;
+  padding: 1rem 1.2rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--md-accent-fg-color);
+  box-shadow: 0 0 12px var(--md-accent-fg-color--transparent);
+}
+
+/* ---------- Hide TOC sidebar, let content use full width ---------- */
+
+.md-sidebar--secondary {
+  display: none;
+}
+
+@media screen and (min-width: 76.25em) {
+  .md-content {
+    max-width: 100%;
+    margin-right: 0;
+  }
+}
+
+/* ---------- Responsive tables ---------- */
+
+.md-typeset__scrollwrap {
+  overflow-x: auto;
+}
+
+.md-typeset table:not([class]) {
+  width: 100%;
+  table-layout: auto;
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* ---------- Security matrix status badges ---------- */
+
+.status-broken {
+  color: #ff5252;
+  font-weight: 700;
+}
+
+.status-deprecated {
+  color: #ffab40;
+  font-weight: 700;
+}
+
+.status-secure {
+  color: #69f0ae;
+  font-weight: 700;
+}
