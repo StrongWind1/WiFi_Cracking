@@ -96,64 +96,86 @@ The IEEE 802.11-2024 spec defines PMKIDs in 20 distinct frame/field combinations
 
 ### EAPOL-Key frames
 
-| ID | Frame | Direction | Container | PSK crackable? | Notes |
-|---|---|---|---|---|---|
-| S1 | **EAPOL-Key M1** | AP → STA | KDE (`{DD 14 00:0F:AC 04}`) | Yes | The Steube 2018 attack vector — most common source |
-| S2 | **EAPOL-Key M2** | STA → AP | RSN IE in Key Data | Yes | For FT-PSK, carries PMKR1Name + MDE + FTE |
+| ID | Frame | Direction | Container | PSK crackable? |
+|---|---|---|---|---|
+| S1 | **EAPOL-Key M1** | AP → STA | KDE (`{DD 14 00:0F:AC 04}`) | Yes |
+| S2 | **EAPOL-Key M2** | STA → AP | RSN IE in Key Data | Yes |
+
+**S1** — The AP includes its precomputed PMKID in M1's Key Data as a KDE when PMKSA caching is active (§12.6.8.3). The AP is telling the client "I have a cached PMKSA — here's the identifier so you can confirm you have the same one." This is the Steube 2018 attack vector: the PMKID is a deterministic function of the PMK + both MACs, so an attacker who captures M1 can try passwords offline without waiting for the client to respond.
+
+**S2** — The client includes one or more PMKIDs in the RSN IE within M2's Key Data. Per §9.4.2.23.5 and §12.6.8.3, "a STA can supply a list of PMK identifiers" to reference cached PMKSAs. For FT-PSK, M2 carries PMKR1Name plus MDE and FTE in Key Data.
 
 ### Management frames
 
-| ID | Frame | Direction | Container | PSK crackable? | Notes |
-|---|---|---|---|---|---|
-| S3 | Association Request | STA → AP | RSN IE | Yes | Client referencing cached PMKSA |
-| S4 | Reassociation Request | STA → AP | RSN IE | Yes | For FT over-the-air roaming, carries PMKR1Name + MDE + FTE |
-| S14 | Probe Request (directed) | STA → AP | RSN IE | Yes (if PSK) | Rare — most clients omit RSN IE in probes |
-| S15 | Probe Request (broadcast) | STA → broadcast | RSN IE | Yes (if PSK) | Spec-valid but very rare |
-| S16 | Beacon | AP → all | RSN IE | Yes (if PSK) | Vendor firmware bug — spec says PMKID Count should be 0 in AP-originated frames |
-| S17 | Probe Response | AP → STA | RSN IE | Yes (if PSK) | Same vendor firmware bug as S16 |
+| ID | Frame | Direction | Container | PSK crackable? |
+|---|---|---|---|---|
+| S3 | Association Request | STA → AP | RSN IE | Yes |
+| S4 | Reassociation Request | STA → AP | RSN IE | Yes |
+| S14 | Probe Request (directed) | STA → AP | RSN IE | Yes (if PSK) |
+| S15 | Probe Request (broadcast) | STA → broadcast | RSN IE | Yes (if PSK) |
+| S16 | Beacon | AP → all | RSN IE | Yes (if PSK) |
+| S17 | Probe Response | AP → STA | RSN IE | Yes (if PSK) |
+
+**S3/S4** — Per §12.6.8.3: "If a STA has determined it has a valid PMKSA with an AP to which it is about to (re)associate, it includes the PMKID for the PMKSA in the RSNE in the (re)association request." The client is telling the AP which cached PMKSA to resume, skipping a full EAP or SAE exchange. For FT-PSK, the Reassociation Request carries PMKR1Name per §13.4.
+
+**S14/S15** — Spec-valid per §9.4.2.23.5: the RSN IE PMKID List is allowed in any frame that carries an RSN IE. In practice, most clients omit the RSN IE from Probe Requests, so these are rare. When present, they indicate a client actively probing for an AP it has a cached PMKSA with.
+
+**S16/S17** — The spec says AP-originated Beacon/Probe Response frames should have PMKID Count = 0, since the AP doesn't know which STA it's talking to in a broadcast. However, some Broadcom and embedded chipsets include non-zero PMKID values due to firmware bugs. wpawolf extracts these to ensure nothing is missed.
 
 ### FT Authentication frames (Algorithm = 2, Fast BSS Transition)
 
-| ID | Frame | Direction | Container | PSK crackable? | Notes |
-|---|---|---|---|---|---|
-| S5 | FT Auth seq=1 | STA → AP | RSN IE + MDE + FTE | Yes (FT-PSK) | Carries PMKR0Name; FTE has R0KH-ID and ANonce |
-| S6 | FT Auth seq=2 | AP → STA | RSN IE + MDE + FTE | Yes (FT-PSK) | Carries PMKR1Name; FTE has R0KH-ID and R1KH-ID — everything needed for a `WPA*03*` line |
+| ID | Frame | Direction | Container | PSK crackable? |
+|---|---|---|---|---|
+| S5 | FT Auth seq=1 | STA → AP | RSN IE + MDE + FTE | Yes (FT-PSK) |
+| S6 | FT Auth seq=2 | AP → STA | RSN IE + MDE + FTE | Yes (FT-PSK) |
+
+**S5/S6** — FT over-the-air authentication (§13.8.3) uses Authentication frames with Algorithm = 2 (Fast BSS Transition). The STA's seq=1 carries PMKR0Name in the RSN IE PMKID List, plus MDE (MDID) and FTE (R0KH-ID, ANonce). The AP's seq=2 carries PMKR1Name plus FTE with R0KH-ID and R1KH-ID — all the fields needed to construct a `WPA*03*` hash line for hashcat mode 37100.
 
 ### FT Action frames (Category = 6)
 
-| ID | Frame | Direction | Container | PSK crackable? | Notes |
-|---|---|---|---|---|---|
-| S11 | FT Action Request | STA → AP | RSN IE + FTE | Yes (FT-PSK) | Over-the-DS FT path |
-| S12 | FT Action Response | AP → STA | RSN IE + FTE | Yes (FT-PSK) | |
-| S13 | FT Action Confirm | STA → AP | RSN IE + FTE | Yes (FT-PSK) | Carries PMKR1Name |
+| ID | Frame | Direction | Container | PSK crackable? |
+|---|---|---|---|---|
+| S11 | FT Action Request | STA → AP | RSN IE + FTE | Yes (FT-PSK) |
+| S12 | FT Action Response | AP → STA | RSN IE + FTE | Yes (FT-PSK) |
+| S13 | FT Action Confirm | STA → AP | RSN IE + FTE | Yes (FT-PSK) |
+
+**S11-S13** — FT over-the-DS (§13.8.5) uses Action frames (Category 6) instead of Authentication frames when the STA roams via the current AP's DS connection to the target AP. The RSN IE carries the same PMKID/PMKR1Name as the over-the-air path. These are less common than S5/S6 but carry identical crackable material. Note: FT Action frames are in the robust management frame set and can be PMF-encrypted — if so, the PMKID is opaque.
 
 ### FILS Authentication frames (Algorithm = 4 or 5)
 
-| ID | Frame | Direction | Container | PSK crackable? | Notes |
-|---|---|---|---|---|---|
-| S7 | FILS Auth seq=1 | STA → AP | RSN IE | No | PMK from EAP rMSK, not PBKDF2 |
-| S8 | FILS Auth seq=2 | AP → STA | RSN IE | No | AP echoes chosen PMKID |
+| ID | Frame | Direction | Container | PSK crackable? |
+|---|---|---|---|---|
+| S7 | FILS Auth seq=1 | STA → AP | RSN IE | No |
+| S8 | FILS Auth seq=2 | AP → STA | RSN IE | No |
+
+**S7/S8** — FILS (§12.11.2) combines authentication and key establishment into two frames. Per §12.6.8.3, "a STA may use a cached PMKSA" and includes the PMKID in the FILS Authentication frame. The PMK derives from EAP rMSK (not PBKDF2), so these PMKIDs are not PSK-crackable — but wpawolf still extracts and counts them for visibility.
 
 ### PASN Authentication frames
 
-| ID | Frame | Direction | Container | PSK crackable? | Notes |
-|---|---|---|---|---|---|
-| S9 | PASN Auth seq=1 | STA → AP | RSN IE | Conditional | Crackable only when base AKMP is PSK or FT-PSK |
-| S10 | PASN Auth seq=2 | AP → STA | RSN IE | Conditional | |
+| ID | Frame | Direction | Container | PSK crackable? |
+|---|---|---|---|---|
+| S9 | PASN Auth seq=1 | STA → AP | RSN IE | Conditional |
+| S10 | PASN Auth seq=2 | AP → STA | RSN IE | Conditional |
+
+**S9/S10** — PASN (§12.13) establishes a security association before the STA associates. The base AKMP determines whether the PMKID is crackable: if the underlying AKM is PSK or FT-PSK, the PMKID traces back to PBKDF2 and is crackable. If the underlying AKM is SAE or 802.1X, it is not.
 
 ### Mesh Peering and OSEN
 
-| ID | Frame | Direction | Container | PSK crackable? | Notes |
-|---|---|---|---|---|---|
-| S18 | Mesh Peering Open | STA → STA | AMPE element (tag 139), last 16 bytes | No | Mesh PMKSAs derive from SAE |
-| S19 | Mesh Peering Confirm | STA → STA | AMPE element (tag 139) | No | |
-| S20 | Association Request (OSEN) | STA → AP | Vendor IE (`{50:6F:9A:12}`) | No | Wi-Fi Passpoint / Hotspot 2.0; enterprise 802.1X |
+| ID | Frame | Direction | Container | PSK crackable? |
+|---|---|---|---|---|
+| S18 | Mesh Peering Open | STA → STA | AMPE element (tag 139), last 16 bytes | No |
+| S19 | Mesh Peering Confirm | STA → STA | AMPE element (tag 139) | No |
+| S20 | Association Request (OSEN) | STA → AP | Vendor IE (`{50:6F:9A:12}`) | No |
+
+**S18/S19** — Mesh peering (§14.3.5) uses AMPE (Authenticated Mesh Peering Exchange) elements. The "Chosen PMK" field (last 16 bytes of the AMPE element body) identifies which mesh PMKSA the peers are using. Mesh PMKSAs derive from SAE authentication (§12.4), not PBKDF2, so they are not crackable.
+
+**S20** — OSEN (Online Sign-up Network, Wi-Fi Passpoint / Hotspot 2.0) uses a vendor-specific IE (`50:6F:9A:12`) whose internal structure is identical to the RSN IE starting from the Group Cipher Suite field. OSEN authentication is enterprise 802.1X, so the PMKID is not PSK-crackable.
 
 ### Summary by crackability
 
 | Sources | Count | Crackable? |
 |---|---|---|
-| S1-S6, S11-S17 (PSK / FT-PSK) | 13 | Yes — if AKM is 2, 4, 6, 19, or 20 |
+| S1-S6, S11-S17 (PSK / FT-PSK) | 13 | Yes — if AKM is WPA1, 2, 4, 6, 19, or 20 |
 | S9-S10 (PASN) | 2 | Conditional — only if base AKMP is PSK |
 | S7-S8, S18-S20 (FILS, Mesh, OSEN) | 5 | No — PMK not derived from passphrase |
 
