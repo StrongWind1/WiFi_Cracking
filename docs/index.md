@@ -1,13 +1,6 @@
-<p align="center">
-  <a href="https://github.com/StrongWind1/WiFi_Cracking/actions/workflows/docs.yml"><img src="https://github.com/StrongWind1/WiFi_Cracking/actions/workflows/docs.yml/badge.svg" alt="Documentation Build"></a>
-  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="Apache 2.0 License"></a>
-</p>
-
 # WiFi Cracking
 
-Complete technical reference for IEEE 802.11 wireless security. Two paths to
-choose from: a step-by-step **Guide** for cracking WiFi passwords, or a deep
-**Reference** covering protocol internals for all 25 AKM suites.
+Complete technical reference for IEEE 802.11 wireless security. Two paths to choose from: a step-by-step **Guide** for cracking WiFi passwords, or a deep **Reference** covering protocol internals for all 25 AKM suites.
 
 ## Choose your path
 
@@ -59,22 +52,68 @@ choose from: a step-by-step **Guide** for cracking WiFi passwords, or a deep
 
     ---
 
-    hcxpcapngtool, hashcat, aircrack-ng suite. Hash extraction, cracking, and capture tool reference.
+    WPAWolf, WEPWolf, hcxdumptool, hashcat, aircrack-ng suite. Hash extraction, cracking, and capture tool reference.
 
 </div>
 
 ## Quick Reference
 
-| AKM | Name | Category | Offline Crackable? | hashcat Mode |
-|-----|------|----------|--------------------|--------------|
-| 2 | PSK | Password | Yes — PBKDF2 | 22000 |
-| 4 | FT-PSK | Password | Yes — FT KDF chain | 37100 |
-| 6 | PSK-SHA256 | Password | Yes — KDF-SHA-256 | 22000 |
-| 8 | SAE | Password (ZKP) | No — Dragonfly PAKE | N/A |
-| 1 | 802.1X | Enterprise | EAP inner method dependent | 5500, 4800 |
-| 18 | OWE | Open | No — no password | N/A |
-| N/A | WEP | Legacy | Yes — RC4 key recovery | N/A (aircrack-ng) |
+### WEP (pre-AKM)
+
+| Protocol | Attack | Tool | Speed |
+|---|---|---|---|
+| WEP-40 / WEP-104 | RC4 key recovery (PTW) | [WEPWolf](tools/wpawolf.md) / aircrack-ng | ~40K IVs → key in seconds |
+
+### Password — PBKDF2 (offline crackable)
+
+All six families derive the PMK from a passphrase via the same PBKDF2-HMAC-SHA1 (4096 iterations). The "SHA-256" and "SHA-384" in the names refer to the post-PMK key hierarchy, not the password hash.
+
+| AKM | Name | Extract with | Crack with | hashcat mode | Status |
+|---|---|---|---|---|---|
+| WPA1 | WPA-PSK (TKIP) | [WPAWolf](tools/wpawolf.md) | hashcat | 22000 (kv1) | Working |
+| 2 | WPA2-PSK (CCMP) | [WPAWolf](tools/wpawolf.md) | hashcat | 22000 (kv2) | Working |
+| 6 | PSK-SHA256 | [WPAWolf](tools/wpawolf.md) | hashcat | 22000 (kv3) | EAPOL working; PMKID broken (SHA1 bug) |
+| 4 | FT-PSK | [WPAWolf](tools/wpawolf.md) | hashcat | 37100 (PR pending) | Extraction works; hashcat PR #4645 not merged |
+| 19 | FT-PSK-SHA384 | [WPAWolf](tools/wpawolf.md) | — | none | No hashcat module (24 B MIC) |
+| 20 | PSK-SHA384 | [WPAWolf](tools/wpawolf.md) | — | none | No hashcat module (24 B MIC) |
+
+### Password — SAE (not offline crackable)
+
+| AKM | Name | Why it resists offline attack |
+|---|---|---|
+| 8 | SAE (WPA3-Personal) | Dragonfly PAKE — no crackable material on the wire |
+| 9 | FT-SAE | SAE + Fast Transition |
+| 24 | SAE (H2E) | Hash-to-Element, constant-time |
+| 25 | FT-SAE (H2E) | H2E + Fast Transition |
+
+### EAP — Enterprise
+
+| AKM | Name | Crackable inner methods |
+|---|---|---|
+| 1 | 802.1X | PEAP/MSCHAPv2 (mode 5500), EAP-MD5 (mode 4800), LEAP (mode 5500) |
+| 3 | FT-802.1X | Same inner methods via rogue AP |
+| 5 | 802.1X-SHA256 | Same inner methods via rogue AP |
+| 11 | Suite B-128 (deprecated) | — |
+| 12 | Suite B-192 | — |
+| 13 | FT-802.1X-SHA384 | — |
+| 14-17 | FILS (SHA256/384, FT variants) | EAP-based, not directly crackable |
+| 22 | FT-802.1X-SHA384 | — |
+| 23 | 802.1X-SHA384 | — |
+
+### Other
+
+| AKM | Name | Notes |
+|---|---|---|
+| 7 | TDLS | Peer-to-peer direct link — niche |
+| 10 | APPeerKey (deprecated) | Removed from active standard |
+| 18 | OWE | Opportunistic encryption — no password |
+| 21 | PASN | Pre-association security negotiation |
 
 ## Disclaimer
 
 This material is intended for authorized security testing, research, and education only. You must have explicit written permission from the network owner before capturing or cracking WPA handshakes. Unauthorized access to computer networks is illegal.
+
+<p align="center">
+  <a href="https://github.com/StrongWind1/WiFi_Cracking/actions/workflows/docs.yml"><img src="https://github.com/StrongWind1/WiFi_Cracking/actions/workflows/docs.yml/badge.svg" alt="Documentation Build"></a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="Apache 2.0 License"></a>
+</p>
