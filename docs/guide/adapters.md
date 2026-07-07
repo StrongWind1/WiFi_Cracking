@@ -21,10 +21,12 @@ Not every adapter supports all four. The recommendation below prioritizes **in-k
 
 MediaTek chipsets have the best in-kernel Linux support for security testing. The `mt76` driver family covers WiFi 5 through WiFi 7:
 
-| Chipset | WiFi gen | In-kernel driver | Monitor mode since | Active monitor | Recommended kernel |
+| Chipset | WiFi gen | In-kernel driver | Monitor since | Active monitor | Recommended kernel |
 |---|---|---|---|---|---|
-| **MT7612U** | WiFi 5 (AC) | `mt76x2u` | 4.19 | Yes | 6.6+ |
+| **MT7601U** | WiFi 4 (N), 2.4 GHz | `mt7601u` | 4.2 | Yes | 5.x+ |
 | **MT7610U** | WiFi 5 (AC) | `mt76x0u` | 4.19 | Yes | 6.6+ |
+| **MT7612U** | WiFi 5 (AC) | `mt76x2u` | 4.19 | Yes | 6.6+ |
+| **MT7663U** | WiFi 5 (AC) | `mt7663u` | 5.8 | Yes | 6.6+ |
 | **MT7921AU** | WiFi 6E (AXE) | `mt7921u` | 5.18 | Yes | 6.6+ |
 | **MT7925U** | WiFi 7 (BE) | `mt7925u` | 6.7 | Yes | 7.0+ |
 
@@ -35,18 +37,40 @@ MediaTek chipsets have the best in-kernel Linux support for security testing. Th
 - **Netgear A8000** — MT7921AU, WiFi 6E. Compact USB-A form factor.
 - **Adapters with MT7925U** — WiFi 7 capable, newest generation. Requires kernel 7.0+.
 
-### Realtek (limited support)
+### Realtek (monitor mode, no active monitor)
 
-Realtek has multiple in-kernel driver families, but monitor mode support is incomplete compared to MediaTek:
+Realtek has three in-kernel driver families in kernel 7.1.3. All support basic monitor mode via mac80211, but **none support active monitor mode** — hcxdumptool can only passively capture, not actively solicit PMKIDs.
 
-| Driver | Chipsets | WiFi gen | Monitor mode | Active monitor | Notes |
-|---|---|---|---|---|---|
-| `rtl8xxxu` | RTL8188EUS, RTL8192EU | WiFi 4 (N) | Partial (kernel 6.6+ with [patch](https://bugzilla.kernel.org/show_bug.cgi?id=217205)) | No | Legacy chipsets; patch not yet merged into mainline |
-| `rtw88` | RTL8822BU, RTL8822CU, RTL8723DU | WiFi 5 (AC) | Yes | No | No active monitor, no VIF |
-| `rtw89` | RTL8852AU, RTL8852BU, RTL8852CU | WiFi 6 (AX) | Yes | No | Supports VIF but no active monitor |
-| `rtl8187` | RTL8187L | WiFi 3 (B/G) | Yes | Yes | Ancient but fully working; 2.4 GHz only |
+**rtw88 — WiFi 5 (AC)** — the most complete Realtek USB driver as of kernel 7.1.3:
 
-**Bottom line:** Realtek adapters work for passive capture and basic monitor mode, but they do **not** support active monitor mode. This means hcxdumptool cannot actively solicit PMKIDs — it can only passively wait for handshakes. For active attacks, use a MediaTek adapter.
+| Chipset | Config | WiFi gen | Monitor mode | Notes |
+|---|---|---|---|---|
+| RTL8812AU | `RTW88_8812AU` | WiFi 5 (AC) | Yes | **New in recent kernels.** Popular pentesting chipset (ALFA AWUS036ACH) — previously required out-of-tree drivers |
+| RTL8814AU | `RTW88_8814AU` | WiFi 5 (AC) | Yes | **New in recent kernels.** 4x4 MIMO |
+| RTL8821AU/8811AU | `RTW88_8821AU` | WiFi 5 (AC) | Yes | **New in recent kernels.** |
+| RTL8822BU | `RTW88_8822BU` | WiFi 5 (AC) | Yes | |
+| RTL8822CU | `RTW88_8822CU` | WiFi 5 (AC) | Yes | |
+| RTL8821CU | `RTW88_8821CU` | WiFi 5 (AC) | Yes | |
+| RTL8723DU | `RTW88_8723DU` | WiFi 4 (N) | Yes | |
+
+**rtw89 — WiFi 6/6E/7** — newer Realtek chipsets:
+
+| Chipset | Config | WiFi gen | Monitor mode | Notes |
+|---|---|---|---|---|
+| RTL8852AU | `RTW89_8852AU` | WiFi 6 (AX) | Yes | Supports VIF (virtual interfaces) |
+| RTL8852BU | `RTW89_8852BU` | WiFi 6 (AX) | Yes | |
+| RTL8852CU | `RTW89_8852CU` | WiFi 6E (AXE) | Yes | |
+| RTL8851BU | `RTW89_8851BU` | WiFi 6 (AX) | Yes | |
+| RTL8922AE | `RTW89_8922AE` | WiFi 7 (BE) | Yes | PCIe only — no USB variant yet |
+
+**Legacy Realtek:**
+
+| Driver | Chipsets | WiFi gen | Monitor mode | Notes |
+|---|---|---|---|---|
+| `rtl8187` | RTL8187L/B | WiFi 3 (B/G) | Yes (+ active) | Ancient but fully working; 2.4 GHz only |
+| `rtl8xxxu` | RTL8188EUS/CU/FU, RTL8192EU/CU/FU, RTL8723BU, RTL8710BU | WiFi 4 (N) | Partial | Requires kernel 6.6+ with unmerged [patch](https://bugzilla.kernel.org/show_bug.cgi?id=217205) |
+
+**Bottom line:** Realtek adapters work for passive capture and basic monitor mode, but **none support active monitor mode**. This means hcxdumptool cannot actively solicit PMKIDs — it can only passively wait for handshakes. For active attacks, use a MediaTek adapter. The upside: the RTL8812AU/8814AU/8821AU are now in-kernel via rtw88, so you no longer need the old out-of-tree `aircrack-ng/rtl8812au` drivers.
 
 ### Legacy (still works)
 
@@ -71,13 +95,17 @@ Check your kernel version:
 uname -r
 ```
 
+As of July 2026 ([kernel.org](https://kernel.org)):
+
 | Kernel | Status | MediaTek mt76 monitor mode | Notes |
 |---|---|---|---|
-| 5.x | Old | MT7612U works; MT7921AU limited | Missing many fixes |
-| **6.6 LTS** | Longterm | Works up to 6.6.40; **broken in 6.6.41+** | WiFi 7 stack changes caused mt76 regression |
-| 6.8-6.11 | Stable (EOL) | Broken after 6.8.12 | Same WiFi 7 regression |
-| **6.12+ LTS** | Current longterm | Use [morrownr/mt76](https://github.com/morrownr/mt76) out-of-tree driver | In-kernel driver still has issues |
-| **7.0+** | Latest stable | In-kernel fixes landing; MT7925U support | Best path forward |
+| 5.x | EOL (5.15 LTS still maintained) | MT7612U works; MT7921AU limited | Missing many fixes |
+| **6.6 LTS** | Longterm (6.6.144) | Works up to 6.6.40; **broken in 6.6.41+** | WiFi 7 stack changes caused mt76 regression |
+| 6.8-6.11 | EOL | Broken after 6.8.12 | Same WiFi 7 regression |
+| **6.12 LTS** | Longterm (6.12.95) | Use [morrownr/mt76](https://github.com/morrownr/mt76) out-of-tree driver | In-kernel driver still has issues |
+| **6.18 LTS** | Longterm (6.18.38) | Fixes landing | Newest LTS branch |
+| **7.1** | Latest stable (7.1.3) | In-kernel fixes; MT7925U fully supported | Best path forward |
+| 7.2-rc2 | Mainline dev | Bleeding edge | For testing only |
 
 !!! warning "mt76 monitor mode regression"
     The massive WiFi 7 modernization work in the Linux WiFi stack introduced regressions in the mt76 driver for monitor mode and frame injection. The last fully working in-kernel versions were **6.6.40** (longterm) and **6.8.12** (stable). If you're on a kernel after these versions and mt76 monitor mode is broken, use the [morrownr/mt76](https://github.com/morrownr/mt76) out-of-tree driver (supports kernels 6.12 through 7.x).
