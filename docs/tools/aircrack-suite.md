@@ -1,7 +1,6 @@
 # Aircrack-ng Suite
 
-Open-source suite for 802.11 wireless security assessment. Covers monitor mode
-setup, packet capture, traffic injection, and key recovery for WEP and WPA.
+[Aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) is an open-source suite for 802.11 wireless security assessment. Covers monitor mode setup, packet capture, traffic injection, and key recovery for WEP and WPA.
 See [WEP Workflow](../wep/aircrack-workflow.md) for a step-by-step procedure.
 
 ## Tool Overview

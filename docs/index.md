@@ -46,13 +46,13 @@ Complete technical reference for IEEE 802.11 wireless security. Two paths to cho
 
     ---
 
-    Legacy WEP vulnerabilities. FMS, KoreK, PTW attacks and practical aircrack-ng workflows.
+    Legacy WEP vulnerabilities. FMS, KoreK, PTW attacks and practical [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) workflows.
 
 - :material-wrench: __[Tools](tools/index.md)__
 
     ---
 
-    WPAWolf, WEPWolf, hcxdumptool, hashcat, aircrack-ng suite. Hash extraction, cracking, and capture tool reference.
+    WPAWolf, WEPWolf, [hcxdumptool](https://github.com/ZerBea/hcxdumptool), hashcat, aircrack-ng suite. Hash extraction, cracking, and capture tool reference.
 
 </div>
 

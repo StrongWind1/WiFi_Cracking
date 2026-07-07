@@ -1,6 +1,6 @@
 # hcxpcapngtool
 
-Part of the hcxtools suite by ZerBea. Converts pcap/pcapng/gzip capture files into hash formats suitable for hashcat. An alternative extraction tool is [wpawolf](https://github.com/StrongWind1/WPAWolf), which uses a collect-then-pair architecture that avoids several of hcxpcapngtool's extraction limitations (see notes below).
+Part of the [hcxtools](https://github.com/ZerBea/hcxtools) suite by ZerBea. Converts pcap/pcapng/gzip capture files into hash formats suitable for hashcat. An alternative extraction tool is [wpawolf](https://github.com/StrongWind1/WPAWolf), which uses a collect-then-pair architecture that avoids several of hcxpcapngtool's extraction limitations (see notes below).
 
 ## Hash Combo Naming
 

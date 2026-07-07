@@ -6,7 +6,7 @@ WEP (Wired Equivalent Privacy) encrypts each 802.11 frame with RC4, keyed by a s
 
 - **A capture file** containing WEP-encrypted traffic (`.pcap`, `.pcapng`, or `.gz`). You can capture one yourself with `airodump-ng` (Step 1 below) or work with captures you already have.
 - **[WEPWolf](https://github.com/StrongWind1/WEPWolf)** -- the primary cracking tool. Download a prebuilt binary from [GitHub Releases](https://github.com/StrongWind1/WEPWolf/releases/latest) or build from source (`git clone` + `make release`).
-- **aircrack-ng** (optional) -- needed only for active radio attacks like packet injection and ARP replay. Install with `sudo apt install aircrack-ng`.
+- **[aircrack-ng](https://github.com/aircrack-ng/aircrack-ng)** (optional) -- needed only for active radio attacks like packet injection and ARP replay. Install with `sudo apt install aircrack-ng`.
 
 ## Step 1 -- Capture WEP traffic
 

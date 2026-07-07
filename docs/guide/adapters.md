@@ -9,7 +9,7 @@ WiFi security testing requires an adapter that supports:
 | Capability | What it does | Who needs it |
 |---|---|---|
 | **Monitor mode** | Capture all nearby 802.11 frames, not just traffic to/from your machine | Everyone |
-| **Packet injection** | Transmit crafted frames (deauth, association requests) | hcxdumptool active mode, aireplay-ng |
+| **Packet injection** | Transmit crafted frames (deauth, association requests) | [hcxdumptool](https://github.com/ZerBea/hcxdumptool) active mode, aireplay-ng |
 | **Active monitor mode** | Monitor + inject simultaneously on the same interface | hcxdumptool (preferred) |
 | **In-kernel driver** | Driver ships with the Linux kernel — no out-of-tree builds | Reliability, future-proofing |
 

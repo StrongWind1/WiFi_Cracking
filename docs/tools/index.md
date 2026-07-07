@@ -4,12 +4,12 @@
 
 | Tool | PSK | EAP | WEP | Purpose |
 |------|-----|-----|-----|---------|
-| hcxpcapngtool | Yes | Yes | No | Extract hashes from pcap/pcapng/gzip captures |
+| [hcxpcapngtool](https://github.com/ZerBea/hcxtools) | Yes | Yes | No | Extract hashes from pcap/pcapng/gzip captures |
 | wpawolf | Yes | No | No | Extract PSK/FT-PSK hashes (collect-then-pair, no size gate, cross-file pairing) |
 | hashcat | Yes | Yes | No | GPU-accelerated offline password cracking |
-| aircrack-ng | Yes | No | Yes | Capture, injection, and WEP/WPA key recovery |
+| [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) | Yes | No | Yes | Capture, injection, and WEP/WPA key recovery |
 | hostapd-mana | No | Yes | No | Rogue AP for EAP credential capture |
-| hcxdumptool | Yes | No | No | Active PMKID/EAPOL capture |
+| [hcxdumptool](https://github.com/ZerBea/hcxdumptool) | Yes | No | No | Active PMKID/EAPOL capture |
 | Wireshark | Yes | Yes | Yes | Packet analysis and manual field extraction |
 
 ## Capture, Extract, Crack Pipeline

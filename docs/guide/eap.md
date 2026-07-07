@@ -28,7 +28,7 @@ To attack enterprise WiFi, you capture the **inner EAP credentials** — either 
 - A Linux system with a WiFi adapter (monitor mode helpful for passive capture but not required for rogue AP)
 - **hostapd-mana** — rogue AP that terminates TLS and logs inner credentials (required for PEAP/MSCHAPv2)
 - **hashcat** with GPU drivers — for offline cracking of captured hashes
-- **hcxpcapngtool** or **wpawolf** — for extracting EAP-MD5 and LEAP hashes from passive captures
+- **[hcxpcapngtool](https://github.com/ZerBea/hcxtools)** or **wpawolf** — for extracting EAP-MD5 and LEAP hashes from passive captures
 - A wordlist (e.g., `rockyou.txt` at `/usr/share/wordlists/rockyou.txt` on Kali)
 
 ## EAP Methods
