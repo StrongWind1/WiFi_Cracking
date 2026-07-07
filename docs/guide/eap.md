@@ -1,13 +1,34 @@
-# EAP credential capture and cracking
+# WPA-Enterprise (EAP) Attacks
 
-Enterprise WiFi (WPA2-Enterprise / WPA3-Enterprise) authenticates users through a RADIUS server using the Extensible Authentication Protocol (EAP). Unlike WPA-Personal, the password never touches the WPA handshake itself — it is exchanged inside an EAP method, usually wrapped in a TLS tunnel. Capturing the 4-way handshake from an enterprise network gives you nothing crackable. Instead, you capture the inner EAP credentials, either passively (if the EAP method has no encryption) or by running a rogue AP that terminates the TLS tunnel and exposes the inner exchange.
+## What is WPA-Enterprise?
+
+WPA-Enterprise (also called WPA2-Enterprise or WPA3-Enterprise) replaces the shared passphrase of WPA-Personal with per-user authentication through a RADIUS server. The key difference: **the user's password never touches the WPA 4-way handshake**. Instead, credentials are exchanged inside an EAP (Extensible Authentication Protocol) method, usually wrapped in a TLS tunnel between the client and the RADIUS server. Capturing the WPA handshake from an enterprise network gives you nothing crackable.
+
+To attack enterprise WiFi, you capture the **inner EAP credentials** — either passively (if the EAP method has no encryption) or by running a rogue AP that terminates the TLS tunnel and exposes the inner exchange.
+
+## Key terms
+
+| Acronym | Full name | What it is |
+|---|---|---|
+| **EAP** | Extensible Authentication Protocol | Framework for carrying authentication methods inside 802.1X. Defined in RFC 3748. |
+| **PEAP** | Protected EAP | Wraps an inner EAP method (usually MSCHAPv2) inside a TLS tunnel. Most common enterprise WiFi method. |
+| **EAP-TTLS** | EAP Tunneled TLS | Similar to PEAP — TLS outer tunnel, inner method can be MSCHAPv2, PAP, CHAP, or others. |
+| **MSCHAPv2** | Microsoft Challenge-Handshake Authentication Protocol v2 | Password-based challenge/response used inside PEAP or EAP-TTLS. DES-based — fast to crack. |
+| **EAP-TLS** | EAP Transport Layer Security | Certificate-based mutual authentication. No password transmitted. |
+| **EAP-MD5** | EAP with MD5-Challenge | Simple challenge/response with no encryption. Sends hash in cleartext. |
+| **LEAP** | Lightweight EAP | Cisco-proprietary method using MS-CHAPv1. No encryption. Deprecated. |
+| **EAP-GTC** | EAP Generic Token Card | Carries a plaintext token or password inside a TLS tunnel (PEAP or TTLS). |
+| **EAP-FAST** | EAP Flexible Authentication via Secure Tunneling | Cisco replacement for LEAP using PAC (Protected Access Credential) provisioning. |
+| **EAP-PWD** | EAP Password | Dragonfly PAKE (same as WPA3-SAE). No crackable material exposed. |
+| **RADIUS** | Remote Authentication Dial-In User Service | The backend server that validates credentials. The AP proxies EAP between client and RADIUS. |
+| **802.1X** | IEEE 802.1X Port-Based Network Access Control | The standard that connects EAP to WiFi. Defines the Authenticator (AP), Supplicant (client), and Authentication Server (RADIUS) roles. |
 
 ## What you need
 
-- A Linux system with a WiFi adapter (monitor mode is helpful for passive capture but not required for rogue AP setups)
+- A Linux system with a WiFi adapter (monitor mode helpful for passive capture but not required for rogue AP)
 - **hostapd-mana** — rogue AP that terminates TLS and logs inner credentials (required for PEAP/MSCHAPv2)
 - **hashcat** with GPU drivers — for offline cracking of captured hashes
-- **hcxpcapngtool** — for extracting EAP-MD5 and LEAP hashes from passive captures
+- **hcxpcapngtool** or **wpawolf** — for extracting EAP-MD5 and LEAP hashes from passive captures
 - A wordlist (e.g., `rockyou.txt` at `/usr/share/wordlists/rockyou.txt` on Kali)
 
 ## EAP Methods

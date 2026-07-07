@@ -28,11 +28,11 @@ Three end-to-end workflows for WiFi security testing — from capture to cracked
 
     [:octicons-arrow-right-24: WPA/WPA2 Cracking Guide](wpa.md)
 
-- :material-badge-account: **EAP Credential Capture**
+- :material-badge-account: **WPA-Enterprise (EAP)**
 
     Capture enterprise credentials via a rogue AP (PEAP/MSCHAPv2) or passive sniffing (EAP-MD5, LEAP). Crack with hashcat mode 5500 or 4800.
 
-    [:octicons-arrow-right-24: EAP Cracking Guide](eap.md)
+    [:octicons-arrow-right-24: WPA-Enterprise Guide](eap.md)
 
 </div>
 

@@ -92,7 +92,7 @@ nav:
     - guide/index.md
     - WEP Cracking: guide/wep.md
     - WPA/WPA2 Cracking: guide/wpa.md
-    - EAP Credential Capture: guide/eap.md
+    - WPA-Enterprise (EAP): guide/eap.md
   - Reference:
     - Protocol:
       - protocol/index.md
