@@ -9,16 +9,16 @@ Cisco officially deprecated LEAP and recommends migrating to EAP-FAST or PEAP.
 
 ## LEAP Authentication Flow
 
-LEAP performs a two-way challenge/response — the server challenges the client,
+LEAP performs a two-way challenge/response: the server challenges the client,
 and then the client challenges the server with the same NTHash construction:
 
 ```
-AP → STA:  LEAP Challenge (AP Challenge — 8 bytes)
-STA → AP:  LEAP Response (Peer Response — 24 bytes)
+AP → STA:  LEAP Challenge (AP Challenge, 8 bytes)
+STA → AP:  LEAP Response (Peer Response, 24 bytes)
            Username
 
-STA → AP:  LEAP Challenge (Peer Challenge — 8 bytes)
-AP → STA:  LEAP Response (AP Response — 24 bytes)
+STA → AP:  LEAP Challenge (Peer Challenge, 8 bytes)
+AP → STA:  LEAP Response (AP Response, 24 bytes)
 
 AP → STA:  EAP-Success
 ```
@@ -43,14 +43,14 @@ then verify against the NTHash.
 
 ## Why LEAP Is Deprecated
 
-1. **No TLS tunnel** — challenge and response are transmitted in cleartext.
+1. **No TLS tunnel**: challenge and response are transmitted in cleartext.
    Passive sniffing captures everything needed for offline cracking.
-2. **MS-CHAPv1 weakness** — same DES-based construction as MSCHAPv2 without
+2. **MS-CHAPv1 weakness**: same DES-based construction as MSCHAPv2 without
    the peer challenge. The `asleap` tool (2003, Joshua Wright) demonstrated
    real-time practical cracking.
-3. **Same NT hash derivation** — cracking LEAP yields the Windows NTHash,
+3. **Same NT hash derivation**: cracking LEAP yields the Windows NTHash,
    usable for pass-the-hash attacks.
-4. **Mutual authentication is illusory** — both sides use the same weak
+4. **Mutual authentication is illusory**: both sides use the same weak
    construction. The "mutual" verification does not prevent an active attacker
    who can precompute the AP's response for any guessed password.
 
@@ -93,7 +93,7 @@ hashcat -m 5500 leap.hashes wordlist.txt
 ```
 
 Mode 5500 is GPU-accelerated against DES. Modern GPUs achieve billions of
-candidates per second. LEAP passwords are typically domain credentials —
+candidates per second. LEAP passwords are typically domain credentials,
 a targeted dictionary attack against common corporate passwords is highly
 effective.
 

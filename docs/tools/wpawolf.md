@@ -9,7 +9,7 @@ wpawolf addresses several architectural limitations of hcxpcapngtool:
 | Behaviour | hcxpcapngtool | wpawolf |
 |---|---|---|
 | Pairing strategy | Stream-pairs as frames arrive | Collect-then-pair (reads everything, then pairs) |
-| EAPOL frame size ceiling | 255 bytes (`EAPOL_AUTHLEN_OLD_MAX`) | No size gate — emits every valid EAPOL-Key frame |
+| EAPOL frame size ceiling | 255 bytes (`EAPOL_AUTHLEN_OLD_MAX`) | No size gate, emits every valid EAPOL-Key frame |
 | Per-(AP, STA) message buffer | Shared 64-entry circular buffer | `HashMap<(AP, STA), Vec<Message>>`, no eviction |
 | WDS / 4-address relay frames | Skipped unless `--all` | Always processed |
 | State across input files | Reset between files | Carried across files (cross-file pairing) |
@@ -28,14 +28,14 @@ The collect-then-pair architecture means wpawolf cannot miss a valid pair regard
 | `--22000-out FILE` | Non-FT PSK hashes | 22000 | `WPA*01*` (PMKID), `WPA*02*` (EAPOL) |
 | `--37100-out FILE` | FT-PSK hashes | 37100 | `WPA*03*` (FT PMKID), `WPA*04*` (FT EAPOL) |
 | `-o FILE` | All hashes, per-AKM 11-type format | proposed 22002/22003 | `WPA*01*` through `WPA*11*` |
-| `--wpa1-out FILE` | WPA1-PSK only | — | `WPA*01*` |
-| `--wpa2-out FILE` | WPA2-PSK only | — | `WPA*02*`, `WPA*03*` |
-| `--psk-sha256-out FILE` | PSK-SHA256 only | — | `WPA*04*`, `WPA*05*` |
-| `--ft-out FILE` | FT-PSK only | — | `WPA*06*`, `WPA*07*` |
-| `--psk-sha384-out FILE` | PSK-SHA384 only | — | `WPA*08*`, `WPA*09*` |
-| `--ft-psk-sha384-out FILE` | FT-PSK-SHA384 only | — | `WPA*10*`, `WPA*11*` |
+| `--wpa1-out FILE` | WPA1-PSK only | N/A | `WPA*01*` |
+| `--wpa2-out FILE` | WPA2-PSK only | N/A | `WPA*02*`, `WPA*03*` |
+| `--psk-sha256-out FILE` | PSK-SHA256 only | N/A | `WPA*04*`, `WPA*05*` |
+| `--ft-out FILE` | FT-PSK only | N/A | `WPA*06*`, `WPA*07*` |
+| `--psk-sha384-out FILE` | PSK-SHA384 only | N/A | `WPA*08*`, `WPA*09*` |
+| `--ft-psk-sha384-out FILE` | FT-PSK-SHA384 only | N/A | `WPA*10*`, `WPA*11*` |
 
-The legacy sinks (`--22000-out`, `--37100-out`) produce lines that current hashcat reads. The per-AKM sinks (`-o` and the six per-family flags) use an 11-prefix format that no current hashcat mode reads — proposed modes 22002/22003 are sketched in the wpawolf docs.
+The legacy sinks (`--22000-out`, `--37100-out`) produce lines that current hashcat reads. The per-AKM sinks (`-o` and the six per-family flags) use an 11-prefix format that no current hashcat mode reads; proposed modes 22002/22003 are sketched in the wpawolf docs.
 
 SHA-384 hashes (types 8-11) are deliberately suppressed from the legacy sinks because their 24-byte MIC does not fit the 16-byte `<mic>` field.
 
@@ -64,7 +64,7 @@ wpawolf splits output options into two categories:
 | `--nc-dedup` | off | Fold near-identical-nonce siblings into one survivor |
 | `--collapse-message-pair` | off | Drop message-pair byte from dedup identity |
 
-**Filter** options can drop crackable hashes — use with caution:
+**Filter** options can drop crackable hashes; use with caution:
 
 | Flag | Default | Effect |
 |---|---|---|
@@ -116,6 +116,6 @@ Requires a stable Rust toolchain.
 ## Spec References
 
 - Project: [github.com/StrongWind1/WPAWolf](https://github.com/StrongWind1/WPAWolf)
-- Architecture: [ARCHITECTURE.md](https://github.com/StrongWind1/WPAWolf/blob/main/ARCHITECTURE.md) — 5-phase pipeline, critical invariants, 20 PMKID sites
-- Hash formats: [HASHCAT-CURRENT-FORMATS.md](https://github.com/StrongWind1/WPAWolf/blob/main/HASHCAT-CURRENT-FORMATS.md) — modes 22000/37100 as hashcat reads them today
-- New formats: [HASHCAT-NEW-FORMATS.md](https://github.com/StrongWind1/WPAWolf/blob/main/HASHCAT-NEW-FORMATS.md) — the 11-type per-AKM classification
+- Architecture: [ARCHITECTURE.md](https://github.com/StrongWind1/WPAWolf/blob/main/ARCHITECTURE.md): 5-phase pipeline, critical invariants, 20 PMKID sites
+- Hash formats: [HASHCAT-CURRENT-FORMATS.md](https://github.com/StrongWind1/WPAWolf/blob/main/HASHCAT-CURRENT-FORMATS.md): modes 22000/37100 as hashcat reads them today
+- New formats: [HASHCAT-NEW-FORMATS.md](https://github.com/StrongWind1/WPAWolf/blob/main/HASHCAT-NEW-FORMATS.md): the 11-type per-AKM classification

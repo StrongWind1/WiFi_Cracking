@@ -11,8 +11,8 @@ Every WiFi security scheme falls into one of five categories based on how the us
 | Category | How it works | Offline crackable? |
 |---|---|---|
 | **WEP** | Static shared key, RC4 encryption | Key recovery from traffic (no password cracking) |
-| **Password (PBKDF2)** | Passphrase → PBKDF2 → PMK; 4-way handshake exposes MIC/PMKID | **Yes** — dictionary/brute-force against PBKDF2 |
-| **Password (SAE)** | Passphrase used in Dragonfly PAKE; no crackable material exposed | No — online-only, rate-limited |
+| **Password (PBKDF2)** | Passphrase → PBKDF2 → PMK; 4-way handshake exposes MIC/PMKID | **Yes**, dictionary/brute-force against PBKDF2 |
+| **Password (SAE)** | Passphrase used in Dragonfly PAKE; no crackable material exposed | No, online-only, rate-limited |
 | **EAP (802.1X)** | Credentials verified by RADIUS server via EAP method | Depends on EAP inner method |
 | **Other** | No password (OWE), peer-to-peer (TDLS), or pre-association (PASN) | No |
 
@@ -24,9 +24,9 @@ Every WiFi security scheme falls into one of five categories based on how the us
 |---|---|---|---|
 | WEP-40 / WEP-104 | RC4 with 24-bit IV | PTW key recovery (~40K ARP frames) | [WEPWolf](https://github.com/StrongWind1/WEPWolf) / [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) |
 
-### Password — PBKDF2 (offline crackable)
+### Password: PBKDF2 (offline crackable)
 
-All six PSK families derive the PMK from a passphrase via PBKDF2-HMAC-SHA1 (4096 iterations, 256-bit output). This is the same PBKDF2 call regardless of AKM — the "SHA-256" and "SHA-384" in the AKM names refer to the post-PMK key hierarchy (KDF, MIC algorithms), not the password hashing step. Extract handshakes from pcap captures with [WPAWolf](https://github.com/StrongWind1/WPAWolf) and crack with hashcat.
+All six PSK families derive the PMK from a passphrase via PBKDF2-HMAC-SHA1 (4096 iterations, 256-bit output). This is the same PBKDF2 call regardless of AKM. The "SHA-256" and "SHA-384" in the AKM names refer to the post-PMK key hierarchy (KDF, MIC algorithms), not the password hashing step. Extract handshakes from pcap captures with [WPAWolf](https://github.com/StrongWind1/WPAWolf) and crack with hashcat.
 
 | AKM | Name | Variant | hashcat mode | Standard |
 |-----|------|---------|-------------|----------|
@@ -37,7 +37,7 @@ All six PSK families derive the PMK from a passphrase via PBKDF2-HMAC-SHA1 (4096
 | 19 | FT-PSK-SHA384 | FT with SHA-384 key hierarchy | none | 802.11-2020 |
 | 20 | PSK-SHA384 | SHA-384 key hierarchy with GCMP-256 | none | 802.11-2020 |
 
-### Password — SAE (not offline crackable)
+### Password: SAE (not offline crackable)
 
 These AKMs use the same passphrase but negotiate it via Dragonfly PAKE. The handshake exposes no material that can be cracked offline.
 
@@ -48,7 +48,7 @@ These AKMs use the same passphrase but negotiate it via Dragonfly PAKE. The hand
 | 24 | SAE (group-dependent) | H2E only | 802.11-2024 |
 | 25 | FT-SAE (group-dependent) | H2E + Fast Transition | 802.11-2024 |
 
-### EAP — Enterprise (802.1X / FILS)
+### EAP: Enterprise (802.1X / FILS)
 
 Authentication delegated to a RADIUS server. PMK derived from EAP Master Session Key, not a passphrase. Whether credentials are recoverable depends on the EAP inner method (e.g., PEAP/MSCHAPv2 → mode 5500; EAP-MD5 → mode 4800; EAP-TLS → not crackable).
 
@@ -84,16 +84,16 @@ Authentication delegated to a RADIUS server. PMK derived from EAP Master Session
 
     | AKM | KCK | KEK | TK (CCMP) | TK (GCMP-256) |
     |-----|-----|-----|-----------|---------------|
-    | 1, 2 | 128 | 128 | 128 | — |
-    | 3, 4, 5, 6 | 128 | 128 | 128 | — |
-    | 8, 9 (SAE) | 128 | 128 | 128 | — |
-    | 11 (Suite B-128) | 128 | 128 | 128 | — |
-    | 12, 13 (Suite B-192) | 192 | 256 | — | 256 |
-    | 14, 16 (FILS, SHA-256) | 0 (ICK=256) | 256 | 128 | — |
+    | 1, 2 | 128 | 128 | 128 | N/A |
+    | 3, 4, 5, 6 | 128 | 128 | 128 | N/A |
+    | 8, 9 (SAE) | 128 | 128 | 128 | N/A |
+    | 11 (Suite B-128) | 128 | 128 | 128 | N/A |
+    | 12, 13 (Suite B-192) | 192 | 256 | N/A | 256 |
+    | 14, 16 (FILS, SHA-256) | 0 (ICK=256) | 256 | 128 | N/A |
     | 15, 17 (FILS, SHA-384) | 0 (ICK=384) | 512 | 256 | 256 |
-    | 19, 20 | 192 | 256 | — | 256 |
-    | 22, 23 | 192 | 256 | — | 256 |
-    | 24, 25 | group-dependent | group-dependent | — | — |
+    | 19, 20 | 192 | 256 | N/A | 256 |
+    | 22, 23 | 192 | 256 | N/A | 256 |
+    | 24, 25 | group-dependent | group-dependent | N/A | N/A |
 
 === "Algorithms"
 
@@ -113,10 +113,10 @@ Authentication delegated to a RADIUS server. PMK derived from EAP Master Session
 
 ## Deep Dives
 
-- [PSK Family (AKM 2, 6, 20)](psk-family.md) — PBKDF2 password-based, offline crackable
-- [FT-PSK Family (AKM 4, 19)](ft-psk-family.md) — Fast Transition variants
-- [SAE Family (AKM 8, 9, 24, 25)](sae-family.md) — Dragonfly PAKE, not offline crackable
-- [Enterprise Family (AKM 1, 3, 5, 11–13, 22, 23)](enterprise-family.md) — 802.1X / RADIUS
-- [FILS Family (AKM 14–17)](fils-family.md) — Fast Initial Link Setup
-- [Other AKMs (OWE, TDLS, PASN)](other-family.md) — Opportunistic encryption, peer-to-peer, pre-association
-- [Security Matrix](security-matrix.md) — per-AKM security posture and attack status
+- [PSK Family (AKM 2, 6, 20)](psk-family.md): PBKDF2 password-based, offline crackable
+- [FT-PSK Family (AKM 4, 19)](ft-psk-family.md): Fast Transition variants
+- [SAE Family (AKM 8, 9, 24, 25)](sae-family.md): Dragonfly PAKE, not offline crackable
+- [Enterprise Family (AKM 1, 3, 5, 11–13, 22, 23)](enterprise-family.md): 802.1X / RADIUS
+- [FILS Family (AKM 14–17)](fils-family.md): Fast Initial Link Setup
+- [Other AKMs (OWE, TDLS, PASN)](other-family.md): Opportunistic encryption, peer-to-peer, pre-association
+- [Security Matrix](security-matrix.md): per-AKM security posture and attack status

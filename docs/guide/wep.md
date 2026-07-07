@@ -1,16 +1,16 @@
 # Cracking WEP
 
-WEP (Wired Equivalent Privacy) encrypts each 802.11 frame with RC4, keyed by a static secret concatenated with a 24-bit initialization vector sent in the clear. The 24-bit IV space is tiny -- it exhausts within hours on a busy network -- and the RC4 key schedule leaks key bytes through predictable biases. The result: given enough captured frames, the key falls out statistically, no wordlist needed. See the [WEP reference](../wep/index.md) for the full cryptographic breakdown.
+WEP (Wired Equivalent Privacy) encrypts each 802.11 frame with RC4, keyed by a static secret concatenated with a 24-bit initialization vector sent in the clear. The 24-bit IV space is tiny: it exhausts within hours on a busy network, and the RC4 key schedule leaks key bytes through predictable biases. The result: given enough captured frames, the key falls out statistically, no wordlist needed. See the [WEP reference](../wep/index.md) for the full cryptographic breakdown.
 
 ## What you need
 
 - **A capture file** containing WEP-encrypted traffic (`.pcap`, `.pcapng`, or `.gz`). You can capture one yourself with `airodump-ng` (Step 1 below) or work with captures you already have.
-- **[WEPWolf](https://github.com/StrongWind1/WEPWolf)** -- the primary cracking tool. Download a prebuilt binary from [GitHub Releases](https://github.com/StrongWind1/WEPWolf/releases/latest) or build from source (`git clone` + `make release`).
-- **[aircrack-ng](https://github.com/aircrack-ng/aircrack-ng)** (optional) -- needed only for active radio attacks like packet injection and ARP replay. Install with `sudo apt install aircrack-ng`.
+- **[WEPWolf](https://github.com/StrongWind1/WEPWolf)** is the primary cracking tool. Download a prebuilt binary from [GitHub Releases](https://github.com/StrongWind1/WEPWolf/releases/latest) or build from source (`git clone` + `make release`).
+- **[aircrack-ng](https://github.com/aircrack-ng/aircrack-ng)** (optional): needed only for active radio attacks like packet injection and ARP replay. Install with `sudo apt install aircrack-ng`.
 
-## Step 1 -- Capture WEP traffic
+## Step 1: Capture WEP traffic
 
-WEPWolf is passive and offline -- it works on capture files you already have on disk, never touches a radio. If you need to generate a capture, use `airodump-ng`:
+WEPWolf is passive and offline. It works on capture files you already have on disk, never touches a radio. If you need to generate a capture, use `airodump-ng`:
 
 ```bash
 # Enable monitor mode
@@ -24,7 +24,7 @@ sudo airodump-ng wlan0mon
 sudo airodump-ng -c <channel> --bssid <BSSID> -w wep_capture wlan0mon
 ```
 
-Watch the `#Data` column -- that is your unique IV count. PTW typically needs **40,000+ unique IVs** for WEP-104 (fewer for WEP-40). If traffic is slow, generate IVs with ARP replay injection:
+Watch the `#Data` column. That is your unique IV count. PTW typically needs **40,000+ unique IVs** for WEP-104 (fewer for WEP-40). If traffic is slow, generate IVs with ARP replay injection:
 
 ```bash
 # Fake-authenticate with the AP first
@@ -36,7 +36,7 @@ sudo aireplay-ng -3 -b <BSSID> -h <your_mac> wlan0mon
 
 Once `#Data` passes ~40K, you have enough. The capture file (`wep_capture-01.cap`) is ready for WEPWolf.
 
-## Step 2 -- Recover the key with WEPWolf
+## Step 2: Recover the key with WEPWolf
 
 ### Basic usage
 
@@ -129,24 +129,24 @@ Both tools implement the same attack family (PTW, KoreK, FMS) with the same uniq
 
 | Capability | WEPWolf | aircrack-ng |
 |------------|---------|-------------|
-| RC4-bias database (Sepehrdad FSE 2013) | Ships it -- recovers WEP-104 from fewer packets | Not included |
+| RC4-bias database (Sepehrdad FSE 2013) | Ships it. Recovers WEP-104 from fewer packets | Not included |
 | Per-key-slot cracking (Key ID 0-3) | Cracks each slot separately; finds keys a pooled vote misses | Pools all key IDs |
 | Directory ingestion | Parallel scan + cross-file IV merging | Single file at a time |
 | IPv6/EAPOL known-plaintext | Reads destination MAC to mine ND and EAPOL headers | IPv4-shaped guess only |
 | Frame carving (`--carve`) | Extracts WEP frames into a re-crackable pcap | Not available |
 | Output formats | Table, TSV, NDJSON, potfile | Table only |
 
-WEPWolf is passive and offline only -- it reads capture files and recovers keys. It does not capture traffic, inject frames, or touch a radio. That is by design: the active tools are the aircrack-ng suite's job.
+WEPWolf is passive and offline only. It reads capture files and recovers keys. It does not capture traffic, inject frames, or touch a radio. That is by design: the active tools are the aircrack-ng suite's job.
 
 ## Alternative: aircrack-ng
 
 Use aircrack-ng when you need active radio attacks that WEPWolf does not perform:
 
-- **ARP replay injection** (`aireplay-ng -3`) -- generate IVs on a quiet network
-- **ChopChop** (`aireplay-ng -4`) -- decrypt a frame byte-by-byte without the key
-- **Fragmentation** (`aireplay-ng -5`) -- recover keystream from a single fragment
-- **Caffe-Latte / Hirte** (`aireplay-ng -6` / `-8`) -- client-side attacks without AP proximity
-- **Deauthentication** (`aireplay-ng -0`) -- force clients to reconnect and generate traffic
+- **ARP replay injection** (`aireplay-ng -3`): generate IVs on a quiet network
+- **ChopChop** (`aireplay-ng -4`): decrypt a frame byte-by-byte without the key
+- **Fragmentation** (`aireplay-ng -5`): recover keystream from a single fragment
+- **Caffe-Latte / Hirte** (`aireplay-ng -6` / `-8`): client-side attacks without AP proximity
+- **Deauthentication** (`aireplay-ng -0`): force clients to reconnect and generate traffic
 
 For passive key recovery from a capture file, aircrack-ng works but is single-file, CPU-only, and lacks the RC4-bias database and per-key-slot cracking.
 
@@ -159,7 +159,7 @@ See the [aircrack-ng WEP workflow](../wep/aircrack-workflow.md) for the full ste
 
 ## Deep dive
 
-- [WEP protocol reference](../wep/index.md) -- IV reuse, CRC-32 linearity, RC4 KSA weakness, attack history
-- [Aircrack-ng WEP workflow](../wep/aircrack-workflow.md) -- full active attack walkthrough with injection
-- [WEPWolf documentation](https://strongwind1.github.io/WEPWolf/) -- complete option reference, output formats, tuning guide
-- [Aircrack-ng suite](../tools/aircrack-suite.md) -- tool reference for the full suite
+- [WEP protocol reference](../wep/index.md): IV reuse, CRC-32 linearity, RC4 KSA weakness, attack history
+- [Aircrack-ng WEP workflow](../wep/aircrack-workflow.md): full active attack walkthrough with injection
+- [WEPWolf documentation](https://strongwind1.github.io/WEPWolf/): complete option reference, output formats, tuning guide
+- [Aircrack-ng suite](../tools/aircrack-suite.md): tool reference for the full suite

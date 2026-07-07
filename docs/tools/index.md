@@ -16,9 +16,9 @@
 
 The general workflow follows three stages:
 
-1. **Capture** -- Acquire raw 802.11 frames containing authentication exchanges.
-2. **Extract** -- Parse captures into hash formats suitable for cracking tools.
-3. **Crack** -- Run extracted hashes through hashcat or aircrack-ng.
+1. **Capture**: Acquire raw 802.11 frames containing authentication exchanges.
+2. **Extract**: Parse captures into hash formats suitable for cracking tools.
+3. **Crack**: Run extracted hashes through hashcat or aircrack-ng.
 
 ```mermaid
 flowchart LR

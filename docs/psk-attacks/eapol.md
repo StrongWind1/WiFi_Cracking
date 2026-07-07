@@ -17,9 +17,9 @@ EAPOL-Key MIC (AKM 2, 4, 6, 19, 20).
 
 To verify a password guess, hashcat needs exactly three things:
 
-1. **The EAPOL frame** — raw M2, M3, or M4 frame with the MIC field zeroed
-2. **The MIC** — extracted from that frame before zeroing
-3. **The external nonce** — the nonce NOT already embedded inside the EAPOL frame
+1. **The EAPOL frame**: raw M2, M3, or M4 frame with the MIC field zeroed
+2. **The MIC**: extracted from that frame before zeroing
+3. **The external nonce**: the nonce NOT already embedded inside the EAPOL frame
 
 The EAPOL frame already contains one nonce at Key Nonce offset (bytes 17–48).
 Hashcat only needs the other nonce supplied externally.
@@ -72,7 +72,7 @@ Total: 2 × 2 × 3 = **12 theoretical combinations**.
 | 11 | M3 | M4 | M3 | N4E3 (twin) |
 | 12 | M3 | M4 | M4 | N3E4 (twin) |
 
-Twins produce identical hash lines — the "unused" nonce source does not affect
+Twins produce identical hash lines. The "unused" nonce source does not affect
 the output because the EAPOL frame already embeds one nonce.
 
 ## Why 12 Collapses to 6
@@ -92,7 +92,7 @@ EAPOL frame (M2, M3, or M4)  ×  External nonce source (2 choices per EAPOL)  = 
 | N1E4 | M4 | SNonce | ANonce | ANonce from M1 |
 | N3E4 | M4 | SNonce | ANonce | ANonce from M3 |
 
-**Challenge vs. Authorized**: N1E2 is the only "challenge" hash — requires
+**Challenge vs. Authorized**: N1E2 is the only "challenge" hash; it requires
 only M1+M2; the client authenticated but the AP never confirmed it. All other
 combos require M3 or M4, or use M3 as the nonce source, meaning the AP
 verified M2's MIC. These are "authorized" hashes.
@@ -113,11 +113,11 @@ flowchart TD
     T12["12 theoretical"] -->|"EAPOL already contains one nonce"| T6
     T6["6 practical N#E# combos"] -->|"ANonce M1==M3, SNonce M2==M4"| T3["3 unique hashes"]
 
-    N1E2["N1E2"] --> HA["Hash A — EAPOL=M2"]
+    N1E2["N1E2"] --> HA["Hash A: EAPOL=M2"]
     N3E2["N3E2"] --> HA
-    N2E3["N2E3"] --> HB["Hash B — EAPOL=M3"]
+    N2E3["N2E3"] --> HB["Hash B: EAPOL=M3"]
     N4E3["N4E3"] --> HB
-    N1E4["N1E4"] --> HC["Hash C — EAPOL=M4"]
+    N1E4["N1E4"] --> HC["Hash C: EAPOL=M4"]
     N3E4["N3E4"] --> HC
 ```
 
@@ -134,7 +134,7 @@ In practice, most captures yield only Hash A and one copy of Hash B (via N2E3).
 1. **Reliability**: M2 SNonce is always populated; M4 nonce is usually zeroed.
 2. **Size**: M2 EAPOL is ~120–140 bytes; M3 can be larger (contains encrypted
    GTK + RSN IE), potentially exceeding EAPOL buffer limits.
-3. **Timing**: M1+M2 are the first two messages — easiest to capture even with
+3. **Timing**: M1+M2 are the first two messages, easiest to capture even with
    packet loss on M3/M4.
 4. **Replay counter**: M1 and M2 share the same replay counter (N), making
    nonce error correction simpler.
@@ -153,7 +153,7 @@ In practice, most captures yield only Hash A and one copy of Hash B (via N2E3).
 ### Reading N#E#
 
 N = external nonce source message, E = EAPOL frame source message.
-N1E2 means "nonce from M1, EAPOL from M2" — hashcat extracts SNonce from
+N1E2 means "nonce from M1, EAPOL from M2"; hashcat extracts SNonce from
 inside M2's EAPOL frame and uses the ANonce from M1 in the NONCE field.
 
 ### Reading old hcx M##E#
@@ -165,9 +165,9 @@ SNonce from M2, EAPOL from M3. Used in hcxtools discussions and source code
 ### Identical Hash Pairs
 
 ```
-N1E2 == N3E2  (same M2 EAPOL, same ANonce value — M1 or M3 both equal)
-N2E3 == N4E3  (same M3 EAPOL, same SNonce value — M2 or M4 both equal)
-N1E4 == N3E4  (same M4 EAPOL, same ANonce value — M1 or M3 both equal)
+N1E2 == N3E2  (same M2 EAPOL, same ANonce value; M1 or M3 both equal)
+N2E3 == N4E3  (same M3 EAPOL, same SNonce value; M2 or M4 both equal)
+N1E4 == N3E4  (same M4 EAPOL, same ANonce value; M1 or M3 both equal)
 ```
 
 ## Higher Bits of Message Pair Byte
@@ -180,7 +180,7 @@ N1E4 == N3E4  (same M4 EAPOL, same ANonce value — M1 or M3 both equal)
 | 6 | `0x40` | BE (big-endian nonce) | AP stores trailing nonce-counter bytes in big-endian order |
 | 7 | `0x80` | NC (nonce-error-correction) | Nonce error correction should be applied |
 
-Bits 5 and 6 (LE/BE) indicate which byte order the AP uses for the counter portion of the ANonce; hashcat uses these to prioritize byte order during nonce error correction. Bit 7 (NC) tells hashcat that nonce error correction should be applied — the extractor sets it for every M1-anchored pair and for pairs where endianness drift is detected or the replay-counter gap deviates from the expected handshake delta.
+Bits 5 and 6 (LE/BE) indicate which byte order the AP uses for the counter portion of the ANonce; hashcat uses these to prioritize byte order during nonce error correction. Bit 7 (NC) tells hashcat that nonce error correction should be applied. The extractor sets it for every M1-anchored pair and for pairs where endianness drift is detected or the replay-counter gap deviates from the expected handshake delta.
 
 **Nonce error correction** compensates for firmware bugs where the ANonce captured in M1 differs from the one used in PTK derivation (the AP's internal counter incremented between derivation and transmission). hashcat adjusts the trailing byte of the nonce by ±N/2 (default N=8, so ±4), trying both little-endian and big-endian byte orders. Controlled by hashcat `--nonce-error-corrections=N`.
 

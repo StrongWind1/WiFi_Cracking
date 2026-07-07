@@ -7,7 +7,7 @@ WiFi attack types. These hash lines are produced by [WPAWolf](https://github.com
 
 ## WPA Hash Line Formats
 
-### Mode 22000 — WPA*01 (PMKID)
+### Mode 22000: WPA*01 (PMKID)
 
 ```
 WPA*01*<PMKID>*<MAC_AP>*<MAC_STA>*<ESSID>***<MP>
@@ -25,7 +25,7 @@ Fields:
 | Fields 7–8 | empty | Unused in type 01 (NONCE, EAPOL) |
 | MP | 2-char hex (1 byte) | message_pair bitmask |
 
-### Mode 22000 — WPA*02 (EAPOL)
+### Mode 22000: WPA*02 (EAPOL)
 
 ```
 WPA*02*<MIC>*<MAC_AP>*<MAC_STA>*<ESSID>*<NONCE>*<EAPOL>*<MP>
@@ -48,7 +48,7 @@ Fields:
     hashcat docs label field 7 as "ANONCE" but this is the external nonce.
     For N2E3/N4E3 combos (EAPOL from M3), the external nonce is the SNonce.
 
-### Mode 22000 — message_pair byte
+### Mode 22000: message_pair byte
 
 Low nibble (bits 0-3) encodes the N#E# combo discriminant; upper bits are flags:
 
@@ -66,14 +66,14 @@ Bit 6: 0x40 = BE (AP nonce-counter byte order: big-endian; used for nonce error 
 Bit 7: 0x80 = NC (nonce-error-correction tolerance was needed to pair)
 ```
 
-### Mode 37100 — WPA*03 (FT PMKID)
+### Mode 37100: WPA*03 (FT PMKID)
 
 ```
 WPA*03*<PMKID>*<MAC_AP>*<MAC_STA>*<ESSID>***<MP>*<MDID>*<R0KHID>*<R1KHID>
          32hex   12hex    12hex    0-64hex  2hex  4hex   2-96hex   12hex
 ```
 
-### Mode 37100 — WPA*04 (FT EAPOL)
+### Mode 37100: WPA*04 (FT EAPOL)
 
 ```
 WPA*04*<MIC>*<MAC_AP>*<MAC_STA>*<ESSID>*<NONCE>*<EAPOL>*<MP>*<MDID>*<R0KHID>*<R1KHID>
@@ -120,7 +120,7 @@ hashcat organizes hashes into salt groups by ESSID. Per password guess:
 1. Compute PBKDF2 once per unique ESSID (expensive)
 2. Test that PMK against every hash sharing that ESSID (cheap, parallel)
 
-Adding more hashes for the same ESSID is nearly free — PBKDF2 dominates.
+Adding more hashes for the same ESSID is nearly free; PBKDF2 dominates.
 
 ### Deduplication
 
@@ -166,7 +166,7 @@ ZerBea's 2018 wpa-sec analysis found real FT-PSK EAPOL lengths:
 
 ## EAP Hash Formats
 
-### Mode 5500 — NetNTLMv1 / MSCHAPv2
+### Mode 5500: NetNTLMv1 / MSCHAPv2
 
 ```
 username::::NT-Response:challenge
@@ -181,7 +181,7 @@ username::::NT-Response:challenge
 
 Challenge = `SHA1(peer_challenge || auth_challenge || username)[0:8]`
 
-### Mode 4800 — iSCSI CHAP / EAP-MD5
+### Mode 4800: iSCSI CHAP / EAP-MD5
 
 ```
 md5_response:identifier:challenge

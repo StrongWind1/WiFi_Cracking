@@ -12,7 +12,7 @@ Offset  Length  Field
 1       1       Packet Type (0x03 = Key)
 2       2       Packet Body Length (big-endian uint16)
 4       1       Descriptor Type (0x02 = RSN, 0xFE = WPA)
-5       2       Key Information (bitfield — see below)
+5       2       Key Information (bitfield, see below)
 7       2       Key Length
 9       8       Key Replay Counter (big-endian uint64)
 17      32      Key Nonce (ANonce or SNonce per message)
@@ -68,7 +68,7 @@ These flag combinations identify each handshake message:
 
 For keyver 1 (TKIP), the 16-byte EAPOL-Key IV carries the RC4 encryption
 parameters for Key Data. For keyver 2 and 3 (CCMP, AES-CMAC), this field
-is always zeroed — Key Data is wrapped with the NIST AES key wrap algorithm
+is always zeroed. Key Data is wrapped with the NIST AES key wrap algorithm
 using the KEK.
 
 ## MIC Computation

@@ -8,7 +8,7 @@ the PMK itself. Defined in IEEE 802.11-2024 §12.7.6.
 
 After authentication (open system, SAE, or 802.1X), both sides hold the same
 PMK. The 4-way handshake exchanges nonces, derives the PTK, and distributes
-the GTK — all authenticated by MICs computed with the KCK portion of the PTK.
+the GTK, all authenticated by MICs computed with the KCK portion of the PTK.
 
 ## Message Flow
 

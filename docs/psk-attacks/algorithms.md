@@ -16,7 +16,7 @@ Extract hashes from pcap captures with [WPAWolf](https://github.com/StrongWind1/
 
 ---
 
-## PBKDF2 — Passphrase to PMK
+## PBKDF2: Passphrase to PMK
 
 The same for all crackable PSK variants:
 
@@ -53,7 +53,7 @@ verify the MIC. Since HMAC-SHA1 produces 160 bits per iteration, only one
 iteration (i=0) is ever computed. The counter byte is always 0x00 in the
 100-byte PKE buffer.
 
-### KDF Internal Structure (AKM 6, 4 — keyver 3)
+### KDF Internal Structure (AKM 6, 4, keyver 3)
 
 ```
 KDF-Hash-Length(K, label, context):
@@ -71,11 +71,11 @@ Length is appended as a 2-byte little-endian integer.
 
 For standard PSK (AKM 2, 6), the PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. Comparison treats each as an unsigned big-endian integer. The smaller value is concatenated first. This ensures both sides derive the same PTK regardless of AP vs. STA role.
 
-**FT-PSK (AKM 4, 19) does not use Min/Max ordering.** The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per IEEE 802.11-2024 §12.7.1.6.5. This is why the APLESS combos (N2E3, N4E3) fail in hashcat mode 37100 — the kernel hardcodes the nonce layout and cannot swap them for M3-anchored pairs.
+**FT-PSK (AKM 4, 19) does not use Min/Max ordering.** The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per IEEE 802.11-2024 §12.7.1.6.5. This is why the APLESS combos (N2E3, N4E3) fail in hashcat mode 37100. The kernel hardcodes the nonce layout and cannot swap them for M3-anchored pairs.
 
 ---
 
-## Standard PSK — AKM 2
+## Standard PSK: AKM 2
 
 ### AKM 2 PMKID
 
@@ -86,7 +86,7 @@ PMKID = HMAC-SHA1-128(PMK, "PMK Name" || MAC_AP || MAC_STA)
 - Hash: HMAC-SHA1, truncated to first 128 bits (16 bytes)
 - Input: "PMK Name" (8 bytes) + AP MAC (6 bytes) + STA MAC (6 bytes) = 20 bytes
 
-### AKM 2 + keyver 1 (TKIP) — EAPOL Attack
+### AKM 2 + keyver 1 (TKIP): EAPOL Attack
 
 ```
 PTK = PRF-512(PMK,
@@ -108,7 +108,7 @@ MIC = HMAC-MD5(KCK, EAPOL_frame_with_MIC_zeroed)
 - Only first 16 bytes of PRF output needed (KCK)
 - MIC: **HMAC-MD5**, full 128-bit output
 
-### AKM 2 + keyver 2 (CCMP) — EAPOL Attack
+### AKM 2 + keyver 2 (CCMP): EAPOL Attack
 
 ```
 PTK = PRF-384(PMK,
@@ -124,7 +124,7 @@ MIC = HMAC-SHA1-128(KCK, EAPOL_frame_with_MIC_zeroed)
 
 ---
 
-## PSK-SHA256 — AKM 6
+## PSK-SHA256: AKM 6
 
 ### AKM 6 PMKID
 
@@ -134,9 +134,9 @@ PMKID = HMAC-SHA256-128(PMK, "PMK Name" || MAC_AP || MAC_STA)
 
 - Hash: **HMAC-SHA256** (not SHA1)
 - Same input format as AKM 2
-- hashcat 22000 aux4 uses SHA1 for all `WPA*01*` lines — silently broken for AKM 6. See [gap table](../reference/gap-table.md).
+- hashcat 22000 aux4 uses SHA1 for all `WPA*01*` lines; silently broken for AKM 6. See [gap table](../reference/gap-table.md).
 
-### AKM 6 + keyver 3 — EAPOL Attack
+### AKM 6 + keyver 3: EAPOL Attack
 
 ```
 PTK = KDF-SHA256-384(PMK,
@@ -157,18 +157,18 @@ MIC = AES-128-CMAC(KCK, EAPOL_frame_with_MIC_zeroed)
 
     !!! note
         For AKM 6, full PTK = 384 bits (KCK 128 + KEK 128 + TK 128). KDF-SHA256
-        produces 256 bits per iteration — two iterations required for the full PTK,
+        produces 256 bits per iteration. Two iterations required for the full PTK,
         but only one needed to extract the 128-bit KCK for MIC verification.
 
 - MIC: **AES-128-CMAC** (not HMAC-based)
 
 ---
 
-## FT-PSK — AKM 4
+## FT-PSK: AKM 4
 
 ### AKM 4 PMKID
 
-The PMKID is not a simple HMAC of the PMK — it uses the FT key hierarchy:
+The PMKID is not a simple HMAC of the PMK. It uses the FT key hierarchy:
 
 ```
 Step A: PMK-R0-Name-salt
@@ -191,7 +191,7 @@ Step C: PMKID
 - All SHA-256 after the initial PBKDF2
 - Requires extra inputs: MDID, R0KH-ID, R1KH-ID
 
-### AKM 4 EAPOL Attack — 3-Step KDF Chain
+### AKM 4 EAPOL Attack: 3-Step KDF Chain
 
 ```
 Step A: PMK-R0 (first 32 bytes)
@@ -208,7 +208,7 @@ Step B: PMK-R1 (first 32 bytes)
       size_LE16(256))
   Take bytes 0–31.
 
-Step C: PTK (48 bytes — requires 2 iterations)
+Step C: PTK (48 bytes, requires 2 iterations)
   iter1 = HMAC-SHA256(PMK-R1,
       counter_LE16(1) || "FT-PTK" ||
       SNonce || ANonce || MAC_AP || STA_MAC ||
@@ -224,7 +224,7 @@ Step D: MIC
   MIC = AES-128-CMAC(KCK, EAPOL_frame_with_MIC_zeroed)
 ```
 
-- **Two KDF iterations mandatory for Step C** — PTK = 384 bits,
+- **Two KDF iterations mandatory for Step C**. PTK = 384 bits,
   KDF-SHA256 produces 256 bits per call: ceil(384/256) = 2 (§12.7.1.6.2)
 - Three chained HMAC-SHA256 KDF calls vs. one PRF call for standard PSK
 - Only keyver 3 (AES-CMAC) is used with AKM 4

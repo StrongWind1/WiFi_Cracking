@@ -1,6 +1,6 @@
 # Security Matrix
 
-Security posture of each AKM suite — known attacks, crackable outputs, and corresponding [hashcat](https://github.com/hashcat/hashcat) modes.
+Security posture of each AKM suite: known attacks, crackable outputs, and corresponding [hashcat](https://github.com/hashcat/hashcat) modes.
 
 ## WiFi Security Timeline
 
@@ -24,33 +24,33 @@ flowchart LR
 
 | AKM | Name | Status | Offline attack? | hashcat mode | Notes |
 |-----|------|--------|----------------|-------------|-------|
-| — | WEP | **Broken** | RC4 key recovery (PTW) | N/A ([WEPWolf](https://github.com/StrongWind1/WEPWolf) / aircrack-ng) | 40K ARP frames → key in seconds |
-| WPA1 | WPA-PSK (TKIP) | Vulnerable | **Yes** — PBKDF2 dict | 22000 (kv1) | Legacy, vendor IE `00:50:F2:01` |
+| N/A | WEP | **Broken** | RC4 key recovery (PTW) | N/A ([WEPWolf](https://github.com/StrongWind1/WEPWolf) / aircrack-ng) | 40K ARP frames → key in seconds |
+| WPA1 | WPA-PSK (TKIP) | Vulnerable | **Yes**, PBKDF2 dict | 22000 (kv1) | Legacy, vendor IE `00:50:F2:01` |
 | 1 | 802.1X (SHA-1) | Secure | No (EAP-dependent) | EAP inner method | PEAP/MSCHAPv2 inner: mode 5500 |
-| 2 | PSK (SHA-1) | Vulnerable | **Yes** — PBKDF2 dict | 22000 (kv2) | Most common WPA2 network |
-| 3 | FT-802.1X (SHA-256) | Secure | No | — | |
-| 4 | FT-PSK (SHA-256) | Vulnerable | **Yes** — EAPOL/PMKID | 37100 (PR pending) | |
-| 5 | 802.1X-SHA256 | Secure | No | — | |
+| 2 | PSK (SHA-1) | Vulnerable | **Yes**, PBKDF2 dict | 22000 (kv2) | Most common WPA2 network |
+| 3 | FT-802.1X (SHA-256) | Secure | No | N/A | |
+| 4 | FT-PSK (SHA-256) | Vulnerable | **Yes**, EAPOL/PMKID | 37100 (PR pending) | |
+| 5 | 802.1X-SHA256 | Secure | No | N/A | |
 | 6 | PSK-SHA256 | Partially vulnerable | EAPOL: yes (kv3) / PMKID: broken | 22000 (EAPOL only) | PMKID aux4 uses SHA1, needs SHA256 |
-| 7 | TDLS | N/A | No | — | Peer-to-peer, niche |
-| 8 | SAE | Secure | No | — | Dragonfly PAKE, no offline attack |
-| 9 | FT-SAE | Secure | No | — | |
-| 10 | APPeerKey | Deprecated | N/A | — | Removed from active standard |
-| 11 | 802.1X Suite B (SHA-256) | Deprecated | No | — | Deprecated per Table 9-190 NOTE 2 |
-| 12 | 802.1X Suite B (SHA-384) | Secure | No | — | 192-bit security level |
-| 13 | FT-802.1X (SHA-384) | Secure | No | — | |
-| 14 | FILS-SHA256 | Secure | No | — | Fast initial link setup |
-| 15 | FILS-SHA384 | Secure | No | — | |
-| 16 | FT-FILS-SHA256 | Secure | No | — | |
-| 17 | FT-FILS-SHA384 | Secure | No | — | |
-| 18 | OWE | Secure | No | — | Unauthenticated DH; no password |
+| 7 | TDLS | N/A | No | N/A | Peer-to-peer, niche |
+| 8 | SAE | Secure | No | N/A | Dragonfly PAKE, no offline attack |
+| 9 | FT-SAE | Secure | No | N/A | |
+| 10 | APPeerKey | Deprecated | N/A | N/A | Removed from active standard |
+| 11 | 802.1X Suite B (SHA-256) | Deprecated | No | N/A | Deprecated per Table 9-190 NOTE 2 |
+| 12 | 802.1X Suite B (SHA-384) | Secure | No | N/A | 192-bit security level |
+| 13 | FT-802.1X (SHA-384) | Secure | No | N/A | |
+| 14 | FILS-SHA256 | Secure | No | N/A | Fast initial link setup |
+| 15 | FILS-SHA384 | Secure | No | N/A | |
+| 16 | FT-FILS-SHA256 | Secure | No | N/A | |
+| 17 | FT-FILS-SHA384 | Secure | No | N/A | |
+| 18 | OWE | Secure | No | N/A | Unauthenticated DH; no password |
 | 19 | FT-PSK (SHA-384) | Vulnerable | **Yes** | none | No hashcat module; SHA-384 24 B MIC unsupported by any mode |
 | 20 | PSK-SHA384 | Vulnerable | **Yes** | none | No hashcat module exists or is planned |
-| 21 | PASN | Secure | No | — | Pre-association security |
-| 22 | FT-802.1X-SHA384 | Secure | No | — | |
-| 23 | 802.1X-SHA384 | Secure | No | — | |
-| 24 | SAE (group-dep.) | Secure | No | — | H2E only |
-| 25 | FT-SAE (group-dep.) | Secure | No | — | H2E only |
+| 21 | PASN | Secure | No | N/A | Pre-association security |
+| 22 | FT-802.1X-SHA384 | Secure | No | N/A | |
+| 23 | 802.1X-SHA384 | Secure | No | N/A | |
+| 24 | SAE (group-dep.) | Secure | No | N/A | H2E only |
+| 25 | FT-SAE (group-dep.) | Secure | No | N/A | H2E only |
 
 ## Protocol Status Notes
 
@@ -59,7 +59,7 @@ flowchart LR
 **WEP** (pre-AKM era): Fundamentally broken due to 24-bit IV space (birthday
 bound at ~5000 frames), CRC-32 linearity enabling bit-flipping, and weak RC4
 key scheduling that leaks key bytes. PTW attack recovers 104-bit WEP keys
-from ~40,000 ARP frames — aircrack-ng default. FMS and KoreK are historical
+from ~40,000 ARP frames; aircrack-ng default. FMS and KoreK are historical
 predecessors requiring more frames.
 
 ### Deprecated
@@ -75,7 +75,7 @@ AKMs **2, 4, 6, 19, 20** all derive the PMK from a passphrase via PBKDF2.
 The 4-way handshake exposes enough material (nonces, MIC, EAPOL frame) to
 perform offline verification of password candidates. Extract handshakes with
 [WPAWolf](https://github.com/StrongWind1/WPAWolf) and crack with hashcat.
-The computational cost is dominated by PBKDF2 — ~8192 HMAC-SHA1 calls per
+The computational cost is dominated by PBKDF2; ~8192 HMAC-SHA1 calls per
 candidate. Modern GPUs achieve ~500K–2M PMK/s on dedicated hardware.
 
 **AKM 6 PMKID**: The hashcat 22000 aux4 routine uses HMAC-SHA1 for all
@@ -98,7 +98,7 @@ rogue AP but cracking requires MSCHAPv2 hash format (mode 5500), not the
 WPA handshake.
 
 **OWE (AKM 18)**: No password. Protection is against passive eavesdropping
-only — a rogue AP can still intercept by acting as the legitimate AP.
+only; a rogue AP can still intercept by acting as the legitimate AP.
 
 **FILS (AKM 14–17)**: Credentials are EAP-based (same as Enterprise). No
 offline attack against the key material itself.

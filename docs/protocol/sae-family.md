@@ -53,13 +53,13 @@ Diffie-Hellman problem in the cryptographic group. Every password test requires
 a new Commit exchange with the AP (online rate-limited attack only).
 
 Contrast with PSK: the EAPOL-Key frames expose ANonce, SNonce, MIC, and the
-raw EAPOL frame — everything needed to verify a password guess offline.
+raw EAPOL frame; everything needed to verify a password guess offline.
 
 ## Hash-to-Element vs Hunting-and-Pecking
 
 Two methods exist for deriving the PWE (Password Element) from the passphrase:
 
-**Hunting-and-Pecking (H&P)** — original method, now deprecated:
+**Hunting-and-Pecking (H&P)**: original method, now deprecated:
 
 1. Compute `seed = HMAC-SHA256(max(MAC_AP, MAC_STA) || min(...), password || counter)`
 2. Map `seed` into the group via a hash-to-field function
@@ -69,7 +69,7 @@ Two methods exist for deriving the PWE (Password Element) from the passphrase:
 The number of iterations depends on the input, creating a timing side channel
 that leaks bits of information about the password (Dragonblood attack, CVE-2019-9494).
 
-**Hash-to-Element (H2E)** — deterministic replacement (IEEE 802.11-2021):
+**Hash-to-Element (H2E)**: deterministic replacement (IEEE 802.11-2021):
 
 1. Derive a PAKE password seed (PPS) using HKDF-Extract
 2. Map PPS directly to a group element using a constant-time hash-to-curve

@@ -19,17 +19,17 @@ Educational:        M{e}(embedded_nonce+MIC) + M{n}     e.g. M2(SNonce+MIC) + M1
 
 | Option | Default | What it controls |
 |--------|---------|-----------------|
-| `-o FILE` | — | Output file for mode 22000 hashes (PMKID + EAPOL) |
-| `-f FILE` | — | Output file for mode 37100 FT-PSK hashes |
+| `-o FILE` | N/A | Output file for mode 22000 hashes (PMKID + EAPOL) |
+| `-f FILE` | N/A | Output file for mode 37100 FT-PSK hashes |
 | `--all` | off | Master switch: disables dedup, adds N2E3/N4E3, includes relayed/zeroed-PSK/bad-FCS frames |
 | `--nonce-error-corrections=N` | 0 | Max replay counter gap between paired messages. 0 = exact match only |
 | `--eapoltimeout=N` | 5000 ms | Max time gap between paired messages |
 | `--ignore-ie` | off | Bypass AKM checks (process non-PSK APs, PSK-SHA256 mismatches) |
-| `--eapmd5=FILE` | — | Output EAP-MD5 hashes (hashcat mode 4800) |
-| `--eapleap=FILE` | — | Output Cisco LEAP hashes (hashcat mode 5500) |
-| `--eapmschapv2=FILE` | — | Output MSCHAPv2 hashes from PEAP/EAP-TTLS (hashcat mode 5500) |
-| `-E FILE` | — | Extract ESSIDs into a wordlist file |
-| `-I FILE` | — | Extract identities (EAP usernames) into a wordlist file |
+| `--eapmd5=FILE` | N/A | Output EAP-MD5 hashes (hashcat mode 4800) |
+| `--eapleap=FILE` | N/A | Output Cisco LEAP hashes (hashcat mode 5500) |
+| `--eapmschapv2=FILE` | N/A | Output MSCHAPv2 hashes from PEAP/EAP-TTLS (hashcat mode 5500) |
+| `-E FILE` | N/A | Extract ESSIDs into a wordlist file |
+| `-I FILE` | N/A | Extract identities (EAP usernames) into a wordlist file |
 
 ## What Default Mode Does
 
@@ -43,7 +43,7 @@ With no flags, hcxpcapngtool:
 6. **Skips zeroed PSK/PMK**: hashes that verify against empty passphrase are dropped
 7. **Checks AKM from beacons**: only PSK/PSK-SHA256/FT-PSK APs produce hashes
 8. **Enforces EAPOL size ceiling**: frames exceeding 255 bytes at parse are silently dropped. FT-PSK M2 frames routinely reach 260–510 B (RSN IE + MDE + FTE in Key Data) and can hit this limit
-9. **Uses a shared 64-entry circular buffer**: all EAPOL messages share one ring buffer. When the 65th message arrives, the oldest is silently dropped — busy captures with many interleaved handshakes lose messages
+9. **Uses a shared 64-entry circular buffer**: all EAPOL messages share one ring buffer. When the 65th message arrives, the oldest is silently dropped. Busy captures with many interleaved handshakes lose messages
 10. **Resets state between files**: when processing multiple input files, EAPOL messages from one file cannot pair with messages from another. Each file is processed independently
 
 ## What `--all` Enables
@@ -122,4 +122,4 @@ awk -F'*' '!seen[$3,$4,$5,$6,$7,$8]++' hashes.22000 > unique.22000
 
 !!! warning "Do not use wpaclean"
     wpaclean strips frames that hcxpcapngtool needs. Do not pre-process
-    captures with it. Do not filter during capture — record everything.
+    captures with it. Do not filter during capture. Record everything.

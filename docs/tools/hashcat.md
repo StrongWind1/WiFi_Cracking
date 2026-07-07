@@ -1,6 +1,6 @@
 # hashcat
 
-[hashcat](https://github.com/hashcat/hashcat) -- GPU-accelerated password recovery tool. For WiFi attacks, it operates on hash lines produced by [WPAWolf](https://github.com/StrongWind1/WPAWolf) or hcxpcapngtool from pcap captures.
+[hashcat](https://github.com/hashcat/hashcat) is a GPU-accelerated password recovery tool. For WiFi attacks, it operates on hash lines produced by [WPAWolf](https://github.com/StrongWind1/WPAWolf) or hcxpcapngtool from pcap captures.
 
 ## WiFi-Related Modes
 
@@ -14,7 +14,7 @@
 
 **Mode 22001** uses the same `WPA*01*`/`WPA*02*` format as 22000. The only
 difference: candidates are 64-hex-char raw PMKs. PBKDF2 is skipped entirely
-(iterations = 0) — orders of magnitude faster. Use with pre-computed PMK tables
+(iterations = 0), orders of magnitude faster. Use with pre-computed PMK tables
 or PMKs extracted from device memory.
 
 ## Deprecated Modes
@@ -97,16 +97,16 @@ hcxhashtool -i hashes.22000 --mac-ap=112233445566 -o target_ap.22000
 
 The PBKDF2 step dominates everything. Cracking speed is effectively identical
 for keyver 1, 2, and 3. Mode 22001 eliminates PBKDF2 entirely and is limited
-only by PTK + MIC speed — typically 100–1000× faster than mode 22000.
+only by PTK + MIC speed, typically 100–1000× faster than mode 22000.
 
 Mode 5500 (MSCHAPv2/LEAP) uses DES internally and is extremely fast by
-comparison — billions of candidates per second on modern GPUs. Mode 4800
+comparison, billions of candidates per second on modern GPUs. Mode 4800
 (EAP-MD5) is similarly fast.
 
 ## PMKID + EAPOL in One Session
 
 PMKID (`WPA*01*`) and EAPOL (`WPA*02*`) hashes for the same SSID share the
-PBKDF2 salt. Put both in the same file — one PBKDF2 per guess covers both:
+PBKDF2 salt. Put both in the same file; one PBKDF2 per guess covers both:
 
 ```
 WPA*01*<pmkid>*<mac_ap>*<mac_sta1>*<essid>***<mp>

@@ -135,6 +135,6 @@ The key is shown in hex. For ASCII WEP keys, decode the hex bytes to ASCII.
 ## Notes
 
 - The capture file (`capture*.cap`) accumulates all frames. aircrack-ng reads
-  it while airodump-ng is still writing — no need to stop capture first.
+  it while airodump-ng is still writing; no need to stop capture first.
 - The `#Data` counter in airodump-ng tracks IV count, not raw frame count.
-- Do not run `wpaclean` on WEP captures — it removes needed frames.
+- Do not run `wpaclean` on WEP captures; it removes needed frames.

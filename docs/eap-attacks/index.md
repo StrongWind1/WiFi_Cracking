@@ -31,7 +31,7 @@ For PEAP/EAP-TTLS: clients must validate the server certificate. Misconfigured
 clients that accept any certificate are the primary target. Correctly configured
 clients will fail at the certificate validation step and not expose credentials.
 
-For LEAP and EAP-MD5: no TLS tunnel — credentials are captured by passive
+For LEAP and EAP-MD5: no TLS tunnel; credentials are captured by passive
 sniffing or MitM.
 
 ## EAP Type Taxonomy
@@ -75,7 +75,7 @@ material:
 | EAP-MD5 | MD5(ID \|\| password \|\| challenge) transmitted in cleartext | 4800 |
 | LEAP (MS-CHAPv1) | DES-based response transmitted in cleartext | 5500 |
 
-EAP-TLS exposes only certificates — no shared secret or password hash is transmitted.
+EAP-TLS exposes only certificates; no shared secret or password hash is transmitted.
 An attacker can observe that authentication succeeded but gains nothing crackable.
 
 ## Tool Chain

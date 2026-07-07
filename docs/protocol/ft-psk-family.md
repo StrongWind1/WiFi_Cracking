@@ -89,7 +89,7 @@ PTK = (iter1 || iter2)[0:48]          -- first 384 bits of 512
 !!! warning "Two iterations are mandatory"
     PTK length = 384 bits; KDF-SHA-256 produces 256 bits per iteration.
     `ceil(384/256) = 2`. Both HMAC-SHA256 calls are required (§12.7.1.6.2).
-    A single HMAC call produces only 32 bytes — insufficient for the full PTK.
+    A single HMAC call produces only 32 bytes, insufficient for the full PTK.
 
 ## MIC Computation
 
@@ -112,7 +112,7 @@ Step B: PMK-R0-Name = SHA256("FT-R0N" || PMK-R0-Name-salt)[0:16]
 Step C: PMKID = SHA256("FT-R1N" || PMK-R0-Name || R1KH-ID || S1KH-ID)[0:16]
 ```
 
-Requires: SSID, MDID, R0KH-ID, R1KH-ID — captured from MDE/FTE IEs.
+Requires: SSID, MDID, R0KH-ID, R1KH-ID, captured from MDE/FTE IEs.
 
 ## MDE and FTE Information Elements
 

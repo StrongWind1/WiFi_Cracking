@@ -2,7 +2,7 @@
 
 [Aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) is an open-source suite for 802.11 wireless security assessment. Covers monitor mode setup, packet capture, traffic injection, and key recovery for WEP and WPA.
 
-For **offline WEP key recovery**, prefer [WEPWolf](https://github.com/StrongWind1/WEPWolf) — it runs PTW, KoreK, FMS, and RC4-bias attacks from a single command with per-key-slot cracking and parallel directory ingestion. Use the aircrack-ng suite for **active radio attacks** (injection, replay, deauth) and for capturing traffic with `airodump-ng`. See the [WEP cracking guide](../guide/wep.md) for the recommended workflow.
+For **offline WEP key recovery**, prefer [WEPWolf](https://github.com/StrongWind1/WEPWolf). It runs PTW, KoreK, FMS, and RC4-bias attacks from a single command with per-key-slot cracking and parallel directory ingestion. Use the aircrack-ng suite for **active radio attacks** (injection, replay, deauth) and for capturing traffic with `airodump-ng`. See the [WEP cracking guide](../guide/wep.md) for the recommended workflow.
 
 ## Tool Overview
 
@@ -142,7 +142,7 @@ aircrack-ng -w wordlist.txt capture-01.cap
 
 !!! note "WPA cracking in aircrack-ng vs hashcat"
     aircrack-ng performs WPA dictionary attacks on CPU only. For any serious
-    WPA cracking, use hashcat with hcxpcapngtool extraction — GPU acceleration
+    WPA cracking, use hashcat with hcxpcapngtool extraction. GPU acceleration
     is 10-100× faster. Use aircrack-ng for WEP (where it excels) and quick
     wordlist tests; use hashcat for sustained WPA attacks.
 

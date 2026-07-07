@@ -10,9 +10,9 @@ captured in cleartext, enabling offline cracking of the user's Windows NT hash.
 MSCHAPv2 is a challenge/response protocol based on the Windows NT hash. The
 full exchange:
 
-1. **Authenticator Challenge** (16 bytes) — sent by the server/rogue AP
-2. **Peer Challenge** (16 bytes) — sent by the client in the Response packet
-3. **NT-Response** (24 bytes) — computed by the client:
+1. **Authenticator Challenge** (16 bytes): sent by the server/rogue AP
+2. **Peer Challenge** (16 bytes): sent by the client in the Response packet
+3. **NT-Response** (24 bytes): computed by the client:
 
 ```
 Challenge-Hash = SHA1(Peer-Challenge || Auth-Challenge || Username)[0:8]
@@ -72,7 +72,7 @@ Convert to hashcat 5500 format:
 username::::NT-Response:authenticator-challenge
 ```
 
-### With hcxpcapngtool (only works for EAP-TTLS/MSCHAPv2 without TLS — rare)
+### With hcxpcapngtool (only works for EAP-TTLS/MSCHAPv2 without TLS, rare)
 
 ```bash
 hcxpcapngtool --eapmschapv2=mschapv2.hc5500 capture.pcapng

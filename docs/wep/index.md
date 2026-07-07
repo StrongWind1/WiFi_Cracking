@@ -36,7 +36,7 @@ recoverable.
 CRC-32 is a linear function over GF(2): `CRC(A XOR B) = CRC(A) XOR CRC(B)`.
 An attacker can flip arbitrary bits in a WEP-encrypted frame's ciphertext and
 update the ICV checksum without knowing the key. This completely breaks
-integrity protection — bit-flipping attacks are trivial.
+integrity protection; bit-flipping attacks are trivial.
 
 ### RC4 Key Scheduling Weakness
 
@@ -81,7 +81,7 @@ PTW is the default attack in both [WEPWolf](https://github.com/StrongWind1/WEPWo
 Interactive decryption: the attacker truncates the last byte of an encrypted
 frame and sends modified copies to the AP. If the AP accepts (indicates valid
 CRC), the last byte is determined. Repeating recovers the full plaintext and
-the corresponding keystream — usable for crafting arbitrary encrypted frames.
+the corresponding keystream, usable for crafting arbitrary encrypted frames.
 Does not directly recover the WEP key.
 
 ### Fragmentation
@@ -100,8 +100,8 @@ from the client's transmissions alone.
 ## Spec References
 
 - WEP definition: IEEE 802.11-1997, 802.11b-1999
-- FMS attack: Fluhrer, Mantin, Shamir — "Weaknesses in the Key Scheduling
+- FMS attack: Fluhrer, Mantin, Shamir: "Weaknesses in the Key Scheduling
   Algorithm of RC4" (2001)
-- PTW attack: Pyshkin, Tews, Weinmann — "Breaking 104 Bit WEP in Less Than
+- PTW attack: Pyshkin, Tews, Weinmann: "Breaking 104 Bit WEP in Less Than
   60 Seconds" (2007)
 - ChopChop: KoreK, H1kari (2004)

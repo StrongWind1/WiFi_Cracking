@@ -4,7 +4,7 @@ AKM suites outside the PSK, SAE, Enterprise, and FILS categories. These serve
 specialized roles: opportunistic encryption, direct peer links, pre-association
 security negotiation, and one deprecated suite.
 
-## OWE — AKM 18
+## OWE: AKM 18
 
 **Opportunistic Wireless Encryption**, marketed as "Enhanced Open."
 
@@ -26,11 +26,11 @@ Then the standard 4-way handshake proceeds using this PMK.
 
 ### Security Properties
 
-- **Protects against passive eavesdropping** — each session uses a unique DH
+- **Protects against passive eavesdropping**: each session uses a unique DH
   key pair, so captured frames are unreadable without the session private key.
-- **Does NOT authenticate the AP** — a rogue AP can complete the DH exchange
+- **Does NOT authenticate the AP**: a rogue AP can complete the DH exchange
   and observe traffic. OWE offers no protection against active MITM.
-- **No password** — there is nothing to crack. The PMK is derived from fresh
+- **No password**: there is nothing to crack. The PMK is derived from fresh
   DH randomness, not from a static secret.
 
 OWE is designed for public hotspots where some confidentiality is better than
@@ -44,7 +44,7 @@ none, but where certificate-based authentication is impractical.
 
 ---
 
-## TDLS — AKM 7
+## TDLS: AKM 7
 
 **Tunneled Direct-Link Setup** allows two stations associated to the same AP
 to establish a direct encrypted link for peer-to-peer communication, without
@@ -85,7 +85,7 @@ scenarios (media streaming, file transfer) to avoid the AP bottleneck.
 
 ---
 
-## PASN — AKM 21
+## PASN: AKM 21
 
 **Pre-Association Security Negotiation**, introduced in 802.11az-2022.
 
@@ -123,7 +123,7 @@ particularly 802.11az ranging.
 
 ---
 
-## APPeerKey — AKM 10 (Deprecated)
+## APPeerKey: AKM 10 (Deprecated)
 
 AKM 10 was defined for direct AP-to-AP key exchange in mesh or infrastructure
 contexts. It was deprecated and has been removed from active use in the

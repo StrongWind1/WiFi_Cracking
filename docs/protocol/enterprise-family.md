@@ -50,29 +50,29 @@ using the PMK derived from the EAP exchange.
 
 ## AKM Groupings
 
-### SHA-1 — AKM 1
+### SHA-1: AKM 1
 
 Original 802.1X AKM from 802.11i-2004. Uses HMAC-SHA1-based PRF for PTK
 derivation (same PRF as AKM 2). MIC uses HMAC-MD5 (kv1) or HMAC-SHA1-128 (kv2)
 depending on the cipher suite.
 
-### FT-802.1X — AKM 3
+### FT-802.1X: AKM 3
 
 Adds Fast Transition to AKM 1, enabling fast roaming in enterprise deployments.
 Uses the FT key hierarchy (PMK-R0 / PMK-R1) with KDF-SHA-256. The R0 key
 holder role is filled by the RADIUS server or a dedicated FT infrastructure
 component (R0KH).
 
-### SHA-256 — AKM 5
+### SHA-256: AKM 5
 
 SHA-256 upgrade of AKM 1 from 802.11w-2009 (Management Frame Protection).
 KDF-SHA-256 for PTK derivation. MIC uses AES-128-CMAC (keyver 3).
 
-### Suite B (SHA-256) — AKM 11
+### Suite B (SHA-256): AKM 11
 
 AKM 11 targets the 128-bit security level. Same KDF-SHA-256 as AKM 5. Mandates GCMP-128 (AES-128-GCM) for data frames and BIP-GMAC-128 for management frame protection per Table 9-190.
 
-### Suite B (SHA-384) — AKM 12, 13
+### Suite B (SHA-384): AKM 12, 13
 
 AKM 12 targets the 192-bit security level with SHA-384-based KDF. Key sizes:
 KCK = 192 bits, KEK = 256 bits, TK = 256 bits. MIC uses HMAC-SHA-384
@@ -80,13 +80,13 @@ KCK = 192 bits, KEK = 256 bits, TK = 256 bits. MIC uses HMAC-SHA-384
 
 Mandates AES-256-GCM or AES-256-CCM cipher suites. AKM 13 adds FT to AKM 12.
 
-### 802.11-2024 Extensions — AKM 22, 23
+### 802.11-2024 Extensions: AKM 22, 23
 
 AKM 22 adds FT to the SHA-384 enterprise suite, equivalent to AKM 13 but defined under the 802.11-2024 revision. AKM 23 is the non-FT SHA-384 enterprise AKM, equivalent to AKM 12. These were introduced to align with CNSA (Commercial National Security Algorithm Suite) 2.0 requirements.
 
 ## Suite B Compliance
 
-Suite B (now CNSA — Commercial National Security Algorithm Suite) defines
+Suite B (now CNSA, Commercial National Security Algorithm Suite) defines
 minimum cryptographic requirements for government and high-security networks:
 
 | Suite | Security level | AKMs | Cipher | PRF/KDF |
@@ -107,11 +107,11 @@ The choice of EAP inner method determines whether credentials are crackable:
 | PEAP/MSCHAPv2 | TLS tunnel | NTHash challenge | Yes (rogue AP needed) | 5500 |
 | EAP-TTLS/PAP | TLS tunnel | Plaintext password | No hash to crack | N/A |
 | EAP-TTLS/MSCHAPv2 | TLS tunnel | NTHash challenge | Yes (rogue AP needed) | 5500 |
-| EAP-FAST | TLS tunnel | Varies | Method-dependent | — |
+| EAP-FAST | TLS tunnel | Varies | Method-dependent | N/A |
 | LEAP | None (cleartext) | MS-CHAPv1 | Yes (passive capture) | 5500 |
 | EAP-MD5 | None (cleartext) | MD5-Challenge | Yes (passive capture) | 4800 |
 
-The WPA handshake (4-way) itself is not crackable for Enterprise AKMs — the
+The WPA handshake (4-way) itself is not crackable for Enterprise AKMs; the
 PMK is derived from the MSK, not from a password exposed in the frame exchange.
 Attacks target the EAP inner method credentials, not the 802.11 key derivation.
 

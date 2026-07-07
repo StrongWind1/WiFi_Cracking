@@ -8,8 +8,8 @@ re-associations.
 ## Overview
 
 Standard 802.1X requires multiple round trips (EAP exchange → 4-way handshake)
-before data can flow. FILS reduces this to two frames — Authentication Request
-and Authentication Response — by incorporating key confirmation directly into
+before data can flow. FILS reduces this to two frames: Authentication Request
+and Authentication Response, by incorporating key confirmation directly into
 the association frames. Sub-100ms connections are achievable (compared to ~1-2 seconds for standard 802.1X authentication).
 
 ## FILS Authentication Flow
@@ -67,7 +67,7 @@ connection and fast roaming within the same mobility domain.
 
 ## Security Posture
 
-FILS does not change the authentication security model — credentials are still
+FILS does not change the authentication security model; credentials are still
 EAP-method-dependent. FILS only affects the protocol efficiency. The MIC in
 FILS frames uses the ICK (not the KCK from the 4-way handshake), but this
 does not create new offline attack vectors beyond the EAP inner method.

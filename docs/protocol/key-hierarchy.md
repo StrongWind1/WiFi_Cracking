@@ -21,13 +21,13 @@ flowchart TD
     B --> PMK["PMK (256 bits)"]
     PMK --> PRF["PRF / KDF\n+ ANonce + SNonce\n+ MAC_AP + MAC_STA"]
     PRF --> PTK["PTK"]
-    PTK --> KCK["KCK — computes MIC over EAPOL-Key frames"]
-    PTK --> KEK["KEK — encrypts GTK in EAPOL-Key Data"]
-    PTK --> TK["TK — encrypts unicast data frames"]
-    PTK --> KDK["KDK — application key derivation (802.11-2020+)"]
+    PTK --> KCK["KCK: computes MIC over EAPOL-Key frames"]
+    PTK --> KEK["KEK: encrypts GTK in EAPOL-Key Data"]
+    PTK --> TK["TK: encrypts unicast data frames"]
+    PTK --> KDK["KDK: application key derivation (802.11-2020+)"]
 ```
 
-KDK (Key Derivation Key) — used in 802.11-2024 for additional key derivation in AKMs with extended key hierarchies.
+KDK (Key Derivation Key): used in 802.11-2024 for additional key derivation in AKMs with extended key hierarchies.
 
 The PRF/KDF used for PTK derivation differs by AKM:
 
@@ -49,7 +49,7 @@ flowchart TD
     B --> PMK["PMK (256 bits)"]
     PMK --> R0["PMK-R0\nKDF-SHA256(PMK, 'FT-R0', SSID, MDID, R0KH-ID, STA_MAC)"]
     R0 --> R1["PMK-R1\nKDF-SHA256(PMK-R0, 'FT-R1', R1KH-ID, STA_MAC)"]
-    R1 --> PTK["PTK (384 bits)\nKDF-SHA256 — 2 iterations required\nsee note below"]
+    R1 --> PTK["PTK (384 bits)\nKDF-SHA256, 2 iterations required\nsee note below"]
     PTK --> KCK["KCK (128 bits)"]
     PTK --> KEK["KEK (128 bits)"]
     PTK --> TK["TK (128 bits)"]
@@ -60,7 +60,7 @@ flowchart TD
     256 bits per iteration. IEEE 802.11-2024 §12.7.1.6.2 defines
     `iterations = ceil(Length/Hashlen) = ceil(384/256) = 2`. Both HMAC-SHA-256
     calls are mandatory; the full 48-byte PTK requires concatenating both
-    iterations and truncating. A single HMAC call produces only 32 bytes — PTK
+    iterations and truncating. A single HMAC call produces only 32 bytes; PTK
     derivation with a single call is incorrect.
 
 ## PTK Components
@@ -98,7 +98,7 @@ GTK = PRF-X(GMK, "Group key expansion", MAC_AP || GNonce)
 
 ## Min/Max Ordering (non-FT only)
 
-For standard PSK (AKM 2, 6, 20), the PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. The comparison treats each value as an unsigned big-endian integer — the smaller value is concatenated first. This ensures both sides compute the same PTK regardless of role (AP vs. STA).
+For standard PSK (AKM 2, 6, 20), the PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. The comparison treats each value as an unsigned big-endian integer; the smaller value is concatenated first. This ensures both sides compute the same PTK regardless of role (AP vs. STA).
 
 FT-PSK (AKM 4, 19) does **not** use Min/Max ordering. The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per §12.7.1.6.5.
 

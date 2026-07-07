@@ -10,7 +10,7 @@ Complete technical reference for IEEE 802.11 wireless security. Two paths to cho
 
     ---
 
-    Zero-to-hero walkthrough. Capture traffic, extract hashes, crack passwords — step by step with just the commands you need.
+    Zero-to-hero walkthrough. Capture traffic, extract hashes, crack passwords. Step by step with just the commands you need.
 
 - :material-book-open-variant: __[Reference](protocol/index.md)__
 
@@ -64,7 +64,7 @@ Complete technical reference for IEEE 802.11 wireless security. Two paths to cho
 |---|---|---|---|
 | WEP-40 / WEP-104 | RC4 key recovery (PTW) | [WEPWolf](tools/wpawolf.md) / aircrack-ng | ~40K IVs → key in seconds |
 
-### Password — PBKDF2 (offline crackable)
+### Password: PBKDF2 (offline crackable)
 
 All six families derive the PMK from a passphrase via the same PBKDF2-HMAC-SHA1 (4096 iterations). The "SHA-256" and "SHA-384" in the names refer to the post-PMK key hierarchy, not the password hash.
 
@@ -74,39 +74,39 @@ All six families derive the PMK from a passphrase via the same PBKDF2-HMAC-SHA1 
 | 2 | WPA2-PSK (CCMP) | [WPAWolf](tools/wpawolf.md) | hashcat | 22000 (kv2) | Working |
 | 6 | PSK-SHA256 | [WPAWolf](tools/wpawolf.md) | hashcat | 22000 (kv3) | EAPOL working; PMKID broken (SHA1 bug) |
 | 4 | FT-PSK | [WPAWolf](tools/wpawolf.md) | hashcat | 37100 (PR pending) | Extraction works; hashcat PR #4645 not merged |
-| 19 | FT-PSK-SHA384 | [WPAWolf](tools/wpawolf.md) | — | none | No hashcat module (24 B MIC) |
-| 20 | PSK-SHA384 | [WPAWolf](tools/wpawolf.md) | — | none | No hashcat module (24 B MIC) |
+| 19 | FT-PSK-SHA384 | [WPAWolf](tools/wpawolf.md) | N/A | none | No hashcat module (24 B MIC) |
+| 20 | PSK-SHA384 | [WPAWolf](tools/wpawolf.md) | N/A | none | No hashcat module (24 B MIC) |
 
-### Password — SAE (not offline crackable)
+### Password: SAE (not offline crackable)
 
 | AKM | Name | Why it resists offline attack |
 |---|---|---|
-| 8 | SAE (WPA3-Personal) | Dragonfly PAKE — no crackable material on the wire |
+| 8 | SAE (WPA3-Personal) | Dragonfly PAKE. No crackable material on the wire |
 | 9 | FT-SAE | SAE + Fast Transition |
 | 24 | SAE (H2E) | Hash-to-Element, constant-time |
 | 25 | FT-SAE (H2E) | H2E + Fast Transition |
 
-### EAP — Enterprise
+### EAP: Enterprise
 
 | AKM | Name | Crackable inner methods |
 |---|---|---|
 | 1 | 802.1X | PEAP/MSCHAPv2 (mode 5500), EAP-MD5 (mode 4800), LEAP (mode 5500) |
 | 3 | FT-802.1X | Same inner methods via rogue AP |
 | 5 | 802.1X-SHA256 | Same inner methods via rogue AP |
-| 11 | Suite B-128 (deprecated) | — |
-| 12 | Suite B-192 | — |
-| 13 | FT-802.1X-SHA384 | — |
+| 11 | Suite B-128 (deprecated) | N/A |
+| 12 | Suite B-192 | N/A |
+| 13 | FT-802.1X-SHA384 | N/A |
 | 14-17 | FILS (SHA256/384, FT variants) | EAP-based, not directly crackable |
-| 22 | FT-802.1X-SHA384 | — |
-| 23 | 802.1X-SHA384 | — |
+| 22 | FT-802.1X-SHA384 | N/A |
+| 23 | 802.1X-SHA384 | N/A |
 
 ### Other
 
 | AKM | Name | Notes |
 |---|---|---|
-| 7 | TDLS | Peer-to-peer direct link — niche |
+| 7 | TDLS | Peer-to-peer direct link. Niche |
 | 10 | APPeerKey (deprecated) | Removed from active standard |
-| 18 | OWE | Opportunistic encryption — no password |
+| 18 | OWE | Opportunistic encryption, no password |
 | 21 | PASN | Pre-association security negotiation |
 
 ## Disclaimer

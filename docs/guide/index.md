@@ -1,6 +1,6 @@
 # Guide
 
-Three end-to-end workflows for WiFi security testing — from capture to cracked credential. Each guide is self-contained: pick the one that matches your target network.
+Three end-to-end workflows for WiFi security testing, from capture to cracked credential. Each guide is self-contained: pick the one that matches your target network.
 
 ## What you need
 
@@ -24,7 +24,7 @@ Three end-to-end workflows for WiFi security testing — from capture to cracked
 
 - :material-shield-off: **WEP Cracking**
 
-    Recover the WEP key directly from captured traffic — no wordlist needed. WEPWolf runs PTW, KoreK, FMS, and RC4-bias attacks in one command.
+    Recover the WEP key directly from captured traffic; no wordlist needed. WEPWolf runs PTW, KoreK, FMS, and RC4-bias attacks in one command.
 
     [:octicons-arrow-right-24: WEP Cracking Guide](wep.md)
 

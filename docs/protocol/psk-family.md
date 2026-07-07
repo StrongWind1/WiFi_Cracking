@@ -31,7 +31,7 @@ PMK = PBKDF2(HMAC-SHA1, passphrase, SSID, 4096, 256 bits)
 - Inner PRF: **HMAC-SHA1** (always, regardless of AKM or keyver)
 - Salt: SSID (0–32 bytes)
 - Iterations: **4096** (fixed by spec)
-- Output: **256 bits** — same for AKM 2, 6, and 20
+- Output: **256 bits**, same for AKM 2, 6, and 20
 - Internally calls HMAC-SHA1 **8192 times** (4096 iterations × 2 PBKDF2 blocks)
 
 The passphrase is 8–63 printable ASCII characters (code points 32–126), or
@@ -42,7 +42,7 @@ PTK derivation and MIC verification add ~0.1% overhead.
 
 ## PTK Derivation
 
-### AKM 2 — PRF-X (HMAC-SHA1)
+### AKM 2: PRF-X (HMAC-SHA1)
 
 ```
 PTK = PRF-X(PMK,
@@ -56,7 +56,7 @@ PRF internally constructs: `Label || 0x00 || Context || counter` per §12.7.1.2.
 - X = 384 for CCMP (KCK 128 + KEK 128 + TK 128)
 - X = 512 for TKIP (KCK 128 + KEK 128 + TK 256 including TMK)
 
-### AKM 6 — KDF-SHA-256
+### AKM 6: KDF-SHA-256
 
 ```
 PTK = KDF-SHA-256-384(PMK,
@@ -68,7 +68,7 @@ PTK = KDF-SHA-256-384(PMK,
 KDF constructs: `counter_LE16(i) || Label || Context || size_LE16(384)`.
 Two iterations needed for full PTK (ceil(384/256) = 2), but cracking only requires the first iteration to extract KCK.
 
-### AKM 20 — KDF-SHA-384
+### AKM 20: KDF-SHA-384
 
 Same structure as KDF-SHA-256 but using HMAC-SHA-384 internally. Full PTK = 704 bits per the spec (KCK 192 + KEK 256 + TK 256), requiring two iterations: ceil(704/384) = 2.
 
@@ -82,7 +82,7 @@ Same structure as KDF-SHA-256 but using HMAC-SHA-384 internally. Full PTK = 704 
 | GCMP-256 | 9 | AES-256-GCM | 256 bits | AKM 20 |
 
 Cipher suite values from IEEE 802.11-2024 Table 9-188 (RSN cipher suite selectors).
-Note: GCMP-128 is suite type 8, GCMP-256 is suite type 9 — distinct values.
+Note: GCMP-128 is suite type 8, GCMP-256 is suite type 9, distinct values.
 
 ## Key Descriptor Versions
 
@@ -120,9 +120,9 @@ The `aux1`–`aux4` labels refer to hashcat's internal kernel functions within m
 | 2 | PMKID | WPA*01* | 22000 (aux4) | Yes |
 | 2 | EAPOL kv1 | WPA*02* | 22000 (aux1) | Yes |
 | 2 | EAPOL kv2 | WPA*02* | 22000 (aux2) | Yes |
-| 6 | PMKID | WPA*01* | 22000 (aux4) | **Broken** — aux4 uses SHA1, needs SHA256. See [gap table](../reference/gap-table.md). |
+| 6 | PMKID | WPA*01* | 22000 (aux4) | **Broken**. aux4 uses SHA1, needs SHA256. See [gap table](../reference/gap-table.md). |
 | 6 | EAPOL kv3 | WPA*02* | 22000 (aux3) | Yes |
-| 20 | PMKID/EAPOL | — | none | No module exists |
+| 20 | PMKID/EAPOL | N/A | none | No module exists |
 
 ## Spec References
 

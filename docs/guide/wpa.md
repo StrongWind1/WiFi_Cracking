@@ -9,7 +9,7 @@ A start-to-finish workflow: capture traffic with [hcxdumptool](https://github.co
 | Component | Purpose | Install |
 |-----------|---------|---------|
 | Linux with a **monitor-mode WiFi adapter** | Capture raw 802.11 frames | Most Atheros / Ralink / Realtek chipsets work; check `iw list` for "monitor" support |
-| **[hcxdumptool](https://github.com/ZerBea/hcxdumptool)** | Capture tool -- actively solicits PMKIDs and passively captures handshakes in one run | `sudo apt install hcxdumptool` or [build from source](https://github.com/ZerBea/hcxdumptool) |
+| **[hcxdumptool](https://github.com/ZerBea/hcxdumptool)** | Capture tool. Actively solicits PMKIDs and passively captures handshakes in one run | `sudo apt install hcxdumptool` or [build from source](https://github.com/ZerBea/hcxdumptool) |
 | **[WPAWolf](https://github.com/StrongWind1/WPAWolf)** (primary) | Extract hashes from pcapng captures | Download a [prebuilt binary](https://github.com/StrongWind1/WPAWolf/releases) or `make release` from source |
 | [hcxpcapngtool](https://github.com/ZerBea/hcxtools) (alternative) | Simpler extractor, fewer edge cases covered | `sudo apt install hcxtools` |
 | **[hashcat](https://github.com/hashcat/hashcat)** with GPU drivers | Offline password cracking | `sudo apt install hashcat`; install CUDA or ROCm for GPU acceleration |
@@ -19,14 +19,14 @@ A start-to-finish workflow: capture traffic with [hcxdumptool](https://github.co
 
 ## Terminology: password, passphrase, PSK, PMK
 
-These terms are related but distinct — documentation and tools use them interchangeably, which causes confusion:
+These terms are related but distinct. Documentation and tools use them interchangeably, which causes confusion:
 
 | Term | What it is | Example |
 |---|---|---|
 | **Password** | What the user types into their device's WiFi settings | `correcthorsebatterystaple` |
-| **Passphrase** | Same thing — the spec calls it a "pass-phrase" (8-63 ASCII characters, or 64 hex for raw key) | Same as above |
+| **Passphrase** | Same thing. The spec calls it a "pass-phrase" (8-63 ASCII characters, or 64 hex for raw key) | Same as above |
 | **PSK (Pre-Shared Key)** | The authentication **mode**, not a specific key. "PSK mode" means both sides share the same passphrase, as opposed to Enterprise mode where a RADIUS server authenticates each user individually | "This network uses WPA2-PSK" |
-| **PMK (Pairwise Master Key)** | The 256-bit cryptographic key derived from the passphrase via PBKDF2. This is what the AP and client actually use — the passphrase itself never appears on the wire | `PMK = PBKDF2(passphrase, SSID, 4096, 256 bits)` |
+| **PMK (Pairwise Master Key)** | The 256-bit cryptographic key derived from the passphrase via PBKDF2. This is what the AP and client actually use. The passphrase itself never appears on the wire | `PMK = PBKDF2(passphrase, SSID, 4096, 256 bits)` |
 | **PMKID** | A 128-bit fingerprint of the PMK, computed as `HMAC-SHA1(PMK, "PMK Name" \|\| AP_MAC \|\| STA_MAC)`. Included in EAPOL M1 if the AP has a cached PMKSA | The attack target for client-less cracking |
 
 The relationship is a one-way chain: **passphrase → PMK → PMKID**. Cracking works backward: guess a passphrase, compute the expected PMK, check if it produces the captured PMKID or the correct MIC.
@@ -38,8 +38,8 @@ The relationship is a one-way chain: **passphrase → PMK → PMKID**. Cracking 
 
 Your WiFi password never travels over the air. Instead, both sides derive a 256-bit PMK from the passphrase using PBKDF2 (4096 rounds of HMAC-SHA1 with the SSID as salt), then prove they share it through a 4-way handshake. That handshake exposes two attack surfaces:
 
-- **PMKID** -- the AP includes a fingerprint (`HMAC-SHA1-128(PMK, "PMK Name" || AP_MAC || STA_MAC)`) in its first message. One frame from the AP is enough; no client needed.
-- **EAPOL handshake** -- the client computes a MIC over handshake data using a key derived from the PMK. Capture at least one AP message and one client message, then verify password guesses offline by replaying the same math.
+- **PMKID**: the AP includes a fingerprint (`HMAC-SHA1-128(PMK, "PMK Name" || AP_MAC || STA_MAC)`) in its first message. One frame from the AP is enough; no client needed.
+- **EAPOL handshake**: the client computes a MIC over handshake data using a key derived from the PMK. Capture at least one AP message and one client message, then verify password guesses offline by replaying the same math.
 
 Both produce a hash that hashcat cracks with mode 22000.
 
@@ -67,7 +67,7 @@ sudo hcxdumptool -i wlan0 -o capture.pcapng --active_beacon --enable_status=15
 
 Let it run for **2-5 minutes**. PMKIDs arrive fast (often within seconds); handshakes require a client to connect or reconnect during the capture window.
 
-Press ++ctrl+c++ to stop. The output file contains everything -- both PMKIDs and handshakes in a single pcapng.
+Press ++ctrl+c++ to stop. The output file contains everything: both PMKIDs and handshakes in a single pcapng.
 
 ### Alternative: airodump-ng + aireplay-ng (classic approach)
 
@@ -97,13 +97,13 @@ This only captures handshakes (no PMKID solicitation) and requires a connected c
 
 WPAWolf reads your capture files and produces hashcat-ready hash files. It uses a collect-then-pair architecture: it reads every EAPOL message and PMKID across all input files first, then pairs them, so it never misses a valid combination.
 
-**Basic -- single capture:**
+**Basic (single capture):**
 
 ```bash
 wpawolf --22000-out hashes.22000 --37100-out hashes.37100 capture.pcapng
 ```
 
-**Recommended -- directory of captures with smart dedup:**
+**Recommended (directory of captures with smart dedup):**
 
 ```bash
 wpawolf --22000-out hashes.22000 --smart captures/
@@ -138,8 +138,8 @@ wallclock total (s).........................................: 0.4
 
 | Behaviour | hcxpcapngtool | WPAWolf |
 |-----------|---------------|---------|
-| EAPOL frame size ceiling | 512 bytes at parse -- silently drops oversized FT frames | No size gate |
-| Per-(AP, STA) message buffer | 64-entry circular buffer -- old entries evicted | Unbounded HashMap, no eviction |
+| EAPOL frame size ceiling | 512 bytes at parse; silently drops oversized FT frames | No size gate |
+| Per-(AP, STA) message buffer | 64-entry circular buffer; old entries evicted | Unbounded HashMap, no eviction |
 | Cross-file pairing | State reset between files | M1 in file A pairs with M2 in file B |
 | Pairing strategy | Stream-pairs as frames arrive (can miss late arrivals) | Collect everything, then pair |
 | WDS / 4-address relay frames | Skipped unless `--all` | Always processed |
@@ -168,7 +168,7 @@ grep -c "^WPA\*02" hashes.22000   # EAPOL handshake hashes
 
 ### Wordlist attack
 
-The simplest approach -- try every password in a list:
+The simplest approach. Try every password in a list:
 
 ```bash
 hashcat -m 22000 hashes.22000 /usr/share/wordlists/rockyou.txt
@@ -198,7 +198,7 @@ Common mask placeholders: `?d` = digit, `?l` = lowercase, `?u` = uppercase, `?s`
 hashcat -m 22000 hashes.22000 --show
 ```
 
-Output format: `hash:password` -- the cracked passphrase appears after the colon.
+Output format: `hash:password`. The cracked passphrase appears after the colon.
 
 ### FT-PSK hashes (mode 37100)
 
@@ -213,7 +213,7 @@ hashcat -m 37100 hashes.37100 /usr/share/wordlists/rockyou.txt
 
 ### Speed context
 
-WPA cracking is slow by design. PBKDF2 forces 4096 rounds of HMAC-SHA1 per password guess, so even a high-end GPU only manages roughly 500K--2M PMK/s. A good wordlist and smart rules matter far more than raw GPU speed. The 8-digit brute-force mask above covers 100 million candidates -- about 50 seconds on a modern GPU.
+WPA cracking is slow by design. PBKDF2 forces 4096 rounds of HMAC-SHA1 per password guess, so even a high-end GPU only manages roughly 500K-2M PMK/s. A good wordlist and smart rules matter far more than raw GPU speed. The 8-digit brute-force mask above covers 100 million candidates, about 50 seconds on a modern GPU.
 
 ---
 
@@ -225,7 +225,7 @@ The capture did not contain a usable PMKID or handshake.
 
 - **For PMKID:** Not all APs include a PMKID in their response. Run hcxdumptool longer, or try a different target. Some APs only respond to PMKIDs on the first association attempt after a reboot.
 - **For handshake:** A client must connect (or reconnect) during the capture window. With hcxdumptool's `--active_beacon`, the tool sends disassociation frames to trigger reconnections. With the aircrack-ng workflow, send a deauth manually: `sudo aireplay-ng -0 1 -a <BSSID> wlan0mon`.
-- **Wrong interface:** Confirm your adapter is in monitor mode with `iw dev wlan0 info` -- the "type" field should say "monitor".
+- **Wrong interface:** Confirm your adapter is in monitor mode with `iw dev wlan0 info`. The "type" field should say "monitor".
 
 ### hashcat says "Exhausted"
 
@@ -240,7 +240,7 @@ Every candidate was tested and none matched. The password is not in your wordlis
 
 If the target AP negotiates AKM 6 (PSK-SHA256), the PMKID uses HMAC-SHA256 but hashcat mode 22000's PMKID kernel (aux4) hardcodes HMAC-SHA1. The correct passphrase reports "Exhausted" with no warning. This is a known bug in hashcat, not a problem with your capture or extraction.
 
-**Workaround:** attack via the EAPOL handshake instead -- hashcat's EAPOL kernel (aux3, AES-128-CMAC) handles AKM 6 correctly. If your capture contains both a PMKID and a handshake for the same AP, the EAPOL hash will crack even though the PMKID will not. See the [gap table](../reference/gap-table.md) for the full compatibility matrix.
+**Workaround:** attack via the EAPOL handshake instead: hashcat's EAPOL kernel (aux3, AES-128-CMAC) handles AKM 6 correctly. If your capture contains both a PMKID and a handshake for the same AP, the EAPOL hash will crack even though the PMKID will not. See the [gap table](../reference/gap-table.md) for the full compatibility matrix.
 
 ### WPAWolf shows pairs but hashcat shows 0 hashes
 
