@@ -39,7 +39,10 @@ MediaTek chipsets have the best in-kernel Linux support for security testing. Th
 
 ### Realtek (monitor mode, no active monitor)
 
-Realtek has three in-kernel driver families in kernel 7.1.3. All support basic monitor mode via mac80211, but **none support active monitor mode** — hcxdumptool can only passively capture, not actively solicit PMKIDs.
+Realtek has three in-kernel driver families in kernel 7.1.3. Monitor mode support varies significantly by driver — unlike MediaTek's mt76, most Realtek drivers do **not** explicitly register `NL80211_IFTYPE_MONITOR` in their interface modes or implement dedicated monitor-mode RX filter configuration. Where monitor mode works, it relies on mac80211 providing default behavior. **None support active monitor mode** — hcxdumptool can only passively capture, not actively solicit PMKIDs.
+
+!!! warning "Realtek monitor mode is best-effort"
+    Only `rtw89` (WiFi 6/6E) and `rtl8187` (WiFi 3) have explicit monitor mode code in the kernel driver. For `rtw88` and `rtl8xxxu`, monitor mode depends on mac80211 defaults and may not capture all frames on all chipsets. Test with `tcpdump -i wlan0mon` before relying on a Realtek adapter for security testing.
 
 **rtw88 — WiFi 5 (AC)** — the most complete Realtek USB driver as of kernel 7.1.3:
 
