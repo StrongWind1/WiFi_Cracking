@@ -25,9 +25,10 @@ flowchart LR
 
 | AKM | Name | Status | Offline attack? | hashcat mode | Notes |
 |-----|------|--------|----------------|-------------|-------|
-| — | WEP | **Broken** | RC4 key recovery (PTW) | N/A (aircrack-ng) | 40K ARP frames → key in seconds |
+| — | WEP | **Broken** | RC4 key recovery (PTW) | N/A (WEPWolf / aircrack-ng) | 40K ARP frames → key in seconds |
+| WPA1 | WPA-PSK (TKIP) | Vulnerable | **Yes** — PBKDF2 dict | 22000 (kv1) | Legacy, vendor IE `00:50:F2:01` |
 | 1 | 802.1X (SHA-1) | Secure | No (EAP-dependent) | EAP inner method | PEAP/MSCHAPv2 inner: mode 5500 |
-| 2 | PSK (SHA-1) | Vulnerable | **Yes** — PBKDF2 dict | 22000 | Most common WPA2 network |
+| 2 | PSK (SHA-1) | Vulnerable | **Yes** — PBKDF2 dict | 22000 (kv2) | Most common WPA2 network |
 | 3 | FT-802.1X (SHA-256) | Secure | No | — | |
 | 4 | FT-PSK (SHA-256) | Vulnerable | **Yes** — EAPOL/PMKID | 37100 (PR pending) | |
 | 5 | 802.1X-SHA256 | Secure | No | — | |

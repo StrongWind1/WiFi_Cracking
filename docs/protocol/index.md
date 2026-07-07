@@ -26,15 +26,16 @@ Every WiFi security scheme falls into one of five categories based on how the us
 
 ### Password — PBKDF2 (offline crackable)
 
-These AKMs derive the PMK from a passphrase via PBKDF2-HMAC-SHA1. Captured handshakes are vulnerable to offline dictionary attacks.
+All six PSK families derive the PMK from a passphrase via PBKDF2-HMAC-SHA1 (4096 iterations, 256-bit output). This is the same PBKDF2 call regardless of AKM — the "SHA-256" and "SHA-384" in the AKM names refer to the post-PMK key hierarchy (KDF, MIC algorithms), not the password hashing step.
 
 | AKM | Name | Variant | hashcat mode | Standard |
 |-----|------|---------|-------------|----------|
-| 2 | PSK | WPA/WPA2-Personal | 22000 | 802.11i-2004 |
+| WPA1 | WPA-PSK | Original WPA (TKIP, vendor IE `00:50:F2:01`) | 22000 (kv1) | pre-802.11i |
+| 2 | PSK | WPA2-Personal (CCMP) | 22000 (kv2) | 802.11i-2004 |
 | 4 | FT-PSK | Fast Transition (802.11r) | 37100 (PR pending) | 802.11r-2008 |
 | 6 | PSK-SHA256 | PMF-capable (802.11w) | 22000 (PMKID broken) | 802.11w-2009 |
-| 19 | FT-PSK-SHA384 | FT with SHA-384 | none | 802.11-2020 |
-| 20 | PSK-SHA384 | SHA-384 with GCMP-256 | none | 802.11-2020 |
+| 19 | FT-PSK-SHA384 | FT with SHA-384 key hierarchy | none | 802.11-2020 |
+| 20 | PSK-SHA384 | SHA-384 key hierarchy with GCMP-256 | none | 802.11-2020 |
 
 ### Password — SAE (not offline crackable)
 

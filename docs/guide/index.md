@@ -1,53 +1,40 @@
 # Guide
 
-A step-by-step walkthrough for cracking WiFi passwords — from zero knowledge
-to recovered passphrase. Each page builds on the previous one.
+Three end-to-end workflows for WiFi security testing — from capture to cracked credential. Each guide is self-contained: pick the one that matches your target network.
 
 ## What you need
 
 - A Linux system (Kali Linux recommended)
-- A WiFi adapter that supports monitor mode
-- aircrack-ng suite (`sudo apt install aircrack-ng`)
-- hcxtools (`sudo apt install hcxtools`) or [wpawolf](https://github.com/StrongWind1/WPAWolf)
-- hashcat (`sudo apt install hashcat`) with GPU drivers for reasonable speed
-- A wordlist (e.g., `rockyou.txt`, typically at `/usr/share/wordlists/rockyou.txt` on Kali)
+- A WiFi adapter that supports monitor mode (for capturing)
+- One of the toolkits below, depending on the attack
+
+| Attack | Capture | Extract / Crack | Install |
+|---|---|---|---|
+| **WEP** | airodump-ng | [WEPWolf](https://github.com/StrongWind1/WEPWolf) | [Download binary](https://github.com/StrongWind1/WEPWolf/releases) or `make release` |
+| **WPA/WPA2** | hcxdumptool or airodump-ng | [WPAWolf](https://github.com/StrongWind1/WPAWolf) + hashcat | [Download binary](https://github.com/StrongWind1/WPAWolf/releases) or `make release`; `sudo apt install hashcat` |
+| **EAP** | hostapd-mana (rogue AP) | hashcat | `sudo apt install hostapd-mana hashcat` |
 
 <div class="grid cards" markdown>
 
-- :material-wifi: **How WiFi passwords work**
+- :material-shield-off: **WEP Cracking**
 
-    Brief overview of WPA/WPA2 security and why passwords are crackable offline.
+    Recover the WEP key directly from captured traffic — no wordlist needed. WEPWolf runs PTW, KoreK, FMS, and RC4-bias attacks in one command.
 
-    [:octicons-arrow-right-24: How WiFi passwords work](how-wifi-works.md)
+    [:octicons-arrow-right-24: WEP Cracking Guide](wep.md)
 
-- :material-access-point: **Capturing traffic**
+- :material-wifi-lock: **WPA/WPA2 Cracking**
 
-    Put your adapter in monitor mode and capture the data you need.
+    Capture a PMKID or handshake, extract hashes with WPAWolf, crack with hashcat. Covers all PBKDF2-based PSK networks (AKM 2, 4, 6).
 
-    [:octicons-arrow-right-24: Capturing traffic](capturing.md)
+    [:octicons-arrow-right-24: WPA/WPA2 Cracking Guide](wpa.md)
 
-- :material-key-variant: **PMKID attack**
+- :material-badge-account: **EAP Credential Capture**
 
-    The fastest path — grab a PMKID from a single beacon, no client needed.
+    Capture enterprise credentials via a rogue AP (PEAP/MSCHAPv2) or passive sniffing (EAP-MD5, LEAP). Crack with hashcat mode 5500 or 4800.
 
-    [:octicons-arrow-right-24: PMKID attack](pmkid.md)
-
-- :material-handshake: **Handshake attack**
-
-    Capture a 4-way handshake between an AP and client, then crack it offline.
-
-    [:octicons-arrow-right-24: Handshake attack](handshake.md)
-
-- :material-file-export: **Extracting hashes**
-
-    Convert your capture file into a hash that cracking tools understand.
-
-    [:octicons-arrow-right-24: Extracting hashes](extracting.md)
-
-- :material-hammer-wrench: **Cracking with hashcat**
-
-    Feed the hash to hashcat with wordlists, rules, or masks to recover the password.
-
-    [:octicons-arrow-right-24: Cracking with hashcat](cracking.md)
+    [:octicons-arrow-right-24: EAP Cracking Guide](eap.md)
 
 </div>
+
+!!! tip "Background reading"
+    For protocol details behind these attacks, see the [Protocol Overview](../protocol/index.md) and the [Security Matrix](../protocol/security-matrix.md).
