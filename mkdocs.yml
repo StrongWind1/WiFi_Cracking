@@ -94,6 +94,11 @@ nav:
     - WEP Cracking: guide/wep.md
     - WPA/WPA2 Cracking: guide/wpa.md
     - WPA-Enterprise (EAP): guide/eap.md
+    - Cheat Sheets:
+      - WPAWolf: guide/cheatsheet-wpawolf.md
+      - WEPWolf: guide/cheatsheet-wepwolf.md
+      - hcxdumptool: guide/cheatsheet-hcxdumptool.md
+      - hashcat: guide/cheatsheet-hashcat.md
   - Reference:
     - Protocol:
       - protocol/index.md
