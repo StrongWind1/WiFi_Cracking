@@ -67,8 +67,10 @@ Realtek has three in-kernel driver families in kernel 7.1.3. All support basic m
 
 | Driver | Chipsets | WiFi gen | Monitor mode | Notes |
 |---|---|---|---|---|
-| `rtl8187` | RTL8187L/B | WiFi 3 (B/G) | Yes (+ active) | Ancient but fully working; 2.4 GHz only |
-| `rtl8xxxu` | RTL8188EUS/CU/FU, RTL8192EU/CU/FU, RTL8723BU, RTL8710BU | WiFi 4 (N) | Partial | Requires kernel 6.6+ with unmerged [patch](https://bugzilla.kernel.org/show_bug.cgi?id=217205) |
+| `rtl8187` | RTL8187L, RTL8187B | WiFi 3 (B/G) | Yes (+ active) | Ancient but fully working; 2.4 GHz only |
+| `rtl8xxxu` | RTL8188CU/RU/EU/FU, RTL8191CU, RTL8192CU/EU/FU, RTL8723AU/BU, RTL8710BU (aka RTL8188GU) | WiFi 4 (N) | Partial | Requires kernel 6.6+ with unmerged [patch](https://bugzilla.kernel.org/show_bug.cgi?id=217205) |
+| `rtlwifi` (rtl8192cu) | RTL8192CU, RTL8188CU | WiFi 4 (N) | Limited | Older driver for same chips as rtl8xxxu; being phased out |
+| `rtlwifi` (rtl8192du) | RTL8192DU | WiFi 4 (N) | Limited | Dual-band N adapter; newer rtlwifi USB addition |
 
 **Bottom line:** Realtek adapters work for passive capture and basic monitor mode, but **none support active monitor mode**. This means hcxdumptool cannot actively solicit PMKIDs — it can only passively wait for handshakes. For active attacks, use a MediaTek adapter. The upside: the RTL8812AU/8814AU/8821AU are now in-kernel via rtw88, so you no longer need the old out-of-tree `aircrack-ng/rtl8812au` drivers.
 
