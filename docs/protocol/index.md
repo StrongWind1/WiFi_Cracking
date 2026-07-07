@@ -4,45 +4,76 @@ IEEE 802.11-2024 defines 25 Authentication and Key Management (AKM) suites
 that govern how stations authenticate and derive encryption keys. This section
 organizes them into five functional categories and links to family pages.
 
-## AKM Authentication Categories
+## Authentication Categories
 
-Every AKM falls into one of five categories:
+Every WiFi security scheme falls into one of five categories based on how the user authenticates:
 
-1. **Password-Based (PSK)** — passphrase fed through PBKDF2; offline crackable.
-2. **SAE (WPA3-Personal)** — passphrase used in a Dragonfly PAKE exchange; not offline crackable.
-3. **Enterprise (802.1X)** — authentication delegated to a RADIUS server via EAP.
-4. **FILS** — Fast Initial Link Setup for reduced-latency connections.
-5. **Other** — OWE, TDLS, PASN, and deprecated suites.
+| Category | How it works | Offline crackable? |
+|---|---|---|
+| **WEP** | Static shared key, RC4 encryption | Key recovery from traffic (no password cracking) |
+| **Password (PBKDF2)** | Passphrase → PBKDF2 → PMK; 4-way handshake exposes MIC/PMKID | **Yes** — dictionary/brute-force against PBKDF2 |
+| **Password (SAE)** | Passphrase used in Dragonfly PAKE; no crackable material exposed | No — online-only, rate-limited |
+| **EAP (802.1X)** | Credentials verified by RADIUS server via EAP method | Depends on EAP inner method |
+| **Other** | No password (OWE), peer-to-peer (TDLS), or pre-association (PASN) | No |
 
 ## Quick Reference
 
-| AKM | Name | Category | Offline Crackable? | Standard |
-|-----|------|----------|--------------------|----------|
-| 1 | 802.1X (SHA-1) | Enterprise | No | 802.11i-2004 |
-| 2 | PSK (SHA-1) | PSK | **Yes** | 802.11i-2004 |
-| 3 | FT-802.1X (SHA-256) | Enterprise | No | 802.11r-2008 |
-| 4 | FT-PSK (SHA-256) | PSK | **Yes** | 802.11r-2008 |
-| 5 | 802.1X-SHA256 | Enterprise | No | 802.11w-2009 |
-| 6 | PSK-SHA256 | PSK | **Yes** (EAPOL) / BROKEN (PMKID) | 802.11w-2009 |
-| 7 | TDLS | Other | No | 802.11z-2010 |
-| 8 | SAE | SAE | No | 802.11-2012 |
-| 9 | FT-SAE (SHA-256) | SAE | No | 802.11-2012 |
-| 10 | APPeerKey | Other (deprecated) | N/A | 802.11-2012 |
-| 11 | 802.1X Suite B (SHA-256) | Enterprise (deprecated) | No | 802.11ac-2013 |
-| 12 | 802.1X Suite B (SHA-384) | Enterprise | No | 802.11ac-2013 |
-| 13 | FT-802.1X (SHA-384) | Enterprise | No | 802.11ac-2013 |
-| 14 | FILS-SHA256 | FILS | No | 802.11ai-2016 |
-| 15 | FILS-SHA384 | FILS | No | 802.11ai-2016 |
-| 16 | FT-FILS-SHA256 | FILS | No | 802.11ai-2016 |
-| 17 | FT-FILS-SHA384 | FILS | No | 802.11ai-2016 |
-| 18 | OWE | Other | No | 802.11-2020 |
-| 19 | FT-PSK (SHA-384) | PSK | **Yes** | 802.11-2020 |
-| 20 | PSK-SHA384 | PSK | **Yes** | 802.11-2020 |
-| 21 | PASN | Other | No | 802.11-2024 |
-| 22 | FT-802.1X-SHA384 | Enterprise | No | 802.11-2024 |
-| 23 | 802.1X-SHA384 | Enterprise | No | 802.11-2024 |
-| 24 | SAE (group-dependent) | SAE | No | 802.11-2024 |
-| 25 | FT-SAE (group-dependent) | SAE | No | 802.11-2024 |
+### WEP (pre-AKM)
+
+| Protocol | Encryption | Attack | Tool |
+|---|---|---|---|
+| WEP-40 / WEP-104 | RC4 with 24-bit IV | PTW key recovery (~40K ARP frames) | aircrack-ng |
+
+### Password — PBKDF2 (offline crackable)
+
+These AKMs derive the PMK from a passphrase via PBKDF2-HMAC-SHA1. Captured handshakes are vulnerable to offline dictionary attacks.
+
+| AKM | Name | Variant | hashcat mode | Standard |
+|-----|------|---------|-------------|----------|
+| 2 | PSK | WPA/WPA2-Personal | 22000 | 802.11i-2004 |
+| 4 | FT-PSK | Fast Transition (802.11r) | 37100 (PR pending) | 802.11r-2008 |
+| 6 | PSK-SHA256 | PMF-capable (802.11w) | 22000 (PMKID broken) | 802.11w-2009 |
+| 19 | FT-PSK-SHA384 | FT with SHA-384 | none | 802.11-2020 |
+| 20 | PSK-SHA384 | SHA-384 with GCMP-256 | none | 802.11-2020 |
+
+### Password — SAE (not offline crackable)
+
+These AKMs use the same passphrase but negotiate it via Dragonfly PAKE. The handshake exposes no material that can be cracked offline.
+
+| AKM | Name | Variant | Standard |
+|-----|------|---------|----------|
+| 8 | SAE | WPA3-Personal | 802.11-2012 |
+| 9 | FT-SAE | WPA3 + Fast Transition | 802.11-2012 |
+| 24 | SAE (group-dependent) | H2E only | 802.11-2024 |
+| 25 | FT-SAE (group-dependent) | H2E + Fast Transition | 802.11-2024 |
+
+### EAP — Enterprise (802.1X / FILS)
+
+Authentication delegated to a RADIUS server. PMK derived from EAP Master Session Key, not a passphrase. Whether credentials are recoverable depends on the EAP inner method (e.g., PEAP/MSCHAPv2 → mode 5500; EAP-MD5 → mode 4800; EAP-TLS → not crackable).
+
+| AKM | Name | Variant | Standard |
+|-----|------|---------|----------|
+| 1 | 802.1X | Original enterprise | 802.11i-2004 |
+| 3 | FT-802.1X | Enterprise + Fast Transition | 802.11r-2008 |
+| 5 | 802.1X-SHA256 | Enterprise + PMF | 802.11w-2009 |
+| 11 | Suite B-128 (deprecated) | CNSA predecessor | 802.11ac-2013 |
+| 12 | Suite B-192 | CNSA, SHA-384, P-384 certs | 802.11ac-2013 |
+| 13 | FT-802.1X-SHA384 | Suite B + Fast Transition | 802.11ac-2013 |
+| 14 | FILS-SHA256 | Fast Initial Link Setup | 802.11ai-2016 |
+| 15 | FILS-SHA384 | FILS with SHA-384 | 802.11ai-2016 |
+| 16 | FT-FILS-SHA256 | FILS + Fast Transition | 802.11ai-2016 |
+| 17 | FT-FILS-SHA384 | FILS + FT + SHA-384 | 802.11ai-2016 |
+| 22 | FT-802.1X-SHA384 | Enterprise FT, SHA-384 | 802.11-2024 |
+| 23 | 802.1X-SHA384 | Enterprise, SHA-384 | 802.11-2024 |
+
+### Other
+
+| AKM | Name | Purpose | Standard |
+|-----|------|---------|----------|
+| 7 | TDLS | Peer-to-peer tunneled direct link | 802.11z-2010 |
+| 10 | APPeerKey (deprecated) | Removed from active standard | 802.11-2012 |
+| 18 | OWE | Opportunistic encryption, no password | 802.11-2020 |
+| 21 | PASN | Pre-association security negotiation | 802.11az-2022 |
 
 ## Full Specification Tables
 
@@ -79,38 +110,12 @@ Every AKM falls into one of five categories:
     | 22, 23 (SHA-384) | KDF-SHA-384 | 0 (AKM-defined) | HMAC-SHA-384 | AES key wrap |
     | 24, 25 (SAE-ext) | group-dependent | 0 (AKM-defined) | group-dependent | AES key wrap |
 
-## Category Pages
+## Deep Dives
 
-### Password-Based (PSK)
-
-AKMs 2, 4, 6, 19, 20 derive the PMK from a passphrase via PBKDF2. Captured
-handshakes are vulnerable to offline dictionary attacks.
-
-- [PSK Family (AKM 2, 6, 20)](psk-family.md)
-- [FT-PSK Family (AKM 4, 19)](ft-psk-family.md)
-
-### SAE (WPA3-Personal)
-
-AKMs 8, 9, 24, 25 use Dragonfly PAKE. Capturing the handshake does not yield
-a crackable hash.
-
-- [SAE Family (AKM 8, 9, 24, 25)](sae-family.md)
-
-### Enterprise (802.1X)
-
-AKMs 1, 3, 5, 11–13, 22, 23 delegate authentication to a RADIUS server via EAP.
-PMK derived from EAP Master Session Key, not a passphrase.
-
-- [Enterprise Family (AKM 1, 3, 5, 11–13, 22, 23)](enterprise-family.md)
-
-### FILS
-
-AKMs 14–17 implement Fast Initial Link Setup for reduced-latency associations.
-
-- [FILS Family (AKM 14–17)](fils-family.md)
-
-### Other
-
-AKMs 7 (TDLS), 10 (APPeerKey, deprecated), 18 (OWE), 21 (PASN).
-
-- [Other AKMs (OWE, TDLS, PASN)](other-family.md)
+- [PSK Family (AKM 2, 6, 20)](psk-family.md) — PBKDF2 password-based, offline crackable
+- [FT-PSK Family (AKM 4, 19)](ft-psk-family.md) — Fast Transition variants
+- [SAE Family (AKM 8, 9, 24, 25)](sae-family.md) — Dragonfly PAKE, not offline crackable
+- [Enterprise Family (AKM 1, 3, 5, 11–13, 22, 23)](enterprise-family.md) — 802.1X / RADIUS
+- [FILS Family (AKM 14–17)](fils-family.md) — Fast Initial Link Setup
+- [Other AKMs (OWE, TDLS, PASN)](other-family.md) — Opportunistic encryption, peer-to-peer, pre-association
+- [Security Matrix](security-matrix.md) — per-AKM security posture and attack status
