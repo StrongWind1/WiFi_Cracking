@@ -45,7 +45,6 @@ Realtek has three in-kernel driver families in kernel 7.1.3. Monitor mode works 
     - **rtw88**: Monitor mode works but is unstable — breaks if the device exits promiscuous mode; may require driver reload or device replug to recover. No VIF support, no active monitor. ([hcxdumptool #361](https://github.com/ZerBea/hcxdumptool/discussions/361))
     - **rtw89**: Explicit monitor mode in kernel source (`pure_monitor_mode_vif`). Supports VIF but no active monitor. Most reliable of the Realtek drivers.
     - **rtl8xxxu**: Requires kernel 6.6+ with an unmerged patch ([bugzilla #217205](https://bugzilla.kernel.org/show_bug.cgi?id=217205)). Monitor mode functional but limited.
-    - **rtl8187**: Old but solid — explicit monitor mode hardware flag. Fully working.
     - All Realtek WiFi 5 adapters: "Monitor mode is very solid but does not support VIF or active monitor mode" ([morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi))
 
 **rtw88 — WiFi 5 (AC)** — the most complete Realtek USB driver as of kernel 7.1.3:
@@ -70,42 +69,37 @@ Realtek has three in-kernel driver families in kernel 7.1.3. Monitor mode works 
 | RTL8851BU | `RTW89_8851BU` | WiFi 6 (AX) | Yes | |
 | RTL8922AE | `RTW89_8922AE` | WiFi 7 (BE) | Yes | PCIe only — no USB variant yet |
 
-**Legacy Realtek:**
+**Legacy Realtek (WiFi 4):**
 
-| Driver | Chipsets | WiFi gen | Monitor mode | Notes |
-|---|---|---|---|---|
-| `rtl8187` | RTL8187L, RTL8187B | WiFi 3 (B/G) | Yes (+ active) | Ancient but fully working; 2.4 GHz only |
-| `rtl8xxxu` | RTL8188CU/RU/EU/FU, RTL8191CU, RTL8192CU/EU/FU, RTL8723AU/BU, RTL8710BU (aka RTL8188GU) | WiFi 4 (N) | Partial | Requires kernel 6.6+ with unmerged [patch](https://bugzilla.kernel.org/show_bug.cgi?id=217205) |
-| `rtlwifi` (rtl8192cu) | RTL8192CU, RTL8188CU | WiFi 4 (N) | Limited | Older driver for same chips as rtl8xxxu; being phased out |
-| `rtlwifi` (rtl8192du) | RTL8192DU | WiFi 4 (N) | Limited | Dual-band N adapter; newer rtlwifi USB addition |
+| Driver | Chipsets | Monitor mode | Notes |
+|---|---|---|---|
+| `rtl8xxxu` | RTL8188CU/RU/EU/FU, RTL8191CU, RTL8192CU/EU/FU, RTL8723AU/BU, RTL8710BU (aka RTL8188GU) | Partial | Requires kernel 6.6+ with unmerged [patch](https://bugzilla.kernel.org/show_bug.cgi?id=217205) |
+| `rtlwifi` (rtl8192cu) | RTL8192CU, RTL8188CU | Limited | Older driver for same chips as rtl8xxxu; being phased out |
+| `rtlwifi` (rtl8192du) | RTL8192DU | Limited | Dual-band N adapter; newer rtlwifi USB addition |
 
 **Bottom line:** Realtek adapters work for passive capture and basic monitor mode, but **none support active monitor mode**. This means hcxdumptool cannot actively solicit PMKIDs — it can only passively wait for handshakes. For active attacks, use a MediaTek adapter. The upside: the RTL8812AU/8814AU/8821AU are now in-kernel via rtw88, so you no longer need the old out-of-tree `aircrack-ng/rtl8812au` drivers.
 
 ### Ralink (now MediaTek — legacy but solid)
 
-Ralink was acquired by MediaTek in 2011. Their chipsets use the `rt2x00` driver family, which gets monitor mode through mac80211 automatically. All are WiFi 4 (N) or older — they cannot see 5 GHz networks unless the chipset is explicitly dual-band.
+Ralink was acquired by MediaTek in 2011. Their chipsets use the `rt2x00` driver family (WiFi 4 / 802.11n), which gets monitor mode through mac80211 automatically. All are 2.4 GHz only unless explicitly dual-band.
 
-| Driver | Chipsets | WiFi gen | Bands | Monitor mode | Notes |
-|---|---|---|---|---|---|
-| `rt2500usb` | RT2571, RT2572 | WiFi 3 (B/G) | 2.4 GHz | Yes | Very old, 11 Mbps max |
-| `rt73usb` | RT2573, RT2671 | WiFi 3/4 (B/G) | 2.4 GHz | Yes | |
-| `rt2800usb` | RT2870, RT3070, RT3071, RT3072 | WiFi 4 (N) | 2.4 GHz | Yes | Common in older USB dongles |
-| `rt2800usb` | RT3370 | WiFi 4 (N) | 2.4 GHz | Yes | rt33xx family |
-| `rt2800usb` | **RT3572, RT3573** | WiFi 4 (N) | **Dual-band** | Yes | The best Ralink for pentesting — 2.4 + 5 GHz |
-| `rt2800usb` | RT5370, RT5372 | WiFi 4 (N) | 2.4 GHz | Yes | rt53xx family, very common in cheap dongles |
-| `rt2800usb` | **RT5572** | WiFi 4 (N) | **Dual-band** | Yes | Dual-band variant of RT5370; used in ALFA AWUS051NH v2 |
+| Driver | Chipsets | Bands | Monitor mode | Notes |
+|---|---|---|---|---|
+| `rt2800usb` | RT2870, RT3070, RT3071, RT3072 | 2.4 GHz | Yes | Common in older USB dongles |
+| `rt2800usb` | RT3370 | 2.4 GHz | Yes | rt33xx family |
+| `rt2800usb` | **RT3572, RT3573** | **Dual-band** | Yes | The best Ralink for pentesting — 2.4 + 5 GHz |
+| `rt2800usb` | RT5370, RT5372 | 2.4 GHz | Yes | rt53xx family, very common in cheap dongles |
+| `rt2800usb` | **RT5572** | **Dual-band** | Yes | Dual-band variant of RT5370; used in ALFA AWUS051NH v2 |
 
 All rt2x00 drivers support monitor mode and packet injection via mac80211. The dual-band chipsets (RT3572, RT3573, RT5572) are the most useful since they can capture both 2.4 GHz and 5 GHz traffic.
 
-### Other legacy (still works)
+### Other legacy
 
 | Chipset | Driver | WiFi gen | Monitor | Injection | Notes |
 |---|---|---|---|---|---|
 | Atheros AR9271 | `ath9k_htc` | WiFi 4 (N) | Yes | Yes | Rock-solid. 2.4 GHz only. The classic pentesting adapter (ALFA AWUS036NHA) |
-| Intersil ISL38xx | `p54usb` | WiFi 3/4 | Yes | Yes | Prism54-based |
-| ZyDAS ZD1211/B | `zd1211rw` | WiFi 3 | Yes | Limited | Very old, mostly historical |
 
-These still work and are well-tested, but they are WiFi 4 or older — they cannot see 5 GHz or 6 GHz networks.
+WiFi 4 only — cannot see 5 GHz or 6 GHz networks.
 
 ## Linux kernel requirements
 
