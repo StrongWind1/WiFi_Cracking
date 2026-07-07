@@ -90,6 +90,7 @@ nav:
   - Home: index.md
   - Guide:
     - guide/index.md
+    - Adapters and Linux setup: guide/adapters.md
     - WEP Cracking: guide/wep.md
     - WPA/WPA2 Cracking: guide/wpa.md
     - WPA-Enterprise (EAP): guide/eap.md

@@ -16,6 +16,12 @@ Three end-to-end workflows for WiFi security testing — from capture to cracked
 
 <div class="grid cards" markdown>
 
+- :material-wifi-cog: **Adapters and Linux Setup**
+
+    Which WiFi adapter to buy, which kernel to run, and how to get monitor mode working. MediaTek vs Realtek, in-kernel drivers, and the mt76 regression.
+
+    [:octicons-arrow-right-24: Adapter guide](adapters.md)
+
 - :material-shield-off: **WEP Cracking**
 
     Recover the WEP key directly from captured traffic — no wordlist needed. WEPWolf runs PTW, KoreK, FMS, and RC4-bias attacks in one command.
