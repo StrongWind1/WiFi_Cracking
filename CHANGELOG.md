@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.0] - 2026-07-07
+
+Spec-verification pass: every claim cross-referenced against WPAWolf source code and IEEE 802.11-2024 spec text (5 review passes, 29 agents, 90 findings resolved).
+
+### Added
+
+- Tools: wpawolf page with full CLI reference, comparison table, output options
+- Gap table: APLESS kernel gap section explaining the FT-PSK nonce-swap bug in mode 37100
+- Gap table: AKM 19/20 (SHA-384) rows — no hashcat module, suppressed from legacy sinks
+- hcxpcapngtool: documented 64-entry buffer limit, EAPOL 255 B size gate, per-file state reset
+- Tools index: wpawolf row and pipeline diagram reference
+- Guide: wpawolf mentioned alongside hcxpcapngtool, FT-PSK hash types (`-f` flag), WPA\*03\*/04\*
+- Protocol: KDV=0 added to Key Descriptor Version tables (AKMs 8/9/19/20/24/25)
+- Protocol: M3 classification note (ACK=1 + Install=1 only; MIC and Secure not checked)
+- Protocol: Secure bit "0 (1 if rekey)" for M1/M2 in all identification tables
+
+### Changed
+
+- AKM 22/23 names swapped per Table 9-190: AKM 22 = FT-802.1X-SHA384, AKM 23 = 802.1X-SHA384
+- PMKID description broadened from "single M1 frame" to 20 extraction sites with two container types (KDE vs RSN IE)
+- Message pair byte: bit 7 = NC (nonce error correction needed), not "replay count not checked"
+- LE/BE flags: ANonce byte order for nonce correction, not replay-counter endianness
+- FT-PSK nonce ordering: documented as fixed order (SNonce || ANonce || BSSID || STA), not Min/Max
+- Gap table: complete rewrite with WPAWolf corpus-verified support matrix
+- WPA\*01\* format: trailing message_pair byte documented (was omitted)
+- EAPOL field: 0-512 hex (256 bytes) upper bound documented
+- TKIP TK: 256 bits per Table 12-8 (was listed as 128+128)
+- AKM 11 ciphers: GCMP-128 only per Table 9-190 (was incorrectly showing CCMP-128)
+- PASN introduction: 802.11az-2022 (was incorrectly 802.11-2020)
+
+### Fixed
+
+- FT-PSK PMK-R0 KDF context: SSIDlength (1 B) as first field per §12.7.1.6.3 (was incorrectly SPA)
+- FT-PSK PMK-R1: output length 256 bits, PMK-R1-Name computed separately per §12.7.1.6.4
+- AKM 19/20 PTK size: 704 bits per Table 12-11 + Table 12-8 (was incorrectly 576)
+- EAPOL MIC computation: variable length (16/24 B) with KDV=0 / HMAC-SHA384 path
+- Removed HMAC-SHA-256 from EAPOL MIC algorithm list (no AKM uses it for MIC)
+- FILS PTK derivation formula corrected per §12.11.2.5.3
+- N1E4/N3E4: default hcxpcapngtool combos (were incorrectly marked as --all only)
+- 30+ spec section references corrected against IEEE 802.11-2024 (§12.7.1.3, §12.7.1.6, §12.7.2, §9.4.2.23.5, §9.4.2.45/46, §11.20, §12.7.8, §12.14, §12.7.1.6.5, Annex J.4.1)
+
+### Removed
+
+- `.pre-commit-config.yaml` (no Python source to lint)
+
+### Infrastructure
+
+- `pyproject.toml`: full metadata, `package = false`, authors, keywords, classifiers, URLs
+- `Makefile`: `check` target, canonical `clean`/`distclean`
+- `.gitignore`/`.gitattributes`/`.editorconfig`: tailored to mkdocs repo
+- `docs.yml`: bumped `setup-uv` to v8.3.0, removed stale `fetch-depth: 0`
+
 ## [2.0.0] - 2026-07-02
 
 Complete rewrite: expanded from WPA/WPA2 PSK-only to all 25 AKM suites, EAP attacks, and WEP.

@@ -124,6 +124,7 @@ nav:
     - Tools:
       - tools/index.md
       - hcxpcapngtool: tools/hcxpcapngtool.md
+      - wpawolf: tools/wpawolf.md
       - hashcat: tools/hashcat.md
       - Aircrack-ng suite: tools/aircrack-suite.md
       - hostapd-mana: tools/hostapd-mana.md
