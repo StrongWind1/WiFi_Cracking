@@ -2,10 +2,9 @@
 
 ## Overview
 
-Pre-Shared Key attacks target networks where all stations share a common passphrase.
-Two distinct attack surfaces exist: PMKID capture (client-less) and EAPOL handshake
-interception. This section covers both vectors, the AKM suites they apply to, and
-their relative computational cost.
+Pre-Shared Key (PSK) attacks target networks where all stations share a common passphrase. The passphrase is fed through PBKDF2-HMAC-SHA1 to produce a 256-bit PMK (Pairwise Master Key) — the actual cryptographic key. Two distinct attack surfaces exist: PMKID capture (client-less) and EAPOL handshake interception. This section covers both vectors, the AKM suites they apply to, and their relative computational cost.
+
+For a clear breakdown of the terminology (password vs passphrase vs PSK vs PMK vs PMKID), see the [WPA cracking guide terminology section](../guide/wpa.md#terminology-password-passphrase-psk-pmk).
 
 ## Attack Vectors
 

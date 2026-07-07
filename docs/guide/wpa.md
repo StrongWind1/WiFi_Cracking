@@ -17,6 +17,23 @@ A start-to-finish workflow: capture traffic with hcxdumptool, extract hashes wit
 
 ---
 
+## Terminology: password, passphrase, PSK, PMK
+
+These terms are related but distinct — documentation and tools use them interchangeably, which causes confusion:
+
+| Term | What it is | Example |
+|---|---|---|
+| **Password** | What the user types into their device's WiFi settings | `correcthorsebatterystaple` |
+| **Passphrase** | Same thing — the spec calls it a "pass-phrase" (8-63 ASCII characters, or 64 hex for raw key) | Same as above |
+| **PSK (Pre-Shared Key)** | The authentication **mode**, not a specific key. "PSK mode" means both sides share the same passphrase, as opposed to Enterprise mode where a RADIUS server authenticates each user individually | "This network uses WPA2-PSK" |
+| **PMK (Pairwise Master Key)** | The 256-bit cryptographic key derived from the passphrase via PBKDF2. This is what the AP and client actually use — the passphrase itself never appears on the wire | `PMK = PBKDF2(passphrase, SSID, 4096, 256 bits)` |
+| **PMKID** | A 128-bit fingerprint of the PMK, computed as `HMAC-SHA1(PMK, "PMK Name" \|\| AP_MAC \|\| STA_MAC)`. Included in EAPOL M1 if the AP has a cached PMKSA | The attack target for client-less cracking |
+
+The relationship is a one-way chain: **passphrase → PMK → PMKID**. Cracking works backward: guess a passphrase, compute the expected PMK, check if it produces the captured PMKID or the correct MIC.
+
+!!! note "PSK ≠ PMK"
+    "PSK" is often used loosely to mean the passphrase, the PMK, or the authentication mode. In the spec, PSK refers to the mode (AKM 2 = "PSK"), and the actual key derived from the passphrase is the PMK. When hashcat says it recovered the "PSK", it means the passphrase.
+
 ## How WPA cracking works
 
 Your WiFi password never travels over the air. Instead, both sides derive a 256-bit PMK from the passphrase using PBKDF2 (4096 rounds of HMAC-SHA1 with the SSID as salt), then prove they share it through a 4-way handshake. That handshake exposes two attack surfaces:
