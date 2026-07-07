@@ -9,7 +9,7 @@ A start-to-finish workflow: capture traffic with [hcxdumptool](https://github.co
 | Component | Purpose | Install |
 |-----------|---------|---------|
 | Linux with a **monitor-mode WiFi adapter** | Capture raw 802.11 frames | Most Atheros / Ralink / Realtek chipsets work; check `iw list` for "monitor" support |
-| **hcxdumptool** | Capture tool -- actively solicits PMKIDs and passively captures handshakes in one run | `sudo apt install hcxdumptool` or [build from source](https://github.com/ZerBea/hcxdumptool) |
+| **[hcxdumptool](https://github.com/ZerBea/hcxdumptool)** | Capture tool -- actively solicits PMKIDs and passively captures handshakes in one run | `sudo apt install hcxdumptool` or [build from source](https://github.com/ZerBea/hcxdumptool) |
 | **[WPAWolf](https://github.com/StrongWind1/WPAWolf)** (primary) | Extract hashes from pcapng captures | Download a [prebuilt binary](https://github.com/StrongWind1/WPAWolf/releases) or `make release` from source |
 | [hcxpcapngtool](https://github.com/ZerBea/hcxtools) (alternative) | Simpler extractor, fewer edge cases covered | `sudo apt install hcxtools` |
 | **[hashcat](https://github.com/hashcat/hashcat)** with GPU drivers | Offline password cracking | `sudo apt install hashcat`; install CUDA or ROCm for GPU acceleration |
