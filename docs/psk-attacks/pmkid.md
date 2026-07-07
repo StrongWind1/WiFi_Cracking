@@ -90,6 +90,73 @@ PMKID: 16 bytes
 
 M1 is the most common PMKID source (the Steube 2018 attack vector). Extraction tools check both container types across all applicable frame types.
 
+## All 20 PMKID Extraction Locations
+
+The IEEE 802.11-2024 spec defines PMKIDs in 20 distinct frame/field combinations. [wpawolf](../tools/wpawolf.md) extracts from all 20; hcxpcapngtool covers S1-S4. The labels S1-S20 follow wpawolf's `PmkidSource` naming.
+
+### EAPOL-Key frames
+
+| ID | Frame | Direction | Container | PSK crackable? | Notes |
+|---|---|---|---|---|---|
+| S1 | **EAPOL-Key M1** | AP → STA | KDE (`{DD 14 00:0F:AC 04}`) | Yes | The Steube 2018 attack vector — most common source |
+| S2 | **EAPOL-Key M2** | STA → AP | RSN IE in Key Data | Yes | For FT-PSK, carries PMKR1Name + MDE + FTE |
+
+### Management frames
+
+| ID | Frame | Direction | Container | PSK crackable? | Notes |
+|---|---|---|---|---|---|
+| S3 | Association Request | STA → AP | RSN IE | Yes | Client referencing cached PMKSA |
+| S4 | Reassociation Request | STA → AP | RSN IE | Yes | For FT over-the-air roaming, carries PMKR1Name + MDE + FTE |
+| S14 | Probe Request (directed) | STA → AP | RSN IE | Yes (if PSK) | Rare — most clients omit RSN IE in probes |
+| S15 | Probe Request (broadcast) | STA → broadcast | RSN IE | Yes (if PSK) | Spec-valid but very rare |
+| S16 | Beacon | AP → all | RSN IE | Yes (if PSK) | Vendor firmware bug — spec says PMKID Count should be 0 in AP-originated frames |
+| S17 | Probe Response | AP → STA | RSN IE | Yes (if PSK) | Same vendor firmware bug as S16 |
+
+### FT Authentication frames (Algorithm = 2, Fast BSS Transition)
+
+| ID | Frame | Direction | Container | PSK crackable? | Notes |
+|---|---|---|---|---|---|
+| S5 | FT Auth seq=1 | STA → AP | RSN IE + MDE + FTE | Yes (FT-PSK) | Carries PMKR0Name; FTE has R0KH-ID and ANonce |
+| S6 | FT Auth seq=2 | AP → STA | RSN IE + MDE + FTE | Yes (FT-PSK) | Carries PMKR1Name; FTE has R0KH-ID and R1KH-ID — everything needed for a `WPA*03*` line |
+
+### FT Action frames (Category = 6)
+
+| ID | Frame | Direction | Container | PSK crackable? | Notes |
+|---|---|---|---|---|---|
+| S11 | FT Action Request | STA → AP | RSN IE + FTE | Yes (FT-PSK) | Over-the-DS FT path |
+| S12 | FT Action Response | AP → STA | RSN IE + FTE | Yes (FT-PSK) | |
+| S13 | FT Action Confirm | STA → AP | RSN IE + FTE | Yes (FT-PSK) | Carries PMKR1Name |
+
+### FILS Authentication frames (Algorithm = 4 or 5)
+
+| ID | Frame | Direction | Container | PSK crackable? | Notes |
+|---|---|---|---|---|---|
+| S7 | FILS Auth seq=1 | STA → AP | RSN IE | No | PMK from EAP rMSK, not PBKDF2 |
+| S8 | FILS Auth seq=2 | AP → STA | RSN IE | No | AP echoes chosen PMKID |
+
+### PASN Authentication frames
+
+| ID | Frame | Direction | Container | PSK crackable? | Notes |
+|---|---|---|---|---|---|
+| S9 | PASN Auth seq=1 | STA → AP | RSN IE | Conditional | Crackable only when base AKMP is PSK or FT-PSK |
+| S10 | PASN Auth seq=2 | AP → STA | RSN IE | Conditional | |
+
+### Mesh Peering and OSEN
+
+| ID | Frame | Direction | Container | PSK crackable? | Notes |
+|---|---|---|---|---|---|
+| S18 | Mesh Peering Open | STA → STA | AMPE element (tag 139), last 16 bytes | No | Mesh PMKSAs derive from SAE |
+| S19 | Mesh Peering Confirm | STA → STA | AMPE element (tag 139) | No | |
+| S20 | Association Request (OSEN) | STA → AP | Vendor IE (`{50:6F:9A:12}`) | No | Wi-Fi Passpoint / Hotspot 2.0; enterprise 802.1X |
+
+### Summary by crackability
+
+| Sources | Count | Crackable? |
+|---|---|---|
+| S1-S6, S11-S17 (PSK / FT-PSK) | 13 | Yes — if AKM is 2, 4, 6, 19, or 20 |
+| S9-S10 (PASN) | 2 | Conditional — only if base AKMP is PSK |
+| S7-S8, S18-S20 (FILS, Mesh, OSEN) | 5 | No — PMK not derived from passphrase |
+
 ## AP PMKSA Cache Requirement
 
 The AP only includes a PMKID in M1 if it has an active PMKSA cache entry for
