@@ -94,18 +94,17 @@ GTK = PRF-X(GMK, "Group key expansion", MAC_AP || GNonce)
 | IGTK | Protects management frames when 802.11w (PMF) is active |
 | BIGTK | Protects beacon frames (802.11-2020+) |
 
-## Min/Max Ordering in PRF
+## Min/Max Ordering (non-FT only)
 
-The PRF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. The
-comparison treats each value as an unsigned big-endian integer — the smaller
-value is concatenated first. This ensures both sides compute the same PTK
-regardless of role (AP vs. STA).
+For standard PSK (AKM 2, 6, 20), the PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. The comparison treats each value as an unsigned big-endian integer — the smaller value is concatenated first. This ensures both sides compute the same PTK regardless of role (AP vs. STA).
+
+FT-PSK (AKM 4, 19) does **not** use Min/Max ordering. The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per §13.4.2.
 
 ## Spec References
 
 - PTK derivation: 802.11-2024 §12.7.1.3
 - KDF definition (iterations formula): §12.7.1.6.2
-- Key hierarchy overview: §12.7.2
+- Key hierarchy overview: §12.7.1
 - Key sizes per AKM: Table 12-8 (TK), Table 12-11 (KCK/KEK/MIC)
 - FT key hierarchy: §12.7.1.6.3–6.5
-- GTK derivation: §12.7.7.2
+- Group key handshake: §12.7.7

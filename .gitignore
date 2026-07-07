@@ -5,6 +5,8 @@
 __pycache__/
 *.py[oc]
 *.egg-info
+/build
+/dist
 .venv
 venv/
 env/
@@ -37,6 +39,8 @@ $RECYCLE.BIN/
 .ruff_cache/
 .pytest_cache/
 .mypy_cache/
+.ty/
+.ty_cache/
 .claude/
 
 # Linux

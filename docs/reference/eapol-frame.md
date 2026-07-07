@@ -26,7 +26,7 @@ Offset  Length  Field
 
 !!! note "Variable MIC length"
     The MIC field at offset 81 is 16 bytes for AKM 1–9 and 11 (HMAC-SHA1-128,
-    HMAC-MD5, AES-128-CMAC, or HMAC-SHA-256, all 128-bit output). It is 24
+    HMAC-MD5, or AES-128-CMAC, all 128-bit output). It is 24
     bytes for AKM 12/13/19/20/22/23 (HMAC-SHA-384, truncated to 192 bits). For
     AKM 14/15 (FILS with AES-SIV), the MIC is 0 bytes. The Key Data Length
     field at offset 97 is then shifted by the difference.
@@ -56,10 +56,13 @@ These flag combinations identify each handshake message:
 
 | Message | Key ACK | Key MIC | Install | Secure | Nonce field | Key Data |
 |---------|---------|---------|---------|--------|-------------|----------|
-| M1 | 1 | 0 | 0 | 0 | ANonce | PMKID (optional) |
-| M2 | 0 | 1 | 0 | 0 | SNonce | STA RSN IE |
+| M1 | 1 | 0 | 0 | 0 (1 if rekey) | ANonce | PMKID (optional) |
+| M2 | 0 | 1 | 0 | 0 (1 if rekey) | SNonce | STA RSN IE |
 | M3 | 1 | 1 | 1 | 1 | ANonce | Encrypted GTK + AP RSN IE |
 | M4 | 0 | 1 | 0 | 1 | 0 | None |
+
+!!! note "M3 classification"
+    M3 is identified by Key ACK=1 + Install=1 alone; Key MIC and Secure are not checked. WPA1 M3 carries Secure=0.
 
 ## EAPOL-Key IV Note
 
@@ -73,9 +76,8 @@ using the KEK.
 To verify a MIC (hashcat's core operation):
 
 1. Extract the raw EAPOL-Key frame bytes
-2. Zero out the 16-byte MIC field (offset 81–96)
-3. Compute `HMAC-MD5(KCK, frame)` (keyver 1) or `HMAC-SHA1(KCK, frame)`
-   truncated to 128 bits (keyver 2) or `AES-128-CMAC(KCK, frame)` (keyver 3)
+2. Zero out the MIC field (offset 81 through 81+MIC_len; 16 bytes for AKMs 1–9/11, 24 bytes for AKMs 12/13/19/20/22/23)
+3. Compute `HMAC-MD5(KCK, frame)` (keyver 1) or `HMAC-SHA1(KCK, frame)` truncated to 128 bits (keyver 2) or `AES-128-CMAC(KCK, frame)` (keyver 3) or `HMAC-SHA384(KCK, frame)` truncated to 192 bits (keyver 0, AKMs 19/20)
 4. Compare result against the saved MIC bytes
 
 The frame used includes the full EAPOL header (from offset 0) through the end
@@ -84,6 +86,7 @@ of Key Data. The 802.3/802.11 header preceding the EAPOL packet is NOT included.
 ## Spec References
 
 - EAPOL-Key frame layout: 802.11-2024 §12.7.2
-- Key Information field: §12.7.3, Figure 12-36
-- MIC computation: §12.7.3
+- Key Information field: §12.7.2, Figure 12-36
+- MIC computation: §12.7.2
+- KDV mapping: §12.7.2, Table 12-11
 - Variable MIC lengths: Table 12-11 (integrity algorithms and MIC sizes per AKM)

@@ -25,7 +25,7 @@ Key lengths per IEEE 802.11-2024 Table 12-11 (KCK/KEK) and Table 12-8 (TK).
 All three AKMs use the same PMK derivation:
 
 ```
-PMK = PBKDF2(HMAC-SHA1, passphrase, SSID, 4096, 256)
+PMK = PBKDF2(HMAC-SHA1, passphrase, SSID, 4096, 256 bits)
 ```
 
 - Inner PRF: **HMAC-SHA1** (always, regardless of AKM or keyver)
@@ -70,9 +70,7 @@ Two iterations needed for full PTK (ceil(384/256) = 2), but cracking only requir
 
 ### AKM 20 — KDF-SHA-384
 
-Same structure as KDF-SHA-256 but using HMAC-SHA-384 internally. PTK = 704
-bits (KCK 192 + KEK 256 + TK 256). Requires two iterations:
-ceil(704/384) = 2.
+Same structure as KDF-SHA-256 but using HMAC-SHA-384 internally. Full PTK = 704 bits per the spec (KCK 192 + KEK 256 + TK 256), requiring two iterations: ceil(704/384) = 2.
 
 ## Cipher Suites
 

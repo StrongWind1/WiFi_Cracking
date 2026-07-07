@@ -4,7 +4,8 @@
 
 | Tool | PSK | EAP | WEP | Purpose |
 |------|-----|-----|-----|---------|
-| hcxpcapngtool | Yes | Yes | No | Extract hashes from pcap/pcapng captures |
+| hcxpcapngtool | Yes | Yes | No | Extract hashes from pcap/pcapng/gzip captures |
+| wpawolf | Yes | No | No | Extract PSK/FT-PSK hashes (collect-then-pair, no size gate, cross-file pairing) |
 | hashcat | Yes | Yes | No | GPU-accelerated offline password cracking |
 | aircrack-ng | Yes | No | Yes | Capture, injection, and WEP/WPA key recovery |
 | hostapd-mana | No | Yes | No | Rogue AP for EAP credential capture |
@@ -27,7 +28,7 @@ flowchart LR
         E[hostapd-mana] --> F[EAP log]
     end
     subgraph Extract
-        C --> G[hcxpcapngtool]
+        C --> G[hcxpcapngtool / wpawolf]
         D --> G
         F --> H[manual parsing]
     end

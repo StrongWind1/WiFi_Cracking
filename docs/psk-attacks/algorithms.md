@@ -8,8 +8,10 @@ field, constant, and algorithm is traceable to the spec or tool source.
 | AKM | Name | PMK KDF | PTK KDF | PTK size | MIC algorithm | PMKID hash | hashcat mode |
 |-----|------|---------|---------|----------|---------------|------------|-------------|
 | 2 | PSK | PBKDF2-HMAC-SHA1 | PRF-512/384 (HMAC-SHA1) | 384/512 | HMAC-MD5 (kv1) / HMAC-SHA1-128 (kv2) | HMAC-SHA1-128 | 22000 |
-| 4 | FT-PSK | PBKDF2-HMAC-SHA1 | KDF-SHA256 (2 iters) | 384 | AES-128-CMAC | SHA256 chain | 37100 |
-| 6 | PSK-SHA256 | PBKDF2-HMAC-SHA1 | KDF-SHA256 | 384 | AES-128-CMAC | HMAC-SHA256-128 | 22000 (kv3) |
+| 4 | FT-PSK | PBKDF2-HMAC-SHA1 | FT-KDF-SHA256 (2 iters) | 384 | AES-128-CMAC (kv3) | SHA256 chain | 37100 |
+| 6 | PSK-SHA256 | PBKDF2-HMAC-SHA1 | KDF-SHA256 | 384 | AES-128-CMAC (kv3) | HMAC-SHA256-128 | 22000 |
+| 19 | FT-PSK-SHA384 | PBKDF2-HMAC-SHA1 | FT-KDF-SHA384 (2 iters) | 576 | HMAC-SHA384 (kv0, 24 B) | SHA384 chain | none |
+| 20 | PSK-SHA384 | PBKDF2-HMAC-SHA1 | KDF-SHA384 | 576 | HMAC-SHA384 (kv0, 24 B) | HMAC-SHA384-128 | none |
 
 ---
 
@@ -18,7 +20,7 @@ field, constant, and algorithm is traceable to the spec or tool source.
 The same for all crackable PSK variants:
 
 ```
-PMK = PBKDF2(passphrase, SSID, ssidLen, 4096, 256)
+PMK = PBKDF2(passphrase, SSID, ssidLen, 4096, 256 bits)
 ```
 
 - Inner PRF: **HMAC-SHA1** (always, regardless of AKM or keyver)
@@ -64,12 +66,11 @@ KDF-Hash-Length(K, label, context):
 Counter is a 2-byte little-endian unsigned integer (not a single byte).
 Length is appended as a 2-byte little-endian integer.
 
-### Min/Max Ordering
+### Min/Max Ordering (non-FT only)
 
-The PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`.
-Comparison treats each as an unsigned big-endian integer. The smaller value
-is concatenated first. This ensures both sides derive the same PTK
-regardless of AP vs. STA role.
+For standard PSK (AKM 2, 6), the PRF/KDF input uses `Min(MAC_AP, MAC_STA)` and `Min(ANonce, SNonce)`. Comparison treats each as an unsigned big-endian integer. The smaller value is concatenated first. This ensures both sides derive the same PTK regardless of AP vs. STA role.
+
+**FT-PSK (AKM 4, 19) does not use Min/Max ordering.** The FT-PTK KDF uses a fixed order: `SNonce || ANonce || BSSID || STA_MAC` per IEEE 802.11-2024 §13.4.2. This is why the APLESS combos (N2E3, N4E3) fail in hashcat mode 37100 — the kernel hardcodes the nonce layout and cannot swap them for M3-anchored pairs.
 
 ---
 
@@ -171,8 +172,8 @@ The PMKID is not a simple HMAC of the PMK — it uses the FT key hierarchy:
 ```
 Step A: PMK-R0-Name-salt
   = HMAC-SHA256(PMK,
-      counter_LE16(2) || "FT-R0" || ssidLen || SSID ||
-      MDID || R0KHIDLen || R0KHID || STA_MAC ||
+      counter_LE16(2) || "FT-R0" ||
+      SSIDlength || SSID || MDID || R0KH-ID-Len || R0KH-ID || S0KH-ID ||
       size_LE16(384))
   Take bytes 0–15 (always exactly 16 bytes).
 
@@ -181,10 +182,11 @@ Step B: PMK-R0-Name
   Truncate to 128 bits.
 
 Step C: PMKID
-  = SHA256("FT-R1N" || PMK-R0-Name || R1KHID || STA_MAC)
+  = SHA256("FT-R1N" || PMK-R0-Name || R1KH-ID || S1KH-ID)
   Truncate to 128 bits.
 ```
 
+- S0KH-ID = S1KH-ID = STA MAC address (same value per §12.7.1.6.3)
 - All SHA-256 after the initial PBKDF2
 - Requires extra inputs: MDID, R0KH-ID, R1KH-ID
 
@@ -193,15 +195,15 @@ Step C: PMKID
 ```
 Step A: PMK-R0 (first 32 bytes)
   = HMAC-SHA256(PMK,
-      counter_LE16(1) || "FT-R0" || ssidLen || SSID ||
-      MDID || R0KHIDLen || R0KHID || STA_MAC ||
+      counter_LE16(1) || "FT-R0" ||
+      SSIDlength || SSID || MDID || R0KH-ID-Len || R0KH-ID || S0KH-ID ||
       size_LE16(384))
   Take bytes 0–31.
 
 Step B: PMK-R1 (first 32 bytes)
   = HMAC-SHA256(PMK-R0,
       counter_LE16(1) || "FT-R1" ||
-      R1KHID || STA_MAC ||
+      R1KH-ID || S1KH-ID ||
       size_LE16(256))
   Take bytes 0–31.
 
@@ -229,7 +231,7 @@ Step D: MIC
 
 ## Spec References
 
-- PBKDF2 for PMK: 802.11-2024 §12.7.1.2 + RFC 2898
+- PBKDF2 for PMK: 802.11-2024 Annex J.4.1 + RFC 2898
 - PRF definition: §12.7.1.2
 - KDF definition (iterations formula): §12.7.1.6.2
 - PMKID computation: §12.7.1.3

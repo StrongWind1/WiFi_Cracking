@@ -110,6 +110,6 @@ PMKID (`WPA*01*`) and EAPOL (`WPA*02*`) hashes for the same SSID share the
 PBKDF2 salt. Put both in the same file — one PBKDF2 per guess covers both:
 
 ```
-WPA*01*<pmkid>*<mac_ap>*<mac_sta1>*<essid>***
+WPA*01*<pmkid>*<mac_ap>*<mac_sta1>*<essid>***<mp>
 WPA*02*<mic>*<mac_ap>*<mac_sta2>*<essid>*<nonce>*<eapol>*<mp>
 ```

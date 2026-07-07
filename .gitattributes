@@ -2,18 +2,12 @@
 # Prevents CRLF from sneaking in on Windows checkouts.
 * text=auto eol=lf
 
-# Explicit text types (LF enforced, language-aware diffs where useful).
-*.py      text eol=lf diff=python
-*.rs      text eol=lf diff=rust
-*.toml    text eol=lf
+# Explicit text types (LF enforced).
+*.md      text eol=lf
 *.yml     text eol=lf
 *.yaml    text eol=lf
-*.json    text eol=lf
-*.md      text eol=lf
-*.sh      text eol=lf
-*.fish    text eol=lf
-*.cfg     text eol=lf
-*.ini     text eol=lf
+*.toml    text eol=lf
+*.css     text eol=lf
 Makefile  text eol=lf
 
 # Binary files: never diff or convert line endings.

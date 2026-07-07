@@ -173,20 +173,17 @@ N1E4 == N3E4  (same M4 EAPOL, same ANonce value — M1 or M3 both equal)
 | Bit | Hex | Meaning | Effect on cracking |
 |-----|-----|---------|-------------------|
 | 3 | `0x08` | Reserved | Unused |
-| 4 | `0x10` | AP-less attack | Nonce error corrections forced to 0 |
-| 5 | `0x20` | LE router detected | Only try little-endian nonce corrections |
-| 6 | `0x40` | BE router detected | Only try big-endian nonce corrections |
-| 7 | `0x80` | Replay count not checked | Nonce error corrections = 8 (default) |
+| 4 | `0x10` | AP-less attack | Pair did not require an M1 (N2E3, N4E3); nonce error corrections forced to 0 |
+| 5 | `0x20` | LE (little-endian nonce) | AP stores trailing nonce-counter bytes in little-endian order |
+| 6 | `0x40` | BE (big-endian nonce) | AP stores trailing nonce-counter bytes in big-endian order |
+| 7 | `0x80` | NC (nonce-error-correction) | Nonce error correction should be applied |
 
-**Nonce error correction** compensates for firmware bugs where the ANonce
-captured in M1 differs from the one used in PTK derivation (the AP's internal
-counter incremented between derivation and transmission). hashcat adjusts
-the last 4 bytes of the nonce in the PKE buffer by ±N (default N=8), trying
-both little-endian and big-endian byte orders. Controlled by hcxpcapngtool
-`--nonce-error-corrections=N`.
+Bits 5 and 6 (LE/BE) indicate which byte order the AP uses for the counter portion of the ANonce; hashcat uses these to prioritize byte order during nonce error correction. Bit 7 (NC) tells hashcat that nonce error correction should be applied — the extractor sets it for every M1-anchored pair and for pairs where endianness drift is detected or the replay-counter gap deviates from the expected handshake delta.
+
+**Nonce error correction** compensates for firmware bugs where the ANonce captured in M1 differs from the one used in PTK derivation (the AP's internal counter incremented between derivation and transmission). hashcat adjusts the trailing byte of the nonce by ±N/2 (default N=8, so ±4), trying both little-endian and big-endian byte orders. Controlled by hashcat `--nonce-error-corrections=N`.
 
 ## Spec References
 
 - EAPOL-Key MIC computation: 802.11-2024 §12.7.6.5
 - M4 nonce value: §12.7.6.5 NOTE 9
-- Key descriptor versions: §12.7.3
+- Key descriptor versions: §12.7.2, Table 12-11

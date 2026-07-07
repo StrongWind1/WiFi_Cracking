@@ -57,7 +57,7 @@ type, descriptor version, and processing flags.
 | 6 | Install | 0 | 0 | 1 | 0 |
 | 7 | Key ACK | 1 | 0 | 1 | 0 |
 | 8 | Key MIC | 0 | 1 | 1 | 1 |
-| 9 | Secure | 0 | 0 | 1 | 1 |
+| 9 | Secure | 0 (1 if rekey) | 0 (1 if rekey) | 1 | 1 |
 | 10 | Error | 0 | 0 | 0 | 0 |
 | 11 | Request | 0 | 0 | 0 | 0 |
 | 12 | Encrypted Key Data | 0 | 0 | 1 | 0 |
@@ -67,6 +67,7 @@ type, descriptor version, and processing flags.
 
 | Version | Used with | MIC | Key wrap |
 |---------|-----------|-----|----------|
+| 0 | AKM-defined (AKM 8/9/19/20/24/25) | per AKM (e.g. HMAC-SHA384 for AKM 19/20) | AES NIST key wrap |
 | 1 | TKIP cipher | HMAC-MD5 | RC4 |
 | 2 | CCMP cipher (AKM 2) | HMAC-SHA1-128 | AES-128 NIST key wrap |
 | 3 | AKM 3, 4, 5, 6 | AES-128-CMAC | AES-128 NIST key wrap |
@@ -78,14 +79,17 @@ identify which message is which:
 
 | Message | Key ACK | Key MIC | Install | Secure | Nonce |
 |---------|---------|---------|---------|--------|-------|
-| M1 | 1 | 0 | 0 | 0 | ANonce |
-| M2 | 0 | 1 | 0 | 0 | SNonce |
+| M1 | 1 | 0 | 0 | 0 (1 if rekey) | ANonce |
+| M2 | 0 | 1 | 0 | 0 (1 if rekey) | SNonce |
 | M3 | 1 | 1 | 1 | 1 | ANonce |
 | M4 | 0 | 1 | 0 | 1 | 0 (usually) |
+
+!!! note "M3 classification"
+    M3 is identified by Key ACK=1 + Install=1 alone; Key MIC and Secure are not checked for M3 classification.
 
 ## Spec References
 
 - 4-way handshake procedure: 802.11-2024 §12.7.6
 - M1–M4 frame construction: §12.7.6.2–12.7.6.5
 - EAPOL-Key frame format: §12.7.2
-- Key Information field: §12.7.3, Figure 12-36
+- Key Information field: §12.7.2, Figure 12-36

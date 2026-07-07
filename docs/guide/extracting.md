@@ -6,15 +6,15 @@
 
 Before you can crack a WiFi password, you need to extract the relevant
 cryptographic data from your capture file into a format hashcat understands.
-The tool for this is **hcxpcapngtool** (part of hcxtools).
+The primary tool for this is **hcxpcapngtool** (part of hcxtools). An alternative is **[wpawolf](https://github.com/StrongWind1/WPAWolf)**, which uses a collect-then-pair architecture that avoids hcxpcapngtool's 64-entry buffer limit and EAPOL size gate, and supports cross-file pairing.
 
 ## Basic usage
 
 ```bash
-hcxpcapngtool -o hashes.22000 capture-01.pcapng
+hcxpcapngtool -o hashes.22000 -f hashes.37100 capture-01.pcapng
 ```
 
-This extracts both PMKID and EAPOL hashes into a single file.
+This extracts PMKID and EAPOL hashes for standard PSK (`-o`, mode 22000) and FT-PSK (`-f`, mode 37100) into separate files.
 
 ## Output format
 
@@ -26,14 +26,17 @@ WPA*TYPE*PMKID_OR_MIC*MAC_AP*MAC_STA*ESSID*NONCE*EAPOL*MP
 
 | Type | Meaning |
 |------|---------|
-| `WPA*01*` | PMKID hash |
-| `WPA*02*` | EAPOL handshake hash |
+| `WPA*01*` | PMKID hash (mode 22000) |
+| `WPA*02*` | EAPOL handshake hash (mode 22000) |
+| `WPA*03*` | FT-PSK PMKID hash (mode 37100) |
+| `WPA*04*` | FT-PSK EAPOL hash (mode 37100) |
 
 ## Common options
 
 | Flag | Purpose |
 |------|---------|
-| `-o file` | Output hashcat 22000 format |
+| `-o file` | Output hashcat 22000 format (PSK) |
+| `-f file` | Output hashcat 37100 format (FT-PSK) |
 | `--all` | Include all message pairs (not just best) |
 | `-E essids` | Write ESSIDs to file (for wordlist building) |
 

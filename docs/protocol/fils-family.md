@@ -35,12 +35,12 @@ fast connections, without going back to the RADIUS server.
 
 ## Key Derivation
 
-FILS derives a session key from the rMSK:
+FILS derives the PTK from the PMK (derived from rMSK via ERP):
 
 ```
-FILS-Key-Data = KDF-Hash(rMSK || ANonce || SNonce,
-                         "FILS PTK Derivation",
-                         MAC_AP || MAC_STA)
+PTK = KDF-Hash-Length(PMK,
+                      "FILS PTK Derivation",
+                      SPA || AA || SNonce || ANonce)
 ```
 
 The output is split into ICK (Integrity Check Key), KEK, and TK. The ICK

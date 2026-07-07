@@ -8,15 +8,7 @@ charset = utf-8
 indent_style = space
 indent_size = 4
 
-[*.py]
-indent_style = space
-indent_size = 4
-
-[*.rs]
-indent_style = space
-indent_size = 4
-
-[*.{yml,yaml,toml,json}]
+[*.{yml,yaml,toml,json,css}]
 indent_style = space
 indent_size = 2
 

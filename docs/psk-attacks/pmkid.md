@@ -1,8 +1,6 @@
 # PMKID Attack
 
-Published by Jens Steube in 2018. Allows offline passphrase cracking from a
-single EAPOL M1 frame — no full 4-way handshake required. The AP includes a
-PMKID in M1 if it has a PMKSA cache entry for the station.
+Published by Jens Steube in 2018. Allows offline passphrase cracking without a full 4-way handshake. The most common source is the PMKID KDE in EAPOL M1, but the spec defines PMKIDs in many other frame types: M2 RSN IE, Association/Reassociation Request RSN IE, FT Authentication frames (seq 1 and 2), FT Action frames, and even Beacon/Probe Response RSN IE (vendor firmware bugs). Extraction tools like wpawolf and hcxpcapngtool check all of these locations.
 
 ## Per-AKM PMKID Formulas
 
@@ -14,7 +12,7 @@ PMKID = HMAC-SHA1-128(PMK, "PMK Name" || MAC_AP || MAC_STA)
 
 - Hash: HMAC-SHA1, output truncated to first 128 bits (16 bytes)
 - Input: literal string "PMK Name" (8 bytes) + AP MAC (6 bytes) + STA MAC (6 bytes) = 20 bytes
-- PMK = PBKDF2-HMAC-SHA1(passphrase, SSID, 4096, 256)
+- PMK = PBKDF2-HMAC-SHA1(passphrase, SSID, 4096, 256 bits)
 - hashcat mode 22000, hash type `WPA*01*`
 
 ### AKM 6 (PSK-SHA256)
@@ -41,8 +39,8 @@ HMAC of the PMK:
 ```
 Step A: PMK-R0-Name-salt
   = HMAC-SHA256(PMK,
-      counter_LE16(2) || "FT-R0" || ssidLen || SSID ||
-      MDID || R0KHIDLen || R0KHID || STA_MAC ||
+      counter_LE16(2) || "FT-R0" ||
+      SPA || SSID || MDID || R0KH-ID-Len || R0KH-ID || S0KH-ID ||
       size_LE16(384))
   Take bytes 0–15 (16 bytes).
 
@@ -51,9 +49,11 @@ Step B: PMK-R0-Name
   Truncate to 128 bits.
 
 Step C: PMKID
-  = SHA256("FT-R1N" || PMK-R0-Name || R1KHID || STA_MAC)
+  = SHA256("FT-R1N" || PMK-R0-Name || R1KH-ID || S1KH-ID)
   Truncate to 128 bits.
 ```
+
+SPA = S0KH-ID = S1KH-ID = STA MAC address (per §13.4).
 
 - Requires extra fields: MDID, R0KH-ID, R1KH-ID
 - hashcat mode 37100, hash type `WPA*03*`
@@ -74,8 +74,11 @@ Truncated to 128 bits. Not supported in current hashcat.
 
 ## RSN IE Structure
 
-The PMKID is carried in the RSN Information Element Key Data of M1 as a
-PMKID KDE (Key Data Encapsulation):
+PMKIDs appear in two container types depending on the frame:
+
+**Container A: RSN IE (tag 48).** The PMKID Count + PMKID List sit near the end of the RSN IE per §9.4.2.24.5. Used in M2 RSN IE, Association/Reassociation Request, FT Authentication, FT Action frames, Probe Request, and (via vendor firmware bugs) Beacon/Probe Response.
+
+**Container B: PMKID KDE.** A vendor-specific Key Data Encapsulation inside EAPOL-Key M1 Key Data:
 
 ```
 Tag: 0xDD (vendor-specific KDE)
@@ -85,9 +88,7 @@ Data type: 0x04
 PMKID: 16 bytes
 ```
 
-Alternatively, the PMKID can appear in the PMKID List subelement of the
-RSN IE directly (tag 0x30), at fixed offset after RSN capabilities.
-hcxpcapngtool extracts both locations.
+M1 is the most common PMKID source (the Steube 2018 attack vector). Extraction tools check both container types across all applicable frame types.
 
 ## AP PMKSA Cache Requirement
 
@@ -107,13 +108,13 @@ PMKSA cache state.
 ## Limitations
 
 - AP must have a PMKSA cache entry; not all APs comply.
-- SAE (AKM 8/9): PMK derived via Dragonfly PAKE — PMKID cannot be used for
-  offline dictionary attack against the passphrase.
+- SAE (AKM 8/9): PMK derived via Dragonfly PAKE — PMKID cannot be used for offline dictionary attack against the passphrase.
 - AKM 6: silently broken in hashcat 22000 aux4 (see warning above).
-- AKM 4: hashcat 37100 module not yet merged into mainline.
+- AKM 4: hashcat 37100 module not yet merged into mainline (PR #4645).
+- AKMs 19, 20 (SHA-384): PMK is PBKDF2-derived (crackable in principle) but no hashcat module exists for the SHA-384 PMKID or MIC primitives.
 
 ## Spec References
 
-- PMKID definition: 802.11-2024 §12.7.1.3
-- FT PMKID derivation: §12.7.1.6.3
-- RSN IE PMKID List: §9.4.2.24.7
+- PMKID derivation: 802.11-2024 §12.6.1.3
+- FT key hierarchy: §13.4–§13.8
+- RSN IE PMKID List: §9.4.2.24.5

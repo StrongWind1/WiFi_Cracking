@@ -10,7 +10,7 @@ capture file.
 | Attack | AKM | Minimum capture | Fields required |
 |--------|-----|----------------|-----------------|
 | PMKID | 2 (PSK) | M1, M2, Assoc Req, or Reassoc Req with PMKID | SSID, MAC_AP, MAC_STA, PMKID |
-| PMKID | 4 (FT-PSK) | M2 with PMKID + FT IEs | SSID, MAC_AP, MAC_STA, PMKID, MDID, R0KH-ID, R1KH-ID |
+| PMKID | 4 (FT-PSK) | M1, M2, Assoc Req, Reassoc Req, FT Auth, or FT Action with PMKID + FT IEs | SSID, MAC_AP, MAC_STA, PMKID, MDID, R0KH-ID, R1KH-ID |
 | PMKID | 6 (PSK-SHA256) | M1, M2, Assoc Req, or Reassoc Req with PMKID | SSID, MAC_AP, MAC_STA, PMKID |
 
 ### EAPOL Handshake Extraction
@@ -32,7 +32,7 @@ capture file.
 | SNonce | M2 (or M4 if non-zero) EAPOL Key Nonce field | M4 nonce usually zeroed |
 | MIC | M2, M3, or M4 EAPOL Key MIC field (16 bytes) | M1 has no MIC |
 | EAPOL frame | Raw bytes of the EAPOL-Key frame containing the MIC | MIC field zeroed for verification |
-| PMKID | M1, M2, Assoc Req, or Reassoc Req Key Data (KDE tag 0xDD, type 0x04) | Not always present |
+| PMKID | M1: PMKID KDE in Key Data (tag 0xDD, OUI 00:0F:AC, type 0x04); M2/AssocReq/ReassocReq: RSN IE PMKID List (tag 48) | Not always present |
 | MDID | Mobility Domain IE (tag 0x36) in Beacon/assoc frames | 2 bytes, FT only |
 | R0KH-ID | Fast BSS Transition IE (tag 0x37) subelement | Variable length, up to 48 bytes |
 | R1KH-ID | Fast BSS Transition IE (tag 0x37) subelement | 6 bytes, usually = AP MAC |

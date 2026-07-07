@@ -10,8 +10,8 @@ WiFi attack types.
 ### Mode 22000 — WPA*01 (PMKID)
 
 ```
-WPA*01*<PMKID>*<MAC_AP>*<MAC_STA>*<ESSID>***
-         32hex   12hex    12hex    0-64hex
+WPA*01*<PMKID>*<MAC_AP>*<MAC_STA>*<ESSID>***<MP>
+         32hex   12hex    12hex    0-64hex   2hex
 ```
 
 Fields:
@@ -22,7 +22,8 @@ Fields:
 | MAC_AP | 12-char hex (6 bytes) | AP BSSID, no separators |
 | MAC_STA | 12-char hex (6 bytes) | STA MAC, no separators |
 | ESSID | 0–64-char hex (0–32 bytes) | SSID hex-encoded (not string) |
-| Fields 7–9 | empty | Unused in type 01 |
+| Fields 7–8 | empty | Unused in type 01 (NONCE, EAPOL) |
+| MP | 2-char hex (1 byte) | message_pair bitmask |
 
 ### Mode 22000 — WPA*02 (EAPOL)
 
@@ -40,7 +41,7 @@ Fields:
 | MAC_STA | 12-char hex | STA MAC |
 | ESSID | 0–64-char hex | SSID hex-encoded |
 | NONCE | 64-char hex (32 bytes) | External nonce (ANonce if EAPOL=M2/M4, SNonce if EAPOL=M3) |
-| EAPOL | variable hex | Raw EAPOL-Key frame (MIC field zeroed) |
+| EAPOL | 0–512 hex (0–256 bytes) | Raw EAPOL-Key frame (MIC field zeroed) |
 | MP | 2-char hex (1 byte) | message_pair bitmask |
 
 !!! note "NONCE field label"
@@ -49,27 +50,27 @@ Fields:
 
 ### Mode 22000 — message_pair byte
 
-Lower 3 bits encode the N#E# combo; upper bits are flags:
+Low nibble (bits 0-3) encodes the N#E# combo discriminant; upper bits are flags:
 
 ```
-Bits 0-2:
+Bits 0-3 (mask 0x0F):
   000 = N1E2  (M1+M2, EAPOL from M2)  challenge
   001 = N1E4  (M1+M4, EAPOL from M4)  authorized, --all
   010 = N3E2  (M2+M3, EAPOL from M2)  authorized
   011 = N2E3  (M2+M3, EAPOL from M3)  authorized, --all
   100 = N4E3  (M3+M4, EAPOL from M3)  authorized, --all
   101 = N3E4  (M3+M4, EAPOL from M4)  authorized, --all
-Bit 4: 0x10 = AP-less attack
-Bit 5: 0x20 = LE router detected
-Bit 6: 0x40 = BE router detected
-Bit 7: 0x80 = replay count not checked (NC corrections needed)
+Bit 4: 0x10 = AP-less (pair did not require an M1; set for N2E3, N4E3)
+Bit 5: 0x20 = LE (replay-counter pair resolved as little-endian; diagnostic only)
+Bit 6: 0x40 = BE (replay-counter pair resolved as big-endian; diagnostic only)
+Bit 7: 0x80 = NC (nonce-error-correction tolerance was needed to pair)
 ```
 
 ### Mode 37100 — WPA*03 (FT PMKID)
 
 ```
-WPA*03*<PMKID>*<MAC_AP>*<MAC_STA>*<ESSID>****<MDID>*<R0KHID>*<R1KHID>
-         32hex   12hex    12hex    0-64hex      4hex  var hex   12hex
+WPA*03*<PMKID>*<MAC_AP>*<MAC_STA>*<ESSID>***<MP>*<MDID>*<R0KHID>*<R1KHID>
+         32hex   12hex    12hex    0-64hex  2hex  4hex   2-96hex   12hex
 ```
 
 ### Mode 37100 — WPA*04 (FT EAPOL)
@@ -108,7 +109,7 @@ PBKDF2 salt. hashcat computes the PMK once per guess and tests it against all
 matching hashes. Put both types in the same file:
 
 ```
-WPA*01*<pmkid>*<mac_ap>*<mac_sta1>*<essid>***
+WPA*01*<pmkid>*<mac_ap>*<mac_sta1>*<essid>***<mp>
 WPA*02*<mic>*<mac_ap>*<mac_sta2>*<essid>*<nonce>*<eapol>*<mp>
 ```
 
@@ -152,8 +153,8 @@ awk -F'*' '!seen[$3,$4,$5,$6,$7,$8]++' raw.22000 > unique.22000
 | hcxpcapngtool internal | 1024 bytes | Practical implementation limit |
 | hcxpcapngtool → mode 22000 | 255 bytes | Legacy hccap/hccapx uint8 constraint |
 | hcxpcapngtool → mode 37100 | 1024 bytes | ZerBea raised limit for FT |
-| hashcat m22000 kernel | 320 bytes (`eapol[64+16]` u32 words) | GPU buffer |
-| hashcat m37100 kernel | 320 bytes | GPU buffer |
+| hashcat m22000 parser | 256 bytes (512 hex chars, `token.len_max[7] = 512`) | Module parser limit |
+| hashcat m37100 parser | 256 bytes (512 hex chars) | Module parser limit |
 | Typical WPA2-PSK M2 | ~120–140 bytes | Fits easily |
 | Typical FT-PSK M2 | ~260–300 bytes | Contains FT IEs, often exceeds 255 |
 | Largest in wpa-sec (2018) | **510 bytes** | ZerBea found 256–510 byte frames |

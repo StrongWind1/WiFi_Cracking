@@ -37,7 +37,7 @@ hashcat -m 22000 hashes.22000 wordlist.txt
 
 - The AP must have **PMKSA caching** enabled (most do)
 - Not all APs include PMKID in their responses
-- Only works for WPA/WPA2-PSK networks (AKM 2)
+- PMKID formula varies by AKM — the simple HMAC-SHA1 formula above applies to AKM 2 only. AKM 6 uses HMAC-SHA256, AKM 4 uses an FT chain. See the [PMKID reference](../psk-attacks/pmkid.md)
 
 !!! tip "Deep dive"
     See the [PMKID reference](../psk-attacks/pmkid.md) for per-AKM PMKID

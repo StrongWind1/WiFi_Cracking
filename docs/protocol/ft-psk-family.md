@@ -32,12 +32,14 @@ PMK-R0 binds the key to the mobility domain and R0 key holder:
 ```
 PMK-R0 || PMK-R0-Name-salt
   = KDF-SHA256-384(PMK,
-      "FT-R0" ||
-      ssidLen (1 byte) || SSID (ssidLen bytes) ||
+      "FT-R0",
+      SSIDlength (1 byte) || SSID (SSIDlength bytes) ||
       MDID (2 bytes) ||
-      R0KHIDLen (1 byte) || R0KHID (R0KHIDLen bytes) ||
-      STA_MAC (6 bytes))
+      R0KH-ID-Len (1 byte) || R0KH-ID (R0KH-ID-Len bytes) ||
+      S0KH-ID (6 bytes))
 ```
+
+S0KH-ID = STA MAC address (per §12.7.1.6.3).
 
 - Take first 32 bytes → **PMK-R0**
 - Take bytes 32–47 (16 bytes) → **PMK-R0-Name-salt** (used to compute PMK-R0-Name)
@@ -53,15 +55,16 @@ PMK-R0-Name = SHA256("FT-R0N" || PMK-R0-Name-salt)[0:16]
 PMK-R1 binds the key to the specific target AP (R1 key holder):
 
 ```
-PMK-R1 || PMK-R1-Name
-  = KDF-SHA256-384(PMK-R0,
-      "FT-R1" ||
-      R1KHID (6 bytes) ||
-      STA_MAC (6 bytes))
+PMK-R1
+  = KDF-SHA256-256(PMK-R0,
+      "FT-R1",
+      R1KH-ID (6 bytes) ||
+      S1KH-ID (6 bytes))
 ```
 
-- Take first 32 bytes → **PMK-R1**
-- PMK-R1-Name (16 bytes) → used to compute the PMKID
+- KDF output length = 256 bits (one HMAC-SHA256 iteration) → **PMK-R1** (32 bytes)
+- PMK-R1-Name is computed separately (see PMKID Derivation section)
+- S1KH-ID = STA MAC address (same as S0KH-ID)
 
 The R0 key holder (typically the first AP in the mobility domain) distributes
 PMK-R1 to target APs via the FT over-the-DS protocol or over-the-air
@@ -127,7 +130,7 @@ FT authentication:
 | Field | Size | Description |
 |-------|------|-------------|
 | MIC Control | 2 bytes | Element count for MIC coverage |
-| MIC | 16 bytes | AES-128-CMAC over specific FTE fields |
+| MIC | 16 bytes (AKM 4) / 24 bytes (AKM 19) | FTE MIC; MIC Length subfield in MIC Control determines size |
 | ANonce | 32 bytes | AP nonce |
 | SNonce | 32 bytes | STA nonce |
 | R0KH-ID | variable | Identifies the R0 key holder (up to 48 bytes) |
@@ -158,8 +161,8 @@ the 1–2 calls for standard PSK), but PBKDF2 still dominates:
 
 ## Spec References
 
-- FT key hierarchy: 802.11-2024 §12.7.1.6.3–6.5
-- FT protocol: §13.6
+- FT key hierarchy: 802.11-2024 §12.7.1.6.3–12.7.1.6.5
 - KDF definition: §12.7.1.6.2
-- MDE/FTE structure: §9.4.2.47, §9.4.2.48
+- MDE structure: §9.4.2.45
+- FTE structure: §9.4.2.46
 - AKM selectors: Table 9-190

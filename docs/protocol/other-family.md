@@ -38,8 +38,8 @@ none, but where certificate-based authentication is impractical.
 
 ### Spec References
 
-- OWE: 802.11-2024 §12.12
-- DH group negotiation: §12.12.2
+- OWE: 802.11-2024 §12.14
+- DH group negotiation: §12.14.2
 - RFC 8110 (OWE definition)
 
 ---

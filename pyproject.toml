@@ -2,9 +2,38 @@
 name = "wifi-cracking"
 version = "2.0.0"
 description = "Complete technical reference for IEEE 802.11 security — protocols, attacks, and hash extraction"
+readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.11,<3.15"
+authors = [
+    {name = "StrongWind1"},
+]
+keywords = [
+    "802.11",
+    "eapol",
+    "hashcat",
+    "pmkid",
+    "security",
+    "wifi",
+    "wpa",
+    "wpa2",
+]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Documentation",
+    "Topic :: Security",
+]
+
+[project.urls]
+Repository = "https://github.com/StrongWind1/WiFi_Cracking"
+Documentation = "https://strongwind1.github.io/WiFi_Cracking/"
+Changelog = "https://github.com/StrongWind1/WiFi_Cracking/blob/main/CHANGELOG.md"
+Issues = "https://github.com/StrongWind1/WiFi_Cracking/issues"
 
 [dependency-groups]
 docs = [
-    "mkdocs-material",
+    "mkdocs-material>=9.0",
 ]
+
+[tool.uv]
+package = false
