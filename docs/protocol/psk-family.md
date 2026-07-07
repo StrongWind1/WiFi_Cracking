@@ -16,7 +16,7 @@ SHA-256-based key derivation with 802.11w-2009. AKM 20, introduced in
 |-----|------|---------|---------------|-----|-----|-----------|-------------|
 | 2 | PSK | PRF (HMAC-SHA1) | HMAC-MD5 (kv1) / HMAC-SHA1-128 (kv2) | 128 | 128 | 128 | 22000 |
 | 6 | PSK-SHA256 | KDF-SHA-256 | AES-128-CMAC (kv3) | 128 | 128 | 128 | 22000 |
-| 20 | PSK-SHA384 | KDF-SHA-384 | HMAC-SHA-384 (kv0) | 192 | 256 | 256 | pending |
+| 20 | PSK-SHA384 | KDF-SHA-384 | HMAC-SHA-384 (kv0) | 192 | 256 | 256 | none |
 
 Key lengths per IEEE 802.11-2024 Table 12-11 (KCK/KEK) and Table 12-8 (TK).
 
@@ -120,7 +120,7 @@ The `aux1`–`aux4` labels refer to hashcat's internal kernel functions within m
 | 2 | EAPOL kv2 | WPA*02* | 22000 (aux2) | Yes |
 | 6 | PMKID | WPA*01* | 22000 (aux4) | **Broken** — aux4 uses SHA1, needs SHA256. See [gap table](../reference/gap-table.md). |
 | 6 | EAPOL kv3 | WPA*02* | 22000 (aux3) | Yes |
-| 20 | PMKID/EAPOL | — | pending | No module yet |
+| 20 | PMKID/EAPOL | — | none | No module exists |
 
 ## Spec References
 

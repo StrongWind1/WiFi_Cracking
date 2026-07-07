@@ -11,7 +11,7 @@ field, constant, and algorithm is traceable to the spec or tool source.
 | 4 | FT-PSK | PBKDF2-HMAC-SHA1 | FT-KDF-SHA256 (2 iters) | 384 | AES-128-CMAC (kv3) | SHA256 chain | 37100 (pending) |
 | 6 | PSK-SHA256 | PBKDF2-HMAC-SHA1 | KDF-SHA256 | 384 | AES-128-CMAC (kv3) | HMAC-SHA256-128 | 22000 |
 | 19 | FT-PSK-SHA384 | PBKDF2-HMAC-SHA1 | FT-KDF-SHA384 (2 iters) | 704 | HMAC-SHA384 (kv0, 24 B) | SHA384 chain | none |
-| 20 | PSK-SHA384 | PBKDF2-HMAC-SHA1 | KDF-SHA384 | 704 | HMAC-SHA384 (kv0, 24 B) | HMAC-SHA384-128 | pending |
+| 20 | PSK-SHA384 | PBKDF2-HMAC-SHA1 | KDF-SHA384 | 704 | HMAC-SHA384 (kv0, 24 B) | HMAC-SHA384-128 | none |
 
 ---
 
