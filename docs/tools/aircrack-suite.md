@@ -64,7 +64,7 @@ airodump-ng -c 6 --bssid AA:BB:CC:DD:EE:FF wlan0mon
 | `--bssid <mac>` | Filter to single AP |
 | `-w <prefix>` | Write capture to `prefix-01.cap`, `prefix-01.csv`, etc. |
 | `--band <a/b/g>` | Scan specific band (default: bg) |
-| `-d <mac>` | Filter to clients with specific AP MAC |
+| `-d <mac>` / `--bssid` | Filter by BSSID (same as `--bssid`) |
 
 Column definitions:
 
@@ -108,8 +108,9 @@ aireplay-ng -5 -b <BSSID> -h <your_mac> wlan0mon
 | KoreK ChopChop | `-4` | Byte-by-byte decryption (WEP) |
 | Fragmentation | `-5` | PRGA (keystream) recovery (WEP) |
 | Caffe-Latte | `-6` | Client-side WEP attack without AP |
-| WPA Migration | `-7` | WPA Migration Mode attack |
-| Hirte | `-8` | Client-side ARP fragmentation (WEP) |
+| Client Fragmentation | `-7` | Fragments against a client (`--cfrag`) |
+| WPA Migration Mode | `-8` | WPA migration mode attack (`--migmode`) |
+| Injection Test | `-9` | Test injection quality and speed (`--test`) |
 
 ---
 
@@ -122,8 +123,8 @@ aircrack-ng capture*.cap
 # WEP key recovery (KoreK, more IVs needed)
 aircrack-ng -K capture*.cap
 
-# WEP with known key length
-aircrack-ng -l 13 capture*.cap    # 13 bytes = WEP-104
+# WEP with known key length (128 bits = WEP-104)
+aircrack-ng -n 128 capture*.cap
 
 # WPA dictionary attack (requires 4-way handshake in capture)
 aircrack-ng -w wordlist.txt -b <BSSID> capture*.cap
@@ -135,7 +136,8 @@ aircrack-ng -w wordlist.txt capture-01.cap
 | Option | Description |
 |--------|-------------|
 | `-K` | Use KoreK statistical attack (WEP) instead of PTW |
-| `-l <len>` | Force key length in bytes (WEP) |
+| `-n <nbits>` | WEP key length in bits: 64, 128, 152, 256, or 512 |
+| `-l <file>` | Write cracked key to file (overwrites) |
 | `-w <wordlist>` | Wordlist for WPA dictionary attack |
 | `-b <bssid>` | Target specific AP by BSSID |
 | `-e <essid>` | Target specific network by ESSID |

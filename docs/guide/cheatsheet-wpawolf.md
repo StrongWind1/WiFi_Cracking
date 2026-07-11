@@ -22,14 +22,13 @@ wpawolf --wpa2-out wpa2.out --ft-out ft.out capture.pcapng.gz
 ## Auxiliary Outputs
 
 ```bash
-# ESSID wordlist + EAP identities
-wpawolf --22000-out hashes.22000 -E essids.txt -W wordlist.txt -I identities.txt captures/
+# All outputs at once — prefix shorthand (recommended)
+wpawolf --prefix=results --smart captures/
+# Creates results.22000, results.37100, results.essid, results.wordlist,
+# results.identity, results.username, results.device, results.log, ...
 
-# Full extraction with all auxiliaries
-wpawolf --22000-out h.22000 --37100-out h.37100 -o all.out \
-        -E essids.txt -R probes.txt -W wordlist.txt \
-        -I identities.txt -U usernames.txt -D devices.txt \
-        --log run.log captures/*
+# Explicit per-sink (overrides prefix-derived paths)
+wpawolf --prefix=results --smart -W custom-wordlist.txt captures/
 ```
 
 | Flag | Content |

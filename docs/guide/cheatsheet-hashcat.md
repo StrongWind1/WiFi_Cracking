@@ -69,7 +69,7 @@ hcxhashtool -i hashes.22000 --challenge -o challenge.22000
 hcxhashtool -i hashes.22000 --mac-ap=112233445566 -o target_ap.22000
 
 # Hash info summary
-hcxhashtool -i hashes.22000 --info
+hcxhashtool -i hashes.22000 --info=stdout
 ```
 
 ## Deduplication

@@ -15,9 +15,10 @@ wepwolf -w wordlist.txt capture.cap
 # Target a single BSSID
 wepwolf -b 00:11:22:33:44:55 capture.cap
 
-# Force key length (40 or 104 bits)
+# Force key length (40, 104, or 232 bits)
 wepwolf -n 104 capture.cap
 wepwolf -n 40 capture.cap
+wepwolf -n 232 capture.cap
 ```
 
 ## Output Formats

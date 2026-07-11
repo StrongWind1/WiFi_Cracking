@@ -74,8 +74,10 @@ username::::NT-Response:authenticator-challenge
 
 ### With hcxpcapngtool (only works for EAP-TTLS/MSCHAPv2 without TLS, rare)
 
+The `--eapleap` option extracts both EAP-LEAP and MSCHAPv2 challenge/response pairs (hashcat -m 5500, john netntlm):
+
 ```bash
-hcxpcapngtool --eapmschapv2=mschapv2.hc5500 capture.pcapng
+hcxpcapngtool --eapleap=mschapv2.hc5500 capture.pcapng
 ```
 
 ## hashcat Mode 5500 Format
@@ -126,4 +128,4 @@ hashcat -m 1000 nthash.txt wordlist.txt   # NT hash cracking
 
 - MSCHAPv2 protocol: RFC 2759
 - PEAP protocol: draft-josefsson-pppext-eap-tls-eap (PEAPv0/v1)
-- hashcat format: `HCX_EAPMSCHAPV2HASHLIST` in hcxpcapngtool.h
+- hashcat format: `--eapleap` output (LEAP and MSCHAPv2) in hcxpcapngtool

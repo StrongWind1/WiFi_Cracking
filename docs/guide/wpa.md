@@ -55,15 +55,14 @@ Both produce a hash that hashcat cracks with mode 22000.
 hcxdumptool handles everything in one command: it sends association requests to solicit PMKIDs from nearby APs **and** passively captures any 4-way handshakes that happen on the channel. No manual channel hopping, no separate deauth tool.
 
 ```bash
-sudo hcxdumptool -i wlan0 -o capture.pcapng --active_beacon --enable_status=15
+sudo hcxdumptool -i wlan0 -w capture.pcapng --rds=3
 ```
 
 | Flag | What it does |
 |------|-------------|
 | `-i wlan0` | Your monitor-mode interface |
-| `-o capture.pcapng` | Output capture file |
-| `--active_beacon` | Send beacons and association requests to solicit PMKIDs |
-| `--enable_status=15` | Show all status messages (AP count, handshake count, PMKID count) |
+| `-w capture.pcapng` | Output pcapng capture file |
+| `--rds=3` | Real-time display showing all APs and clients (M1M2ROGUE) |
 
 Let it run for **2-5 minutes**. PMKIDs arrive fast (often within seconds); handshakes require a client to connect or reconnect during the capture window.
 
@@ -111,12 +110,13 @@ wpawolf --22000-out hashes.22000 --smart captures/
 
 `--smart` is the recommended reduction mode: it emits roughly one hash line per unique MIC instead of the full cross-product, without dropping any crackable hash.
 
-**With auxiliary outputs (wordlist from SSIDs, WPS data, EAP identities):**
+**All outputs at once (prefix shorthand):**
 
 ```bash
-wpawolf --22000-out hashes.22000 --37100-out hashes.37100 \
-        -E essids.txt -W wordlist.txt captures/
+wpawolf --prefix=results --smart captures/
 ```
+
+`--prefix` sets every output to `<PREFIX>.<ext>`: `results.22000`, `results.37100`, `results.essid`, `results.wordlist`, `results.identity`, `results.device`, `results.log`, and more. An explicit per-sink flag overrides its prefix-derived path.
 
 The stats banner tells you exactly what was extracted:
 
@@ -224,7 +224,7 @@ WPA cracking is slow by design. PBKDF2 forces 4096 rounds of HMAC-SHA1 per passw
 The capture did not contain a usable PMKID or handshake.
 
 - **For PMKID:** Not all APs include a PMKID in their response. Run hcxdumptool longer, or try a different target. Some APs only respond to PMKIDs on the first association attempt after a reboot.
-- **For handshake:** A client must connect (or reconnect) during the capture window. With hcxdumptool's `--active_beacon`, the tool sends disassociation frames to trigger reconnections. With the aircrack-ng workflow, send a deauth manually: `sudo aireplay-ng -0 1 -a <BSSID> wlan0mon`.
+- **For handshake:** A client must connect (or reconnect) during the capture window. hcxdumptool sends disassociation frames by default to trigger reconnections (disable with `--disable_disassociation`). With the aircrack-ng workflow, send a deauth manually: `sudo aireplay-ng -0 1 -a <BSSID> wlan0mon`.
 - **Wrong interface:** Confirm your adapter is in monitor mode with `iw dev wlan0 info`. The "type" field should say "monitor".
 
 ### hashcat says "Exhausted"

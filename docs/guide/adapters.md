@@ -196,8 +196,8 @@ sudo iw dev wlan0 set type monitor
 sudo ip link set wlan0 up
 sudo iw dev wlan0 info   # type should say "monitor"
 
-# 6. Test with hcxdumptool (quick scan, 10 seconds)
-sudo hcxdumptool -i wlan0 --tot=10 --rcascan=active
+# 6. Test with hcxdumptool (quick scan, 1 minute)
+sudo hcxdumptool -i wlan0 --tot=1 --rcascan=active
 ```
 
 If step 5 fails, your kernel or driver doesn't support monitor mode for this adapter. Check the kernel version table above and consider upgrading or using the morrownr/mt76 out-of-tree driver.

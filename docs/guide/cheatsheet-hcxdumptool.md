@@ -4,33 +4,53 @@
 
 ```bash
 # Standard capture (PMKID solicitation + passive handshakes)
-sudo hcxdumptool -i wlan0 -o capture.pcapng --active_beacon --enable_status=15
+sudo hcxdumptool -i wlan0 -w capture.pcapng -A --rds=1
 
-# Time-limited (120 seconds)
-sudo hcxdumptool -i wlan0 -o capture.pcapng --active_beacon --tot=120
+# Time-limited (2 minutes)
+sudo hcxdumptool -i wlan0 -w capture.pcapng -A --rds=1 --tot=2
 
-# Quick scan (10 seconds, no capture file)
-sudo hcxdumptool -i wlan0 --tot=10 --rcascan=active
+# Exit on first PMKID or handshake
+sudo hcxdumptool -i wlan0 -w capture.pcapng -A --exitoneapol=7
+
+# Quick channel scan (1 minute, no capture file)
+sudo hcxdumptool -i wlan0 --tot=1 --rcascan=active
+
+# Headless / daemonized capture (no display output)
+sudo hcxdumptool -i wlan0 -w capture.pcapng -A --rds=0 --daemonize
 ```
 
 | Flag | Purpose |
 |------|---------|
 | `-i wlan0` | Monitor-mode interface |
-| `-o FILE` | Output pcapng |
-| `--active_beacon` | Send beacons/assoc requests to solicit PMKIDs |
-| `--enable_status=15` | Show all status messages |
-| `--tot=N` | Stop after N seconds |
+| `-w FILE` | Write packets to pcapng file |
+| `-c CHAN` | Set channel (e.g. `1a`, `6a`, `11a`, `36b`) |
+| `-f FREQ` | Set frequency |
+| `-F` | Scan all available frequencies from interface |
+| `-t SEC` | Minimum stay time on a channel (seconds) |
+| `-A` | ACK incoming frames (active monitor mode; needed for PMKID solicitation) |
+| `--rds=N` | Real time display mode (0=off/headless, 1-4=various displays) |
+| `--tot=N` | Timeout in **minutes** (not seconds) |
+| `--exitoneapol=N` | Exit on first EAPOL (bitmask: 1=PMKID, 2=M1M2M3, 4=M1M2, 8=M1M2ROGUE, 16=M1) |
+| `--daemonize` | Run as daemon (suppresses status messages) |
+| `--disable_disassociation` | Do not transmit DISASSOCIATION frames |
 
 ## Target Filtering
 
-```bash
-# Create a filterlist with target BSSIDs (one per line, no colons)
-echo "112233445566" > targets.txt
+hcxdumptool uses Berkeley Packet Filters (BPF) for target filtering. Compile a BPF filter with `--bpfc`, then load it with `--bpf`.
 
-# Capture only targets
-sudo hcxdumptool -i wlan0 -o capture.pcapng --active_beacon \
-    --filterlist_ap=targets.txt --filtermode=2
+```bash
+# Compile a BPF filter to capture only a specific BSSID
+sudo hcxdumptool --bpfc="ether host 11:22:33:44:55:66"
+
+# Save the compiled BPF output to a file, then use it
+sudo hcxdumptool --bpfc="ether host 11:22:33:44:55:66" --bpfd=0 > target.bpf
+sudo hcxdumptool -i wlan0 -w capture.pcapng -A --bpf=target.bpf
+
+# Filter by multiple BSSIDs
+sudo hcxdumptool --bpfc="ether host 11:22:33:44:55:66 or ether host aa:bb:cc:dd:ee:ff"
 ```
+
+Note: `--bpfc` and `--bpfd` require hcxdumptool to be built with libpcap support.
 
 ## Check AKM Types (tshark)
 
@@ -64,10 +84,22 @@ done
 ## Monitor Mode Setup
 
 ```bash
+# List available wireless interfaces
+sudo hcxdumptool -L
+
+# List interfaces (tab-separated, greppable)
+sudo hcxdumptool -l
+
+# Show detailed interface info
+sudo hcxdumptool -I wlan0
+
+# Set monitor mode via hcxdumptool
+sudo hcxdumptool -m wlan0
+
 # Verify adapter supports monitor mode
 iw phy phy0 info | grep -A 5 "Supported interface modes"
 
-# Manual monitor mode (if hcxdumptool doesn't set it automatically)
+# Manual monitor mode (if hcxdumptool -m doesn't work for your adapter)
 sudo ip link set wlan0 down
 sudo iw dev wlan0 set type monitor
 sudo ip link set wlan0 up

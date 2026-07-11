@@ -145,7 +145,7 @@ Use aircrack-ng when you need active radio attacks that WEPWolf does not perform
 - **ARP replay injection** (`aireplay-ng -3`): generate IVs on a quiet network
 - **ChopChop** (`aireplay-ng -4`): decrypt a frame byte-by-byte without the key
 - **Fragmentation** (`aireplay-ng -5`): recover keystream from a single fragment
-- **Caffe-Latte / Hirte** (`aireplay-ng -6` / `-8`): client-side attacks without AP proximity
+- **Caffe-Latte** (`aireplay-ng -6`) / **Client Fragmentation** (`aireplay-ng -7`): client-side attacks without AP proximity
 - **Deauthentication** (`aireplay-ng -0`): force clients to reconnect and generate traffic
 
 For passive key recovery from a capture file, aircrack-ng works but is single-file, CPU-only, and lacks the RC4-bias database and per-key-slot cracking.

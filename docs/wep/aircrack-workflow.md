@@ -130,7 +130,8 @@ The key is shown in hex. For ASCII WEP keys, decode the hex bytes to ASCII.
 | Fragmentation | `-5` | Recover keystream via fragmentation |
 | Deauth | `-0` | Force clients to reconnect (generates traffic) |
 | Caffe-Latte | `-6` | Client-side attack without AP |
-| Hirte | `-8` | ARP fragmentation client attack |
+| Client Fragmentation | `-7` | Fragments against a client (`--cfrag`) |
+| WPA Migration Mode | `-8` | WPA migration mode attack (`--migmode`) |
 
 ## Notes
 

@@ -26,10 +26,13 @@ Educational:        M{e}(embedded_nonce+MIC) + M{n}     e.g. M2(SNonce+MIC) + M1
 | `--eapoltimeout=N` | 5000 ms | Max time gap between paired messages |
 | `--ignore-ie` | off | Bypass AKM checks (process non-PSK APs, PSK-SHA256 mismatches) |
 | `--eapmd5=FILE` | N/A | Output EAP-MD5 hashes (hashcat mode 4800) |
-| `--eapleap=FILE` | N/A | Output Cisco LEAP hashes (hashcat mode 5500) |
-| `--eapmschapv2=FILE` | N/A | Output MSCHAPv2 hashes from PEAP/EAP-TTLS (hashcat mode 5500) |
+| `--eapleap=FILE` | N/A | Output EAP LEAP and MSCHAPV2 hashes (hashcat mode 5500, john netntlm) |
+| `--tacacs-plus=FILE` | N/A | Output TACACS+ v1 hashes (hashcat mode 16100, john tacacs-plus) |
 | `-E FILE` | N/A | Extract ESSIDs into a wordlist file |
+| `-R FILE` | N/A | Extract probe request SSIDs into a wordlist file |
 | `-I FILE` | N/A | Extract identities (EAP usernames) into a wordlist file |
+| `-U FILE` | N/A | Extract usernames into a list file |
+| `-D FILE` | N/A | Extract device information into a list file |
 
 ## What Default Mode Does
 
@@ -94,8 +97,8 @@ Key observations:
 | `-o` | `WPA*01*` (PMKID) and `WPA*02*` (EAPOL) | 22000 |
 | `-f` | `WPA*03*` (FT PMKID) and `WPA*04*` (FT EAPOL) | 37100 |
 | `--eapmd5` | MD5-Challenge: `hash:id:challenge` | 4800 |
-| `--eapleap` | LEAP challenge/response | 5500 |
-| `--eapmschapv2` | MSCHAPv2: `user::::NTresp:challenge` | 5500 |
+| `--eapleap` | LEAP and MSCHAPV2 challenge/response | 5500 |
+| `--tacacs-plus` | TACACS+ v1 authentication | 16100 |
 
 ## Typical Workflow
 
@@ -113,7 +116,6 @@ hcxpcapngtool -o hashes.22000 -f hashes.37100 capture.pcapng
 hcxpcapngtool -o hashes.22000 \
     --eapmd5 eap-md5.hc4800 \
     --eapleap eap-leap.hc5500 \
-    --eapmschapv2 mschapv2.hc5500 \
     capture.pcapng
 
 # Dedup correctly (by crackable content, not full line)

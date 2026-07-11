@@ -21,6 +21,14 @@ wpawolf addresses several architectural limitations of hcxpcapngtool:
 
 The collect-then-pair architecture means wpawolf cannot miss a valid pair regardless of message ordering or interleaving. hcxpcapngtool's 64-entry ring silently drops the oldest message when the 65th arrives without a successful pair.
 
+## Prefix Mode
+
+`--prefix=PREFIX` sets a default path for every hash and auxiliary output: `PREFIX.22000`, `PREFIX.37100`, `PREFIX.essid`, `PREFIX.wordlist`, `PREFIX.identity`, `PREFIX.username`, `PREFIX.device`, `PREFIX.log`, and more. An explicit per-sink flag overrides its prefix-derived path. Mirrors hcxpcapngtool's `--prefix`.
+
+```bash
+wpawolf --prefix=results --smart captures/
+```
+
 ## Hash Output
 
 | Flag | What it writes | hashcat mode | Format |
@@ -49,7 +57,8 @@ SHA-384 hashes (types 8-11) are deliberately suppressed from the legacy sinks be
 | `-I FILE` | EAP identity strings |
 | `-U FILE` | EAP peer-identity (inner username) strings |
 | `-D FILE` | WPS device info (tab-separated, sorted by manufacturer) |
-| `--log FILE` | Structured processing log |
+| `--log FILE` / `-l FILE` | Structured processing log |
+| `--wordlist-scan FILE` | IE-scan wordlist (printable-ASCII runs not in -E/-R/-W) |
 
 ## Output Options
 
@@ -62,6 +71,7 @@ wpawolf splits output options into two categories:
 | `--smart` | off | Recommended. Emit ~one line per MIC instead of the full cross-product. Implies `--dedup-hash-combos` + `--nc-dedup` |
 | `--dedup-hash-combos` | off | 6 N#E# combos to 3 unique per session |
 | `--nc-dedup` | off | Fold near-identical-nonce siblings into one survivor |
+| `--nc-tolerance N` | 8 | Max trailing-4-byte nonce span within one `--nc-dedup` cluster |
 | `--collapse-message-pair` | off | Drop message-pair byte from dedup identity |
 
 **Filter** options can drop crackable hashes; use with caution:
@@ -72,6 +82,22 @@ wpawolf splits output options into two categories:
 | `--eapoltimeout N` | unlimited | Discard pairs more than N seconds apart |
 | `--rc-drift N` | off | Discard pairs with replay-counter delta > N |
 | `--max-eapol-per-type N` | off | Cap pairing to first N messages of each type per (AP, STA) |
+
+## ESSID Variant Collapse
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--essid-collapse-min N` | 3 | Min SSIDs per AP before collapse fires |
+| `--essid-collapse-ratio N` | 10 | Top/runner-up ratio to trigger collapse (set below 2 to disable) |
+
+## Runtime Options
+
+| Flag | Description |
+|---|---|
+| `-t N` / `--threads N` | Pairing threads (default: CPU count) |
+| `-q` / `--quiet` | Suppress progress lines |
+| `-d` / `--debug` | Print verbose diagnostic lines |
+| `--mem-stats` | Print per-store memory footprint at end of run |
 
 ## Typical Workflow
 
@@ -85,14 +111,13 @@ wpawolf -o all-hashes.out *.pcap
 # Per-AKM split for triage
 wpawolf --wpa2-out wpa2.out --ft-out ft.out --psk-sha384-out psk384.out capture.pcapng.gz
 
-# Maximum extraction with all auxiliaries
-wpawolf --22000-out h.22000 --37100-out h.37100 -o all.out \
-        -E essids.txt -R probes.txt -W wordlist.txt \
-        -I identities.txt -U usernames.txt -D devices.txt \
-        --log run.log captures/*
+# All outputs at once — prefix shorthand
+wpawolf --prefix=run --smart captures/
+# Creates run.22000, run.37100, run.combined, run.essid, run.wordlist,
+# run.identity, run.username, run.device, run.log, ...
 
-# Recommended: smart mode (fewer lines, zero MIC loss)
-wpawolf --22000-out hashes.22000 --smart captures/
+# Prefix with explicit override for one sink
+wpawolf --prefix=run --smart -W custom-wordlist.txt captures/
 ```
 
 At least one output flag is required; wpawolf exits without doing any work if no output is configured.
