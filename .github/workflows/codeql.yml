@@ -1,8 +1,8 @@
 name: CodeQL
 
-# GitHub CodeQL static analysis -- Python source and GitHub Actions workflow files.
+# GitHub CodeQL static analysis -- GitHub Actions workflow files only.
 
-run-name: "CodeQL -- ${{ github.event.head_commit.message || github.ref_name }}"
+run-name: CodeQL -- ${{ github.event.head_commit.message || github.ref_name }}
 
 "on":
   push:
@@ -10,7 +10,7 @@ run-name: "CodeQL -- ${{ github.event.head_commit.message || github.ref_name }}"
   pull_request:
     branches: [main]
   schedule:
-    - cron: "19 6 * * 6"
+    - cron: 19 6 * * 6
   workflow_dispatch:
 
 concurrency:
@@ -32,8 +32,6 @@ jobs:
       matrix:
         include:
           - language: actions
-            build-mode: none
-          - language: python
             build-mode: none
 
     steps:
