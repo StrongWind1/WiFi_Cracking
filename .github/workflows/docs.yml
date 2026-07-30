@@ -76,8 +76,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Lint YAML in .github
+      - name: Lint YAML
         run: |
           set -euo pipefail
+          # Whole repo, not just .github -- mkdocs.yml is the file most likely to
+          # be hand-edited. .yamllint.yml scopes the walk via yaml-files and
+          # ignore-from-file.
           python3 -m pip install --user --quiet yamllint
-          python3 -m yamllint --strict -c .yamllint.yml .github
+          python3 -m yamllint --strict -c .yamllint.yml .
