@@ -54,7 +54,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     timeout-minutes: 10
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Pushes to main publish automatically; workflow_dispatch republishes on
+    # demand without needing an empty commit.
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      || github.event_name == 'workflow_dispatch'
     permissions:
       pages: write
       id-token: write
