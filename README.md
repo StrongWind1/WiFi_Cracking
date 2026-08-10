@@ -5,16 +5,16 @@
 <p align="center">
   <a href="https://github.com/StrongWind1/WiFi_Cracking/actions/workflows/docs.yml"><img src="https://github.com/StrongWind1/WiFi_Cracking/actions/workflows/docs.yml/badge.svg" alt="Docs build"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0"></a>
-  <a href="https://strongwind1.github.io/WiFi_Cracking/"><img src="https://img.shields.io/badge/docs-mkdocs-blue.svg" alt="Docs"></a>
+  <a href="https://strongwind.dev/WiFi_Cracking/"><img src="https://img.shields.io/badge/docs-mkdocs-blue.svg" alt="Docs"></a>
 </p>
 
 <p align="center">
-  <a href="https://strongwind1.github.io/WiFi_Cracking/">Documentation</a> &bull;
-  <a href="https://strongwind1.github.io/WiFi_Cracking/protocol/">Protocol</a> &bull;
-  <a href="https://strongwind1.github.io/WiFi_Cracking/psk-attacks/">PSK attacks</a> &bull;
-  <a href="https://strongwind1.github.io/WiFi_Cracking/eap-attacks/">EAP attacks</a> &bull;
-  <a href="https://strongwind1.github.io/WiFi_Cracking/reference/">Reference</a> &bull;
-  <a href="https://strongwind1.github.io/WiFi_Cracking/tools/">Tools</a>
+  <a href="https://strongwind.dev/WiFi_Cracking/">Documentation</a> &bull;
+  <a href="https://strongwind.dev/WiFi_Cracking/protocol/">Protocol</a> &bull;
+  <a href="https://strongwind.dev/WiFi_Cracking/psk-attacks/">PSK attacks</a> &bull;
+  <a href="https://strongwind.dev/WiFi_Cracking/eap-attacks/">EAP attacks</a> &bull;
+  <a href="https://strongwind.dev/WiFi_Cracking/reference/">Reference</a> &bull;
+  <a href="https://strongwind.dev/WiFi_Cracking/tools/">Tools</a>
 </p>
 
 ---

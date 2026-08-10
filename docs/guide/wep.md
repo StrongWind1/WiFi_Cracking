@@ -161,5 +161,5 @@ See the [aircrack-ng WEP workflow](../wep/aircrack-workflow.md) for the full ste
 
 - [WEP protocol reference](../wep/index.md): IV reuse, CRC-32 linearity, RC4 KSA weakness, attack history
 - [Aircrack-ng WEP workflow](../wep/aircrack-workflow.md): full active attack walkthrough with injection
-- [WEPWolf documentation](https://strongwind1.github.io/WEPWolf/): complete option reference, output formats, tuning guide
+- [WEPWolf documentation](https://strongwind.dev/WEPWolf/): complete option reference, output formats, tuning guide
 - [Aircrack-ng suite](../tools/aircrack-suite.md): tool reference for the full suite
