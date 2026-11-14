@@ -25,3 +25,7 @@ Makefile  text eol=lf
 *.hccapx  binary
 *.hc22000 binary
 *.22000   binary
+
+# GitHub language stats: this is a documentation repo, so count the Markdown
+# (prose is excluded by default) instead of the site tooling around it.
+*.md linguist-detectable
