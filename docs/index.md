@@ -6,13 +6,13 @@ Complete technical reference for IEEE 802.11 wireless security. Two paths to cho
 
 <div class="grid cards" markdown>
 
-- :material-school: __[Guide](guide/index.md)__
+- :material-school: **[Guide](guide/index.md)**
 
     ---
 
     Zero-to-hero walkthrough. Capture traffic, extract hashes, crack passwords. Step by step with just the commands you need.
 
-- :material-book-open-variant: __[Reference](protocol/index.md)__
+- :material-book-open-variant: **[Reference](protocol/index.md)**
 
     ---
 
@@ -24,31 +24,31 @@ Complete technical reference for IEEE 802.11 wireless security. Two paths to cho
 
 <div class="grid cards" markdown>
 
-- :material-shield-lock: __[Protocol](protocol/index.md)__
+- :material-shield-lock: **[Protocol](protocol/index.md)**
 
     ---
 
     All 25 AKM suites across 5 categories. Key hierarchies, handshake flows, and cryptographic details per IEEE 802.11-2024.
 
-- :material-key-variant: __[PSK Attacks](psk-attacks/index.md)__
+- :material-key-variant: **[PSK Attacks](psk-attacks/index.md)**
 
     ---
 
     PMKID and EAPOL MIC attacks against password-based AKMs. Message pair analysis, PBKDF2/PRF/KDF algorithms.
 
-- :material-server-network: __[EAP Attacks](eap-attacks/index.md)__
+- :material-server-network: **[EAP Attacks](eap-attacks/index.md)**
 
     ---
 
     Enterprise credential extraction. PEAP/MSCHAPv2, EAP-MD5, and LEAP hash capture from 802.1X exchanges.
 
-- :material-wifi-off: __[WEP](wep/index.md)__
+- :material-wifi-off: **[WEP](wep/index.md)**
 
     ---
 
     Legacy WEP vulnerabilities. FMS, KoreK, PTW attacks and practical [aircrack-ng](https://github.com/aircrack-ng/aircrack-ng) workflows.
 
-- :material-wrench: __[Tools](tools/index.md)__
+- :material-wrench: **[Tools](tools/index.md)**
 
     ---
 

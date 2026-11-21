@@ -126,6 +126,6 @@ hashcat -m 1000 nthash.txt wordlist.txt   # NT hash cracking
 
 ## Spec and Source References
 
-- MSCHAPv2 protocol: RFC 2759
-- PEAP protocol: draft-josefsson-pppext-eap-tls-eap (PEAPv0/v1)
-- hashcat format: `--eapleap` output (LEAP and MSCHAPv2) in hcxpcapngtool
++ MSCHAPv2 protocol: RFC 2759
++ PEAP protocol: draft-josefsson-pppext-eap-tls-eap (PEAPv0/v1)
++ hashcat format: `--eapleap` output (LEAP and MSCHAPv2) in hcxpcapngtool
