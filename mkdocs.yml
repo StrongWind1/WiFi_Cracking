@@ -1,5 +1,5 @@
-site_name: WiFi Cracking
-site_description: Complete technical reference for IEEE 802.11 security — protocols, attacks, and hash extraction
+site_name: Wi-Fi Cracking
+site_description: "IEEE 802.11 security reference: WPA/WPA2/WPA3 PSK, EAP, and WEP, from protocol internals to cracking"
 site_url: https://strongwind.dev/WiFi_Cracking/
 repo_url: https://github.com/StrongWind1/WiFi_Cracking
 repo_name: StrongWind1/WiFi_Cracking
@@ -46,6 +46,8 @@ theme:
     # very long sidebar. Kerberos does the same for the same reason.
     - navigation.tabs
     - navigation.tabs.sticky
+    # Render only the active tab's navigation, which keeps large sites small.
+    - navigation.prune
     # Table of contents
     - toc.follow
     # Search
@@ -60,6 +62,11 @@ theme:
     - content.code.annotate
     - content.action.edit
     - content.action.view
+    # Styled tooltips for the abbreviation glossary appended to every page.
+    - content.tooltips
+
+hooks:
+  - hooks/html_validity.py
 
 plugins:
   - search
@@ -76,7 +83,6 @@ markdown_extensions:
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
-      anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
@@ -165,7 +171,7 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/StrongWind1/WiFi_Cracking
-      name: WiFi Cracking on GitHub
+      name: Wi-Fi Cracking on GitHub
   generator: false
 
 extra_css:
@@ -173,6 +179,10 @@ extra_css:
   # so every Material colour variable is defined there.
   - stylesheets/theme.css
   - stylesheets/extra.css
+
+extra_javascript:
+  # a11y.js gives code blocks that scroll sideways a keyboard tab stop.
+  - javascripts/a11y.js
 
 strict: true
 
